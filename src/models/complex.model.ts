@@ -1,5 +1,6 @@
-import {Entity, belongsTo, model, property} from '@loopback/repository';
+import {Entity, belongsTo, hasMany, model, property} from '@loopback/repository';
 import {Locations} from './locations.model';
+import {ComplexService} from './complex-service.model';
 
 @model({settings: {strict: false}})
 export class Complex extends Entity {
@@ -25,6 +26,9 @@ export class Complex extends Entity {
   @belongsTo(() => Locations, {name: 'location'})
   locationId: string;
 
+  @hasMany(() => ComplexService, { keyTo: 'complexId' })
+  services?: ComplexService[];
+
   @property({
     type: 'array',
     itemType: 'object',
@@ -44,7 +48,7 @@ export class Complex extends Entity {
 }
 
 export interface ComplexRelations {
-  // describe navigational properties here
+  services?: ComplexService[];
 }
 
 export type ComplexWithRelations = Complex & ComplexRelations;
