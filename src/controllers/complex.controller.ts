@@ -26,7 +26,7 @@ export class ComplexController {
     public complexRepository : ComplexRepository,
   ) {}
 
-  @post('/complexes')
+  @post('/api/complexes')
   @response(200, {
     description: 'Complex model instance',
     content: {'application/json': {schema: getModelSchemaRef(Complex)}},
@@ -47,7 +47,7 @@ export class ComplexController {
     return this.complexRepository.create(complex);
   }
 
-  @get('/complexes/count')
+  @get('/api/complexes/count')
   @response(200, {
     description: 'Complex model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +58,7 @@ export class ComplexController {
     return this.complexRepository.count(where);
   }
 
-  @get('/complexes')
+  @get('/api/complexes')
   @response(200, {
     description: 'Array of Complex model instances',
     content: {
@@ -76,7 +76,7 @@ export class ComplexController {
     return this.complexRepository.find(filter);
   }
 
-  @patch('/complexes')
+  @patch('/api/complexes')
   @response(200, {
     description: 'Complex PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -95,7 +95,7 @@ export class ComplexController {
     return this.complexRepository.updateAll(complex, where);
   }
 
-  @get('/complexes/{id}')
+  @get('/api/complexes/{id}')
   @response(200, {
     description: 'Complex model instance',
     content: {
@@ -111,7 +111,7 @@ export class ComplexController {
     return this.complexRepository.findById(id, filter);
   }
 
-  @patch('/complexes/{id}')
+  @patch('/api/complexes/{id}')
   @response(204, {
     description: 'Complex PATCH success',
   })
@@ -129,7 +129,7 @@ export class ComplexController {
     await this.complexRepository.updateById(id, complex);
   }
 
-  @put('/complexes/{id}')
+  @put('/api/complexes/{id}')
   @response(204, {
     description: 'Complex PUT success',
   })
@@ -140,7 +140,7 @@ export class ComplexController {
     await this.complexRepository.replaceById(id, complex);
   }
 
-  @del('/complexes/{id}')
+  @del('/api/complexes/{id}')
   @response(204, {
     description: 'Complex DELETE success',
   })

@@ -26,7 +26,7 @@ export class ApartmentCategoryController {
     public apartmentCategotyRepository : ApartmentCategotyRepository,
   ) {}
 
-  @post('/apartment-categories')
+  @post('/api/apartment-categories')
   @response(200, {
     description: 'ApartmentCategoty model instance',
     content: {'application/json': {schema: getModelSchemaRef(ApartmentCategoty)}},
@@ -47,7 +47,7 @@ export class ApartmentCategoryController {
     return this.apartmentCategotyRepository.create(apartmentCategoty);
   }
 
-  @get('/apartment-categories/count')
+  @get('/api/apartment-categories/count')
   @response(200, {
     description: 'ApartmentCategoty model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +58,7 @@ export class ApartmentCategoryController {
     return this.apartmentCategotyRepository.count(where);
   }
 
-  @get('/apartment-categories')
+  @get('/api/apartment-categories')
   @response(200, {
     description: 'Array of ApartmentCategoty model instances',
     content: {
@@ -76,7 +76,7 @@ export class ApartmentCategoryController {
     return this.apartmentCategotyRepository.find(filter);
   }
 
-  @patch('/apartment-categories')
+  @patch('/api/apartment-categories')
   @response(200, {
     description: 'ApartmentCategoty PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -95,7 +95,7 @@ export class ApartmentCategoryController {
     return this.apartmentCategotyRepository.updateAll(apartmentCategoty, where);
   }
 
-  @get('/apartment-categories/{id}')
+  @get('/api/apartment-categories/{id}')
   @response(200, {
     description: 'ApartmentCategoty model instance',
     content: {
@@ -111,7 +111,7 @@ export class ApartmentCategoryController {
     return this.apartmentCategotyRepository.findById(id, filter);
   }
 
-  @patch('/apartment-categories/{id}')
+  @patch('/api/apartment-categories/{id}')
   @response(204, {
     description: 'ApartmentCategoty PATCH success',
   })
@@ -129,7 +129,7 @@ export class ApartmentCategoryController {
     await this.apartmentCategotyRepository.updateById(id, apartmentCategoty);
   }
 
-  @put('/apartment-categories/{id}')
+  @put('/api/apartment-categories/{id}')
   @response(204, {
     description: 'ApartmentCategoty PUT success',
   })
@@ -140,7 +140,7 @@ export class ApartmentCategoryController {
     await this.apartmentCategotyRepository.replaceById(id, apartmentCategoty);
   }
 
-  @del('/apartment-categories/{id}')
+  @del('/api/apartment-categories/{id}')
   @response(204, {
     description: 'ApartmentCategoty DELETE success',
   })

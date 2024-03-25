@@ -26,7 +26,7 @@ export class ApartmentController {
     public apartmentRepository : ApartmentRepository,
   ) {}
 
-  @post('/apartments')
+  @post('/api/apartments')
   @response(200, {
     description: 'Apartment model instance',
     content: {'application/json': {schema: getModelSchemaRef(Apartment)}},
@@ -47,7 +47,7 @@ export class ApartmentController {
     return this.apartmentRepository.create(apartment);
   }
 
-  @get('/apartments/count')
+  @get('/api/apartments/count')
   @response(200, {
     description: 'Apartment model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +58,7 @@ export class ApartmentController {
     return this.apartmentRepository.count(where);
   }
 
-  @get('/apartments')
+  @get('/api/apartments')
   @response(200, {
     description: 'Array of Apartment model instances',
     content: {
@@ -76,7 +76,7 @@ export class ApartmentController {
     return this.apartmentRepository.find(filter);
   }
 
-  @patch('/apartments')
+  @patch('/api/apartments')
   @response(200, {
     description: 'Apartment PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -95,7 +95,7 @@ export class ApartmentController {
     return this.apartmentRepository.updateAll(apartment, where);
   }
 
-  @get('/apartments/{id}')
+  @get('/api/apartments/{id}')
   @response(200, {
     description: 'Apartment model instance',
     content: {
@@ -111,7 +111,7 @@ export class ApartmentController {
     return this.apartmentRepository.findById(id, filter);
   }
 
-  @patch('/apartments/{id}')
+  @patch('/api/apartments/{id}')
   @response(204, {
     description: 'Apartment PATCH success',
   })
@@ -129,7 +129,7 @@ export class ApartmentController {
     await this.apartmentRepository.updateById(id, apartment);
   }
 
-  @put('/apartments/{id}')
+  @put('/api/apartments/{id}')
   @response(204, {
     description: 'Apartment PUT success',
   })
@@ -140,7 +140,7 @@ export class ApartmentController {
     await this.apartmentRepository.replaceById(id, apartment);
   }
 
-  @del('/apartments/{id}')
+  @del('/api/apartments/{id}')
   @response(204, {
     description: 'Apartment DELETE success',
   })
