@@ -1,6 +1,7 @@
-import {Entity, belongsTo, model, property} from '@loopback/repository';
+import {Entity, belongsTo, hasMany, model, property} from '@loopback/repository';
 import {Complex} from './complex.model';
 import {ApartmentCategoty} from './apartment-categoty.model';
+import {Amenity} from './amenity.model';
 
 @model({settings: {strict: false}})
 export class Apartment extends Entity {
@@ -23,6 +24,9 @@ export class Apartment extends Entity {
   @belongsTo(() => ApartmentCategoty, {name: 'category'})
   category_id: string;
 
+  @hasMany(() => Amenity, {name: 'amenities'})
+  amenities: Amenity[];
+
   @property({
     type: 'string',
     required: true,
@@ -44,33 +48,33 @@ export class Apartment extends Entity {
 
   @property({
     type: 'string',
-    default: '',
+    default: null,
   })
-  host_name: string;
+  host_name: string | null;
 
   @property({
     type: 'string',
-    default: '',
+    default: null,
   })
-  neighbourhood: string;
+  neighbourhood: string | null;
 
   @property({
     type: 'string',
-    default: '',
+    default: null,
   })
-  latitude: string;
+  latitude: string |null;
 
   @property({
     type: 'string',
-    default: '',
+    default: null,
   })
-  longitude: string;
+  longitude: string | null;
 
   @property({
     type: 'string',
-    default: '',
+    default: null,
   })
-  room_type: string;
+  room_type: string |null;
 
   @property({
     type: 'number',
@@ -98,9 +102,9 @@ export class Apartment extends Entity {
 
   @property({
     type: 'string',
-    default: '',
+    default: null,
   })
-  oldPrice: string;
+  oldPrice: string | null;
 
   @property({
     type: 'number',
@@ -116,9 +120,9 @@ export class Apartment extends Entity {
 
   @property({
     type: 'string',
-    default: '',
+    default: null,
   })
-  last_review: string;
+  last_review: string | null;
 
   @property({
     type: 'number',
