@@ -26,7 +26,7 @@ export class AmenityController {
     public amenityRepository : AmenityRepository,
   ) {}
 
-  @post('/amenities')
+  @post('/api/amenities')
   @response(200, {
     description: 'Amenity model instance',
     content: {'application/json': {schema: getModelSchemaRef(Amenity)}},
@@ -47,7 +47,7 @@ export class AmenityController {
     return this.amenityRepository.create(amenity);
   }
 
-  @get('/amenities/count')
+  @get('/api/amenities/count')
   @response(200, {
     description: 'Amenity model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +58,7 @@ export class AmenityController {
     return this.amenityRepository.count(where);
   }
 
-  @get('/amenities')
+  @get('/api/amenities')
   @response(200, {
     description: 'Array of Amenity model instances',
     content: {
@@ -76,7 +76,7 @@ export class AmenityController {
     return this.amenityRepository.find(filter);
   }
 
-  @patch('/amenities')
+  @patch('/api/amenities')
   @response(200, {
     description: 'Amenity PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -95,7 +95,7 @@ export class AmenityController {
     return this.amenityRepository.updateAll(amenity, where);
   }
 
-  @get('/amenities/{id}')
+  @get('/api/amenities/{id}')
   @response(200, {
     description: 'Amenity model instance',
     content: {
@@ -111,7 +111,7 @@ export class AmenityController {
     return this.amenityRepository.findById(id, filter);
   }
 
-  @patch('/amenities/{id}')
+  @patch('/api/amenities/{id}')
   @response(204, {
     description: 'Amenity PATCH success',
   })
@@ -129,7 +129,7 @@ export class AmenityController {
     await this.amenityRepository.updateById(id, amenity);
   }
 
-  @put('/amenities/{id}')
+  @put('/api/amenities/{id}')
   @response(204, {
     description: 'Amenity PUT success',
   })
@@ -140,7 +140,7 @@ export class AmenityController {
     await this.amenityRepository.replaceById(id, amenity);
   }
 
-  @del('/amenities/{id}')
+  @del('/api/amenities/{id}')
   @response(204, {
     description: 'Amenity DELETE success',
   })
