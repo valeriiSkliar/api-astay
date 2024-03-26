@@ -6,3 +6,4 @@ export * from './apartment-category.controller';
 export * from './apartment.controller';
 export * from './complex-service.controller';
 export * from './amenity.controller';
+export * from './customer.controller';

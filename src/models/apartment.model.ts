@@ -144,7 +144,7 @@ export class Apartment extends Entity {
 
   @property({
     type: 'array',
-    itemType: 'object',
+    itemType: 'string',
     default: [],
   })
   amenities?: object[];

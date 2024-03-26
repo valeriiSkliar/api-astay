@@ -5,3 +5,5 @@ export * from './apartment-categoty.model';
 export * from './apartment-service.model';
 export * from './complex-service.model';
 export * from './amenity.model';
+export * from './customer.model';
+export * from './test.model';
