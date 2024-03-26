@@ -69,3 +69,10 @@ dist*/
 
 docker-build
 .vscode
+,
+10,
+30,
+3030,
+CURL_HTTP_VERSION_1_1,
+GET,
+true,

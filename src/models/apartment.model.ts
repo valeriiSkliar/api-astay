@@ -3,6 +3,9 @@ import {Complex} from './complex.model';
 import {ApartmentCategoty} from './apartment-categoty.model';
 import {Amenity} from './amenity.model';
 
+// TODO add price_high_season
+// TODO add price_low_season
+
 @model({settings: {strict: false}})
 export class Apartment extends Entity {
   @property({
@@ -24,9 +27,6 @@ export class Apartment extends Entity {
   @belongsTo(() => ApartmentCategoty, {name: 'category'})
   category_id: string;
 
-  @hasMany(() => Amenity, {name: 'amenities'})
-  amenities: Amenity[];
-
   @property({
     type: 'string',
     required: true,
@@ -41,10 +41,10 @@ export class Apartment extends Entity {
   images?: object[];
 
   @property({
-    type: 'number',
+    type: 'string',
     default: null,
   })
-  host_id: number | null;
+  host_id: string | null;
 
   @property({
     type: 'string',
@@ -141,6 +141,13 @@ export class Apartment extends Entity {
     default: 0,
   })
   number_of_reviews_ltm: number;
+
+  @property({
+    type: 'array',
+    itemType: 'object',
+    default: [],
+  })
+  amenities?: object[];
   // Define well-known properties here
 
   // Indexer property to allow additional data
@@ -153,7 +160,7 @@ export class Apartment extends Entity {
 }
 
 export interface ApartmentRelations {
-  // describe navigational properties here
+  // amenities?: ApartmentAmenity[];
 }
 
 export type ApartmentWithRelations = Apartment & ApartmentRelations;

@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, hasMany, model, property} from '@loopback/repository';
+import {Apartment} from './apartment.model';
 
 @model({settings: {strict: false}})
 export class Amenity extends Entity {
