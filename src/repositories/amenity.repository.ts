@@ -8,9 +8,7 @@ export class AmenityRepository extends DefaultCrudRepository<
   typeof Amenity.prototype.id,
   AmenityRelations
 > {
-  constructor(
-    @inject('datasources.mongo') dataSource: MongoDataSource,
-  ) {
+  constructor(@inject('datasources.mongo') dataSource: MongoDataSource) {
     super(Amenity, dataSource);
   }
 }

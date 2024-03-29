@@ -7,3 +7,5 @@ export * from './apartment.controller';
 export * from './complex-service.controller';
 export * from './amenity.controller';
 export * from './customer.controller';
+export * from './photo.controller';
+export * from './complex-photo.controller';

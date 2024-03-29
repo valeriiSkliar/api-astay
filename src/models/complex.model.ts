@@ -1,15 +1,31 @@
-import {Entity, belongsTo, hasMany, model, property} from '@loopback/repository';
+import {
+  Entity,
+  belongsTo,
+  hasMany,
+  model,
+  property,
+} from '@loopback/repository';
 import {Locations} from './locations.model';
 import {ComplexService} from './complex-service.model';
+import {Photo} from './photo.model';
 
-@model({settings: {strict: false}})
+@model({
+  // settings: {
+  //   fk_photo_complex_id: {
+  //     name: 'fk_photo_complex_id',
+  //     entity: 'Complex',
+  //     entityKey: 'id',
+  //     foreignKey: 'complex_id',
+  //   },
+  // },
+})
 export class Complex extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -23,11 +39,11 @@ export class Complex extends Entity {
   })
   description: string;
 
-  @belongsTo(() => Locations, {name: 'location'})
-  locationId: string;
-
-  @hasMany(() => ComplexService, { keyTo: 'complexId' })
-  services?: ComplexService[];
+  @property({
+    type: 'string',
+    required: true,
+  })
+  address: string;
 
   @property({
     type: 'array',
@@ -36,11 +52,17 @@ export class Complex extends Entity {
   })
   images?: object[];
 
-  // Define well-known properties here
+  @property({
+    type: 'array',
+    itemType: 'object',
+    required: true,
+  })
+  geo_data?: Array<{lat: number; lng: number}>;
 
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  @hasMany(() => Photo, {keyTo: 'complex_id'})
+  photos: Photo[];
+  // @hasMany(() => Photo, {keyTo: 'complex_id'})
+  // photos: Photo[];
 
   constructor(data?: Partial<Complex>) {
     super(data);
@@ -48,7 +70,7 @@ export class Complex extends Entity {
 }
 
 export interface ComplexRelations {
-  services?: ComplexService[];
+
 }
 
 export type ComplexWithRelations = Complex & ComplexRelations;

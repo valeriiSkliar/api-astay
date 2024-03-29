@@ -42,4 +42,5 @@ export interface ApartmentServiceRelations {
   // describe navigational properties here
 }
 
-export type ApartmentServiceWithRelations = ApartmentService & ApartmentServiceRelations;
+export type ApartmentServiceWithRelations = ApartmentService &
+  ApartmentServiceRelations;

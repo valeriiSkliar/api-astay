@@ -23,13 +23,15 @@ import {ApartmentCategotyRepository} from '../repositories';
 export class ApartmentCategoryController {
   constructor(
     @repository(ApartmentCategotyRepository)
-    public apartmentCategotyRepository : ApartmentCategotyRepository,
+    public apartmentCategotyRepository: ApartmentCategotyRepository,
   ) {}
 
   @post('/api/apartment-categories')
   @response(200, {
     description: 'ApartmentCategoty model instance',
-    content: {'application/json': {schema: getModelSchemaRef(ApartmentCategoty)}},
+    content: {
+      'application/json': {schema: getModelSchemaRef(ApartmentCategoty)},
+    },
   })
   async create(
     @requestBody({
@@ -106,7 +108,8 @@ export class ApartmentCategoryController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(ApartmentCategoty, {exclude: 'where'}) filter?: FilterExcludingWhere<ApartmentCategoty>
+    @param.filter(ApartmentCategoty, {exclude: 'where'})
+    filter?: FilterExcludingWhere<ApartmentCategoty>,
   ): Promise<ApartmentCategoty> {
     return this.apartmentCategotyRepository.findById(id, filter);
   }

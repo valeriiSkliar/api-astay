@@ -23,7 +23,7 @@ import {ComplexServiceRepository} from '../repositories';
 export class ComplexServiceController {
   constructor(
     @repository(ComplexServiceRepository)
-    public complexServiceRepository : ComplexServiceRepository,
+    public complexServiceRepository: ComplexServiceRepository,
   ) {}
 
   @post('/api/complex-services')
@@ -106,7 +106,8 @@ export class ComplexServiceController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(ComplexService, {exclude: 'where'}) filter?: FilterExcludingWhere<ComplexService>
+    @param.filter(ComplexService, {exclude: 'where'})
+    filter?: FilterExcludingWhere<ComplexService>,
   ): Promise<ComplexService> {
     return this.complexServiceRepository.findById(id, filter);
   }

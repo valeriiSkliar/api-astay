@@ -49,4 +49,5 @@ export interface ComplexServiceRelations {
   complex?: Complex;
 }
 
-export type ComplexServiceWithRelations = ComplexService & ComplexServiceRelations;
+export type ComplexServiceWithRelations = ComplexService &
+  ComplexServiceRelations;

@@ -8,9 +8,7 @@ export class ApartmentCategotyRepository extends DefaultCrudRepository<
   typeof ApartmentCategoty.prototype.id,
   ApartmentCategotyRelations
 > {
-  constructor(
-    @inject('datasources.mongo') dataSource: MongoDataSource,
-  ) {
+  constructor(@inject('datasources.mongo') dataSource: MongoDataSource) {
     super(ApartmentCategoty, dataSource);
   }
 }

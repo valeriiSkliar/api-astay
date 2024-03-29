@@ -8,9 +8,7 @@ export class CustomerRepository extends DefaultCrudRepository<
   typeof Customer.prototype.id,
   CustomerRelations
 > {
-  constructor(
-    @inject('datasources.mongo') dataSource: MongoDataSource,
-  ) {
+  constructor(@inject('datasources.mongo') dataSource: MongoDataSource) {
     super(Customer, dataSource);
   }
 }

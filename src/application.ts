@@ -17,6 +17,8 @@ import {
   UserServiceBindings,
 } from '@loopback/authentication-jwt';
 import {MongoDataSource} from './datasources';
+import {LocalMysqlDataSource} from './datasources/local-mysql.datasource';
+import {CrudRestComponent} from '@loopback/rest-crud';
 
 export {ApplicationConfig};
 
@@ -28,7 +30,7 @@ export class ApiApplication extends BootMixin(
 
     this.component(AuthenticationComponent);
     this.component(JWTAuthenticationComponent);
-    this.dataSource(MongoDataSource, UserServiceBindings.DATASOURCE_NAME);
+    this.dataSource(LocalMysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     // Set up the custom sequence
     this.sequence(MySequence);
 
@@ -51,5 +53,6 @@ export class ApiApplication extends BootMixin(
         nested: true,
       },
     };
+    this.component(CrudRestComponent);
   }
 }

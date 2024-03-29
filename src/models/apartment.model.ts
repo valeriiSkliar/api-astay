@@ -1,4 +1,10 @@
-import {Entity, belongsTo, hasMany, model, property} from '@loopback/repository';
+import {
+  Entity,
+  belongsTo,
+  hasMany,
+  model,
+  property,
+} from '@loopback/repository';
 import {Complex} from './complex.model';
 import {ApartmentCategoty} from './apartment-categoty.model';
 import {Amenity} from './amenity.model';
@@ -33,12 +39,12 @@ export class Apartment extends Entity {
   })
   description: string;
 
-  @property({
-    type: 'array',
-    itemType: 'object',
-    default: [],
-  })
-  images?: object[];
+  // @property({
+  //   type: 'array',
+  //   items: {type: 'object'},
+  //   default: [],
+  // })
+  // images?: object[];
 
   @property({
     type: 'string',
@@ -52,17 +58,18 @@ export class Apartment extends Entity {
   })
   host_name: string | null;
 
-  @property({
-    type: 'string',
-    default: null,
-  })
-  neighbourhood: string | null;
+  // @property({
+  //   type: 'array',
+  //   items: 'string',
+  //   default: [],
+  // })
+  // neighbourhood: string[];
 
   @property({
     type: 'string',
     default: null,
   })
-  latitude: string |null;
+  latitude: string | null;
 
   @property({
     type: 'string',
@@ -74,7 +81,7 @@ export class Apartment extends Entity {
     type: 'string',
     default: null,
   })
-  room_type: string |null;
+  room_type: string | null;
 
   @property({
     type: 'number',
@@ -142,12 +149,13 @@ export class Apartment extends Entity {
   })
   number_of_reviews_ltm: number;
 
-  @property({
-    type: 'array',
-    itemType: 'string',
-    default: [],
-  })
-  amenities?: object[];
+  // @property({
+  //   type: 'array',
+  //   items: 'string',
+  //   default: [],
+  // })
+  // amenities?: string[];
+
   // Define well-known properties here
 
   // Indexer property to allow additional data

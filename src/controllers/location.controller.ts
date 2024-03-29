@@ -23,7 +23,7 @@ import {LocationsRepository} from '../repositories';
 export class LocationController {
   constructor(
     @repository(LocationsRepository)
-    public locationsRepository : LocationsRepository,
+    public locationsRepository: LocationsRepository,
   ) {}
 
   @post('/api/locations')
@@ -106,7 +106,8 @@ export class LocationController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Locations, {exclude: 'where'}) filter?: FilterExcludingWhere<Locations>
+    @param.filter(Locations, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Locations>,
   ): Promise<Locations> {
     return this.locationsRepository.findById(id, filter);
   }

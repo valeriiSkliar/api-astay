@@ -48,4 +48,5 @@ export interface ApartmentCategotyRelations {
   // describe navigational properties here
 }
 
-export type ApartmentCategotyWithRelations = ApartmentCategoty & ApartmentCategotyRelations;
+export type ApartmentCategotyWithRelations = ApartmentCategoty &
+  ApartmentCategotyRelations;

@@ -105,7 +105,7 @@ export class ComplexController {
     },
   })
   async findById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @param.filter(Complex, {exclude: 'where'}) filter?: FilterExcludingWhere<Complex>
   ): Promise<Complex> {
     return this.complexRepository.findById(id, filter);
@@ -116,7 +116,7 @@ export class ComplexController {
     description: 'Complex PATCH success',
   })
   async updateById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody({
       content: {
         'application/json': {
@@ -134,7 +134,7 @@ export class ComplexController {
     description: 'Complex PUT success',
   })
   async replaceById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody() complex: Complex,
   ): Promise<void> {
     await this.complexRepository.replaceById(id, complex);
@@ -144,7 +144,7 @@ export class ComplexController {
   @response(204, {
     description: 'Complex DELETE success',
   })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
+  async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.complexRepository.deleteById(id);
   }
 }

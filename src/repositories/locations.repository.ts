@@ -8,9 +8,7 @@ export class LocationsRepository extends DefaultCrudRepository<
   typeof Locations.prototype.id,
   LocationsRelations
 > {
-  constructor(
-    @inject('datasources.mongo') dataSource: MongoDataSource,
-  ) {
+  constructor(@inject('datasources.mongo') dataSource: MongoDataSource) {
     super(Locations, dataSource);
   }
 }

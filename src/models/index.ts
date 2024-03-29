@@ -7,3 +7,4 @@ export * from './complex-service.model';
 export * from './amenity.model';
 export * from './customer.model';
 export * from './test.model';
+export * from './photo.model';

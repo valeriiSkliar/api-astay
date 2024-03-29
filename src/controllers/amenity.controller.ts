@@ -23,7 +23,7 @@ import {AmenityRepository} from '../repositories';
 export class AmenityController {
   constructor(
     @repository(AmenityRepository)
-    public amenityRepository : AmenityRepository,
+    public amenityRepository: AmenityRepository,
   ) {}
 
   @post('/api/amenities')
@@ -52,9 +52,7 @@ export class AmenityController {
     description: 'Amenity model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Amenity) where?: Where<Amenity>,
-  ): Promise<Count> {
+  async count(@param.where(Amenity) where?: Where<Amenity>): Promise<Count> {
     return this.amenityRepository.count(where);
   }
 
@@ -106,7 +104,8 @@ export class AmenityController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Amenity, {exclude: 'where'}) filter?: FilterExcludingWhere<Amenity>
+    @param.filter(Amenity, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Amenity>,
   ): Promise<Amenity> {
     return this.amenityRepository.findById(id, filter);
   }

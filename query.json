@@ -1,0 +1,13 @@
+{
+  "where":{
+    "complex_id": 3
+  },
+  "include":[
+    {
+      "relation":"complexes",
+      "scope":{
+        "fields":["id", "title"]
+      }
+    }
+  ]
+  }
