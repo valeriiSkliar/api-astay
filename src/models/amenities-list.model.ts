@@ -1,7 +1,7 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model({settings: {strict: false}})
-export class Locations extends Entity {
+export class AmenitiesList extends Entity {
   @property({
     type: 'number',
     id: true,
@@ -10,34 +10,16 @@ export class Locations extends Entity {
   id?: number;
 
   @property({
-    type: 'string',
+    type: 'number',
     required: true,
   })
-  name: string;
+  apartment_id: number;
 
   @property({
-    type: 'string',
+    type: 'number',
     required: true,
   })
-  latitude: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  longitude: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  city: string;
-
-  @property({
-    type: 'string',
-    default: 'Thailand',
-  })
-  country?: string;
+  amenity_id: number;
 
   // Define well-known properties here
 
@@ -45,13 +27,13 @@ export class Locations extends Entity {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 
-  constructor(data?: Partial<Locations>) {
+  constructor(data?: Partial<AmenitiesList>) {
     super(data);
   }
 }
 
-export interface LocationsRelations {
+export interface AmenitiesListRelations {
   // describe navigational properties here
 }
 
-export type LocationsWithRelations = Locations & LocationsRelations;
+export type AmenitiesListWithRelations = AmenitiesList & AmenitiesListRelations;

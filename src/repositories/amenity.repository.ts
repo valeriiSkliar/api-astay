@@ -1,6 +1,6 @@
 import {inject} from '@loopback/core';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {MongoDataSource} from '../datasources';
+import {LocalMysqlDataSource} from '../datasources';
 import {Amenity, AmenityRelations} from '../models';
 
 export class AmenityRepository extends DefaultCrudRepository<
@@ -8,7 +8,7 @@ export class AmenityRepository extends DefaultCrudRepository<
   typeof Amenity.prototype.id,
   AmenityRelations
 > {
-  constructor(@inject('datasources.mongo') dataSource: MongoDataSource) {
+  constructor(@inject('datasources.local_mysql') dataSource: LocalMysqlDataSource) {
     super(Amenity, dataSource);
   }
 }

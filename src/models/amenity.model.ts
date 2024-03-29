@@ -1,26 +1,32 @@
 import {Entity, hasMany, model, property} from '@loopback/repository';
 import {Apartment} from './apartment.model';
 
-@model({settings: {strict: false}})
+@model({settings: {strict: true}})
 export class Amenity extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  id?: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  name: string;
+  id?: number;
 
   @property({
     type: 'string',
     default: null,
   })
   description?: string;
+
+  @property({
+    type: 'string',
+    default: null,
+  })
+  image?: string;
+
+  @property({
+    type: 'string',
+    default: null,
+  })
+  title?: string;
 
   // Define well-known properties here
 

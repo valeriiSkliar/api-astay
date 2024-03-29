@@ -1,19 +1,19 @@
 import {Entity, model, property} from '@loopback/repository';
 
 @model({settings: {strict: false}})
-export class ApartmentCategoty extends Entity {
+export class RoomType extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
     required: true,
   })
-  name: string;
+  type: string;
 
   @property({
     type: 'string',
@@ -22,31 +22,23 @@ export class ApartmentCategoty extends Entity {
   description?: string;
 
   @property({
-    type: 'object',
-    default: null,
-  })
-  imageURL?: object;
-
-  @property({
     type: 'string',
     default: null,
   })
   color?: string;
-
   // Define well-known properties here
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 
-  constructor(data?: Partial<ApartmentCategoty>) {
+  constructor(data?: Partial<RoomType>) {
     super(data);
   }
 }
 
-export interface ApartmentCategotyRelations {
+export interface RoomTypeRelations {
   // describe navigational properties here
 }
 
-export type ApartmentCategotyWithRelations = ApartmentCategoty &
-  ApartmentCategotyRelations;
+export type RoomTypeWithRelations = RoomType & RoomTypeRelations;

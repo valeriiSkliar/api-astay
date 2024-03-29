@@ -1,25 +1,22 @@
 import {
   Entity,
-  belongsTo,
-  hasMany,
   model,
-  property,
-} from '@loopback/repository';
+  property, belongsTo, hasMany} from '@loopback/repository';
 import {Complex} from './complex.model';
-import {ApartmentCategoty} from './apartment-categoty.model';
+import {Locations} from './locations.model';
+import {Photo} from './photo.model';
 import {Amenity} from './amenity.model';
+import {AmenitiesList} from './amenities-list.model';
+import {RoomType} from './room-type.model';
 
-// TODO add price_high_season
-// TODO add price_low_season
-
-@model({settings: {strict: false}})
+@model()
 export class Apartment extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -27,139 +24,106 @@ export class Apartment extends Entity {
   })
   name: string;
 
-  @belongsTo(() => Complex, {name: 'complex'})
-  complex_id: string;
-
-  @belongsTo(() => ApartmentCategoty, {name: 'category'})
-  category_id: string;
+  @property({
+    type: 'string',
+  })
+  description?: string;
 
   @property({
     type: 'string',
-    required: true,
   })
-  description: string;
-
-  // @property({
-  //   type: 'array',
-  //   items: {type: 'object'},
-  //   default: [],
-  // })
-  // images?: object[];
-
-  @property({
-    type: 'string',
-    default: null,
-  })
-  host_id: string | null;
-
-  @property({
-    type: 'string',
-    default: null,
-  })
-  host_name: string | null;
-
-  // @property({
-  //   type: 'array',
-  //   items: 'string',
-  //   default: [],
-  // })
-  // neighbourhood: string[];
-
-  @property({
-    type: 'string',
-    default: null,
-  })
-  latitude: string | null;
-
-  @property({
-    type: 'string',
-    default: null,
-  })
-  longitude: string | null;
-
-  @property({
-    type: 'string',
-    default: null,
-  })
-  room_type: string | null;
+  host_name?: string;
 
   @property({
     type: 'number',
-    required: true,
   })
-  price: number;
+  guests?: number;
 
   @property({
     type: 'number',
-    default: null,
   })
-  discount: number | null;
+  bathrooms?: number;
+
+  @property({
+    type: 'number',
+  })
+  bedrooms?: number;
+
+  @property({
+    type: 'number',
+  })
+  beds?: number;
+
+  @property.array(String)
+  neighbourhood?: string[];
+
+  @property.array(Date)
+  disabledDates?: Date[];
+
+  @property({
+    type: 'number',
+  })
+  price?: number;
+
+  @property({
+    type: 'number',
+  })
+  price_low_season?: number;
+
+  @property({
+    type: 'number',
+  })
+  price_high_season?: number;
+
+  @property({
+    type: 'number',
+  })
+  discount?: number;
 
   @property({
     type: 'boolean',
-    default: true,
   })
-  isAvailable: boolean;
+  isAvailable?: boolean;
+
+  @belongsTo(() => Complex, {name: 'in_complex'})
+  complex_id: number;
+
+  @belongsTo(() => Locations, {name: 'locationDetails'})
+  location_id: number;
 
   @property({
     type: 'boolean',
-    default: false,
   })
-  isVisible: boolean;
+  isVisible?: boolean;
 
   @property({
     type: 'string',
-    default: null,
   })
-  oldPrice: string | null;
+  oldPrice?: string;
 
   @property({
     type: 'number',
-    default: 1,
   })
-  minimum_nights: number;
+  number_of_reviews?: number;
 
   @property({
     type: 'number',
-    default: 0,
   })
-  number_of_reviews: number;
-
-  @property({
-    type: 'string',
-    default: null,
-  })
-  last_review: string | null;
+  availability_365?: number;
 
   @property({
     type: 'number',
-    default: 0,
   })
-  reviews_per_month: number;
+  review_scores_rating?: number;
 
-  @property({
-    type: 'number',
-    default: 365,
-  })
-  availability_365: number;
+  @hasMany(() => Photo, {keyTo: 'apartment_id'})
+  images: Photo[];
 
-  @property({
-    type: 'number',
-    default: 0,
-  })
-  number_of_reviews_ltm: number;
+  @hasMany(() => Amenity, {through: {model: () => AmenitiesList, keyFrom: 'apartment_id', keyTo: 'amenity_id'}})
+  amenities: Amenity[];
 
-  // @property({
-  //   type: 'array',
-  //   items: 'string',
-  //   default: [],
-  // })
-  // amenities?: string[];
-
-  // Define well-known properties here
-
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  @belongsTo(() => RoomType, {name: 'room_type'})
+  room_type_id: number;
   [prop: string]: any;
 
   constructor(data?: Partial<Apartment>) {
@@ -168,7 +132,6 @@ export class Apartment extends Entity {
 }
 
 export interface ApartmentRelations {
-  // amenities?: ApartmentAmenity[];
 }
 
 export type ApartmentWithRelations = Apartment & ApartmentRelations;

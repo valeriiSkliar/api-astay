@@ -16,20 +16,20 @@ import {
   requestBody,
 } from '@loopback/rest';
 import {
-  Complex,
+  Apartment,
   Photo,
 } from '../models';
-import {ComplexRepository} from '../repositories';
+import {ApartmentRepository} from '../repositories';
 
-export class ComplexPhotoController {
+export class ApartmentPhotoController {
   constructor(
-    @repository(ComplexRepository) protected complexRepository: ComplexRepository,
+    @repository(ApartmentRepository) protected apartmentRepository: ApartmentRepository,
   ) { }
 
-  @get('/api/complexes/{id}/photos', {
+  @get('/api/apartments/{id}/photos', {
     responses: {
       '200': {
-        description: 'Array of Complex has many Photo',
+        description: 'Array of Apartment has many Photo',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Photo)},
@@ -42,38 +42,38 @@ export class ComplexPhotoController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Photo>,
   ): Promise<Photo[]> {
-    return this.complexRepository.photos(id).find(filter);
+    return this.apartmentRepository.images(id).find(filter);
   }
 
-  @post('/api/complexes/{id}/photos', {
+  @post('/api/apartments/{id}/photos', {
     responses: {
       '200': {
-        description: 'Complex model instance',
+        description: 'Apartment model instance',
         content: {'application/json': {schema: getModelSchemaRef(Photo)}},
       },
     },
   })
   async create(
-    @param.path.number('id') id: typeof Complex.prototype.id,
+    @param.path.number('id') id: typeof Apartment.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(Photo, {
-            title: 'NewPhotoInComplex',
+            title: 'NewPhotoInApartment',
             exclude: ['id'],
-            optional: ['complex_id']
+            optional: ['apartment_id']
           }),
         },
       },
     }) photo: Omit<Photo, 'id'>,
   ): Promise<Photo> {
-    return this.complexRepository.photos(id).create(photo);
+    return this.apartmentRepository.images(id).create(photo);
   }
 
-  @patch('/api/complexes/{id}/photos', {
+  @patch('/api/apartments/{id}/photos', {
     responses: {
       '200': {
-        description: 'Complex.Photo PATCH success count',
+        description: 'Apartment.Photo PATCH success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -90,13 +90,13 @@ export class ComplexPhotoController {
     photo: Partial<Photo>,
     @param.query.object('where', getWhereSchemaFor(Photo)) where?: Where<Photo>,
   ): Promise<Count> {
-    return this.complexRepository.photos(id).patch(photo, where);
+    return this.apartmentRepository.images(id).patch(photo, where);
   }
 
-  @del('/api/complexes/{id}/photos', {
+  @del('/api/apartments/{id}/photos', {
     responses: {
       '200': {
-        description: 'Complex.Photo DELETE success count',
+        description: 'Apartment.Photo DELETE success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -105,6 +105,6 @@ export class ComplexPhotoController {
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(Photo)) where?: Where<Photo>,
   ): Promise<Count> {
-    return this.complexRepository.photos(id).delete(where);
+    return this.apartmentRepository.images(id).delete(where);
   }
 }

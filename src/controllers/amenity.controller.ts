@@ -23,7 +23,7 @@ import {AmenityRepository} from '../repositories';
 export class AmenityController {
   constructor(
     @repository(AmenityRepository)
-    public amenityRepository: AmenityRepository,
+    public amenityRepository : AmenityRepository,
   ) {}
 
   @post('/api/amenities')
@@ -52,7 +52,9 @@ export class AmenityController {
     description: 'Amenity model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(@param.where(Amenity) where?: Where<Amenity>): Promise<Count> {
+  async count(
+    @param.where(Amenity) where?: Where<Amenity>,
+  ): Promise<Count> {
     return this.amenityRepository.count(where);
   }
 
@@ -103,9 +105,8 @@ export class AmenityController {
     },
   })
   async findById(
-    @param.path.string('id') id: string,
-    @param.filter(Amenity, {exclude: 'where'})
-    filter?: FilterExcludingWhere<Amenity>,
+    @param.path.number('id') id: number,
+    @param.filter(Amenity, {exclude: 'where'}) filter?: FilterExcludingWhere<Amenity>
   ): Promise<Amenity> {
     return this.amenityRepository.findById(id, filter);
   }
@@ -115,7 +116,7 @@ export class AmenityController {
     description: 'Amenity PATCH success',
   })
   async updateById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody({
       content: {
         'application/json': {
@@ -133,7 +134,7 @@ export class AmenityController {
     description: 'Amenity PUT success',
   })
   async replaceById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody() amenity: Amenity,
   ): Promise<void> {
     await this.amenityRepository.replaceById(id, amenity);
@@ -143,7 +144,7 @@ export class AmenityController {
   @response(204, {
     description: 'Amenity DELETE success',
   })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
+  async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.amenityRepository.deleteById(id);
   }
 }

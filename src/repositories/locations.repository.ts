@@ -1,6 +1,6 @@
 import {inject} from '@loopback/core';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {MongoDataSource} from '../datasources';
+import {LocalMysqlDataSource, MongoDataSource} from '../datasources';
 import {Locations, LocationsRelations} from '../models';
 
 export class LocationsRepository extends DefaultCrudRepository<
@@ -8,7 +8,7 @@ export class LocationsRepository extends DefaultCrudRepository<
   typeof Locations.prototype.id,
   LocationsRelations
 > {
-  constructor(@inject('datasources.mongo') dataSource: MongoDataSource) {
+  constructor(@inject('datasources.local_mysql') dataSource: LocalMysqlDataSource) {
     super(Locations, dataSource);
   }
 }

@@ -23,7 +23,7 @@ import {ApartmentRepository} from '../repositories';
 export class ApartmentController {
   constructor(
     @repository(ApartmentRepository)
-    public apartmentRepository: ApartmentRepository,
+    public apartmentRepository : ApartmentRepository,
   ) {}
 
   @post('/api/apartments')
@@ -105,9 +105,8 @@ export class ApartmentController {
     },
   })
   async findById(
-    @param.path.string('id') id: string,
-    @param.filter(Apartment, {exclude: 'where'})
-    filter?: FilterExcludingWhere<Apartment>,
+    @param.path.number('id') id: number,
+    @param.filter(Apartment, {exclude: 'where'}) filter?: FilterExcludingWhere<Apartment>
   ): Promise<Apartment> {
     return this.apartmentRepository.findById(id, filter);
   }
@@ -117,7 +116,7 @@ export class ApartmentController {
     description: 'Apartment PATCH success',
   })
   async updateById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody({
       content: {
         'application/json': {
@@ -135,7 +134,7 @@ export class ApartmentController {
     description: 'Apartment PUT success',
   })
   async replaceById(
-    @param.path.string('id') id: string,
+    @param.path.number('id') id: number,
     @requestBody() apartment: Apartment,
   ): Promise<void> {
     await this.apartmentRepository.replaceById(id, apartment);
@@ -145,7 +144,7 @@ export class ApartmentController {
   @response(204, {
     description: 'Apartment DELETE success',
   })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
+  async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.apartmentRepository.deleteById(id);
   }
 }
