@@ -72,7 +72,16 @@ export class ApartmentController {
   })
   async find(
     @param.filter(Apartment) filter?: Filter<Apartment>,
+    @param.array("location", "query", {type: "string"})location: string[] = [],
   ): Promise<Apartment[]> {
+    if(location.length > 0) {
+      filter = {
+        where: {
+          location_id: 1
+        }
+      }
+    }
+    console.log(filter);
     return this.apartmentRepository.find(filter);
   }
 

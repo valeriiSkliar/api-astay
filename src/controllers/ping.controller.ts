@@ -5,6 +5,7 @@ import {
   get,
   response,
   ResponseObject,
+  param,
 } from '@loopback/rest';
 
 /**
@@ -43,10 +44,10 @@ export class PingController {
   // Map to `GET /ping`
   @get('/api/ping')
   @response(200, PING_RESPONSE)
-  ping(): object {
+  ping(@param.array('names', "query", {type: "string"})names: string[]): object {
     // Reply with a greeting, the current time, the url, and request headers
     return {
-      greeting: 'Hello from LoopBack',
+      greeting: `Hello from LoopBack ${names.join(", ")}`,
       date: new Date(),
       url: this.req.url,
       headers: Object.assign({}, this.req.headers),
