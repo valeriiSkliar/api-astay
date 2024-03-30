@@ -19,7 +19,9 @@ async function generateContent(tableName) {
   }).join(',\n');
 
 
-  const sqlContent = `INSERT INTO ${tableName} (listing_id, complex_id, avatar, roomName,reviewDate,review, name) VALUES\n${reviewsDataInstansesArray}`;
+  const sqlContent = `INSERT INTO ${tableName} (listing_id, complex_id, avatar, roomName,reviewDate,review, name) VALUES\n${reviewsDataInstansesArray}`;  // const reviewsDataInstansesArray = mockReviews.map((review, index) => {
+    //   return `('${review.text}', ${review.rating}, ${review.apartment_id}, ${review.user_id})`;
+    // }).join(',\n');
   // log(sqlContent);
   return sqlContent;
 }

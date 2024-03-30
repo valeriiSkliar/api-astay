@@ -2,14 +2,14 @@ import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 
 const config = {
-  name: 'local_mysql',
-  connector: 'mysql',
-  url: 'mysql://root@localhost/astay_test',
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: '',
-  database: 'astay_test',
+  name: process.env.LB4_DATA_RESOURCE_NAME,
+  connector: process.env.DATABASE_CONNECTOR,
+  url: '',
+  host: process.env.HOST,
+  port: process.env.PORT,
+  user: process.env.DATABASE_USER,
+  password: process.env.PASSWORD,
+  database: process.env.DATABASE_NAME,
 };
 
 // Observe application's life cycle to disconnect the datasource when
