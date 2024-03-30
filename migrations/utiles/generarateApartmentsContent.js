@@ -27,8 +27,7 @@ function generateApartmentsContent(tableName) {
   })
   .join(',\n');
 
-// FIXME: change the neighbourhood => neighborhood
-  const sqlContent = `INSERT INTO ${tableName} (name, description, host_name, guests, bathrooms, bedrooms, beds, neighbourhood, disabledDates, price, price_low_season, price_high_season, discount, isAvailable, complex_id, isVisible, oldPrice, number_of_reviews, availability_365, review_scores_rating, location_id, room_type_id) VALUES\n${values};`;
+  const sqlContent = `INSERT INTO ${tableName} (name, description, host_name, guests, bathrooms, bedrooms, beds, neighborhood, disabledDates, price, price_low_season, price_high_season, discount, isAvailable, complex_id, isVisible, oldPrice, number_of_reviews, availability_365, review_scores_rating, location_id, room_type_id) VALUES\n${values};`;
 
   console.log('SQL file generated successfully!');
 

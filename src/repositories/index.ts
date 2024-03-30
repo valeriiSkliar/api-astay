@@ -8,3 +8,4 @@ export * from './test.repository';
 export * from './photo.repository';
 export * from './amenities-list.repository';
 export * from './room-type.repository';
+export * from './review.repository';

@@ -58,7 +58,7 @@ export class Apartment extends Entity {
   beds?: number;
 
   @property.array(String)
-  neighbourhood?: string[];
+  neighborhood?: string[];
 
   @property.array(Date)
   disabledDates?: Date[];

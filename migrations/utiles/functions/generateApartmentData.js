@@ -12,7 +12,7 @@ var generateApartmentData = function () {
     bathrooms: Math.floor(Math.random() * (2 - 1 + 1)) + 10,
     bedrooms: Math.floor(Math.random() * (3 - 1 + 1)) + 10,
     beds: Math.floor(Math.random() * (4 - 1 + 1)) + 10,
-    neighbourhood: JSON.stringify([faker.location.direction()]),
+    neighborhood: JSON.stringify([faker.location.direction()]),
     disabledDates: JSON.stringify([faker.date.future()]),
     price: faker.finance.amount(),
     price_low_season: faker.finance.amount(),

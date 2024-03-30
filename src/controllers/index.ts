@@ -15,3 +15,4 @@ export * from './apartment-photo.controller';
 export * from './apartment-amenity.controller';
 export * from './room-type.controller';
 export * from './apartment-room-type.controller';
+export * from './review.controller';
