@@ -1,7 +1,7 @@
 var { generateImageUrl } = require('./functions/generateImageUrl.js');
 var { getConnection } = require('./functions/dataBaseConnection.js');
 async function generateContent(tableName) {
-  const allApartments = await getConnection('SELECT * FROM astay_test.Apartment;');
+  const allApartments = await getConnection('SELECT * FROM Apartment;');
   const photoDataInstansesArray = allApartments.map((apartment, index) => {
 
     const photosData = [];

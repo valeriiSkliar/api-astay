@@ -3,7 +3,7 @@ var {mockReviews} = require('../mock/mockReviews.js');
 var { getConnection } = require('./functions/dataBaseConnection.js');
 
 async function generateContent(tableName) {
-  const allApartments = await getConnection('SELECT * FROM astay_test.Apartment;')
+  const allApartments = await getConnection('SELECT * FROM Apartment;')
     .then((result) => {
       return result.map((apartment) => {
         return {

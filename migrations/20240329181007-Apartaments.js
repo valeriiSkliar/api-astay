@@ -29,7 +29,7 @@ exports.up = function (db) {
     '20240329181007-Apartaments-up.sql',
   );
   return new Promise(function (resolve, reject) {
-    var tableName = 'astay_test.Apartment';
+    var tableName = 'Apartment';
     fs.writeFileSync(filePath, generateApartmentsContent(tableName));
     fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
       if (err) return reject(err);
