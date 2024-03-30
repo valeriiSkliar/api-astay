@@ -1,1 +1,1 @@
-DELETE FROM `astay_test`.`Complex`
+DELETE FROM `Complex`

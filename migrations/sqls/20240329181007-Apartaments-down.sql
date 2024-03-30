@@ -1,1 +1,1 @@
-DELETE FROM astay_test.Apartment
+DELETE FROM `Apartment`
