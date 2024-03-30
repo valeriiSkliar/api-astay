@@ -57,7 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 database.json
-migrations/sqls
+migrations/sqls/*.sql
 
 # Generated apidocs
 api-docs/
