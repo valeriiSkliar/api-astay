@@ -9,3 +9,4 @@ export * from './test.model';
 export * from './photo.model';
 export * from './amenities-list.model';
 export * from './room-type.model';
+export * from './review.model';
