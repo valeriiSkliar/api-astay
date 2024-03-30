@@ -6,7 +6,7 @@ var seed;
 var fs = require('fs');
 var path = require('path');
 var Promise;
-
+var { generateContent } = require('./utiles/generateReviewsContent.js');
 /**
   * We receive the dbmigrate dependency from dbmigrate initially.
   * This enables us to not have to rely on NODE_PATH.
@@ -20,7 +20,8 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db) {
   var filePath = path.join(__dirname, 'sqls', '20240330204108-Review-up.sql');
-  return new Promise( function( resolve, reject ) {
+  return new Promise( async function( resolve, reject ) {
+    fs.writeFileSync(filePath, await generateContent('Review'));
     fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
       if (err) return reject(err);
       console.log('received data: ' + data);

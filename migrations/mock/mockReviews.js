@@ -1,4 +1,4 @@
-export const mockReviews = [
+const mockReviews = [
   {
     id: '1',
     listing_id: '03c869af-2fc5-488d-9995-3484ffed56dc',
@@ -1093,3 +1093,5 @@ export const mockReviews = [
     name: 'Wilton',
   },
 ];
+
+exports.mockReviews = mockReviews;
