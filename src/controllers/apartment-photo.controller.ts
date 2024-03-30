@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Apartment,
-  Photo,
-} from '../models';
+import {Apartment, Photo} from '../models';
 import {ApartmentRepository} from '../repositories';
 
 export class ApartmentPhotoController {
   constructor(
-    @repository(ApartmentRepository) protected apartmentRepository: ApartmentRepository,
-  ) { }
+    @repository(ApartmentRepository)
+    protected apartmentRepository: ApartmentRepository,
+  ) {}
 
   @get('/api/apartments/{id}/photos', {
     responses: {
@@ -61,11 +59,12 @@ export class ApartmentPhotoController {
           schema: getModelSchemaRef(Photo, {
             title: 'NewPhotoInApartment',
             exclude: ['id'],
-            optional: ['apartment_id']
+            optional: ['apartment_id'],
           }),
         },
       },
-    }) photo: Omit<Photo, 'id'>,
+    })
+    photo: Omit<Photo, 'id'>,
   ): Promise<Photo> {
     return this.apartmentRepository.images(id).create(photo);
   }

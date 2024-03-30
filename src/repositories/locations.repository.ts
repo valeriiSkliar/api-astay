@@ -8,7 +8,9 @@ export class LocationsRepository extends DefaultCrudRepository<
   typeof Locations.prototype.id,
   LocationsRelations
 > {
-  constructor(@inject('datasources.local_mysql') dataSource: LocalMysqlDataSource) {
+  constructor(
+    @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
+  ) {
     super(Locations, dataSource);
   }
 }

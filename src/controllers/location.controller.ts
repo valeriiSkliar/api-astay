@@ -23,10 +23,10 @@ import {LocationsRepository} from '../repositories';
 export class LocationController {
   constructor(
     @repository(LocationsRepository)
-    public locationsRepository : LocationsRepository,
+    public locationsRepository: LocationsRepository,
   ) {}
 
-  @post('/locations')
+  @post('/api/locations')
   @response(200, {
     description: 'Locations model instance',
     content: {'application/json': {schema: getModelSchemaRef(Locations)}},
@@ -47,7 +47,7 @@ export class LocationController {
     return this.locationsRepository.create(locations);
   }
 
-  @get('/locations/count')
+  @get('/api/locations/count')
   @response(200, {
     description: 'Locations model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +58,7 @@ export class LocationController {
     return this.locationsRepository.count(where);
   }
 
-  @get('/locations')
+  @get('/api/locations')
   @response(200, {
     description: 'Array of Locations model instances',
     content: {
@@ -76,7 +76,7 @@ export class LocationController {
     return this.locationsRepository.find(filter);
   }
 
-  @patch('/locations')
+  @patch('/api/locations')
   @response(200, {
     description: 'Locations PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -95,7 +95,7 @@ export class LocationController {
     return this.locationsRepository.updateAll(locations, where);
   }
 
-  @get('/locations/{id}')
+  @get('/api/locations/{id}')
   @response(200, {
     description: 'Locations model instance',
     content: {
@@ -106,12 +106,13 @@ export class LocationController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Locations, {exclude: 'where'}) filter?: FilterExcludingWhere<Locations>
+    @param.filter(Locations, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Locations>,
   ): Promise<Locations> {
     return this.locationsRepository.findById(id, filter);
   }
 
-  @patch('/locations/{id}')
+  @patch('/api/locations/{id}')
   @response(204, {
     description: 'Locations PATCH success',
   })
@@ -129,7 +130,7 @@ export class LocationController {
     await this.locationsRepository.updateById(id, locations);
   }
 
-  @put('/locations/{id}')
+  @put('/api/locations/{id}')
   @response(204, {
     description: 'Locations PUT success',
   })
@@ -140,7 +141,7 @@ export class LocationController {
     await this.locationsRepository.replaceById(id, locations);
   }
 
-  @del('/locations/{id}')
+  @del('/api/locations/{id}')
   @response(204, {
     description: 'Locations DELETE success',
   })

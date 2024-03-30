@@ -5,7 +5,7 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
-  import {
+import {
   del,
   get,
   getModelSchemaRef,
@@ -15,22 +15,20 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-Apartment,
-AmenitiesList,
-Amenity,
-} from '../models';
+import {Apartment, AmenitiesList, Amenity} from '../models';
 import {ApartmentRepository} from '../repositories';
 
 export class ApartmentAmenityController {
   constructor(
-    @repository(ApartmentRepository) protected apartmentRepository: ApartmentRepository,
-  ) { }
+    @repository(ApartmentRepository)
+    protected apartmentRepository: ApartmentRepository,
+  ) {}
 
   @get('/api/apartments/{id}/amenities', {
     responses: {
       '200': {
-        description: 'Array of Apartment has many Amenity through AmenitiesList',
+        description:
+          'Array of Apartment has many Amenity through AmenitiesList',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Amenity)},
@@ -65,7 +63,8 @@ export class ApartmentAmenityController {
           }),
         },
       },
-    }) amenity: Omit<Amenity, 'id'>,
+    })
+    amenity: Omit<Amenity, 'id'>,
   ): Promise<Amenity> {
     return this.apartmentRepository.amenities(id).create(amenity);
   }
@@ -88,7 +87,8 @@ export class ApartmentAmenityController {
       },
     })
     amenity: Partial<Amenity>,
-    @param.query.object('where', getWhereSchemaFor(Amenity)) where?: Where<Amenity>,
+    @param.query.object('where', getWhereSchemaFor(Amenity))
+    where?: Where<Amenity>,
   ): Promise<Count> {
     return this.apartmentRepository.amenities(id).patch(amenity, where);
   }
@@ -103,7 +103,8 @@ export class ApartmentAmenityController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Amenity)) where?: Where<Amenity>,
+    @param.query.object('where', getWhereSchemaFor(Amenity))
+    where?: Where<Amenity>,
   ): Promise<Count> {
     return this.apartmentRepository.amenities(id).delete(where);
   }

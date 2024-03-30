@@ -1,22 +1,13 @@
-import {
-  repository,
-} from '@loopback/repository';
-import {
-  param,
-  get,
-  getModelSchemaRef,
-} from '@loopback/rest';
-import {
-  Apartment,
-  RoomType,
-} from '../models';
+import {repository} from '@loopback/repository';
+import {param, get, getModelSchemaRef} from '@loopback/rest';
+import {Apartment, RoomType} from '../models';
 import {ApartmentRepository} from '../repositories';
 
 export class ApartmentRoomTypeController {
   constructor(
     @repository(ApartmentRepository)
     public apartmentRepository: ApartmentRepository,
-  ) { }
+  ) {}
 
   @get('/apartments/{id}/room-type', {
     responses: {

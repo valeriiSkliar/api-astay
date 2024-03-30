@@ -23,7 +23,7 @@ import {ApartmentRepository} from '../repositories';
 export class ApartmentController {
   constructor(
     @repository(ApartmentRepository)
-    public apartmentRepository : ApartmentRepository,
+    public apartmentRepository: ApartmentRepository,
   ) {}
 
   @post('/api/apartments')
@@ -72,14 +72,14 @@ export class ApartmentController {
   })
   async find(
     @param.filter(Apartment) filter?: Filter<Apartment>,
-    @param.array("location", "query", {type: "string"})location: string[] = [],
+    @param.array('location', 'query', {type: 'string'}) location: string[] = [],
   ): Promise<Apartment[]> {
-    if(location.length > 0) {
+    if (location.length > 0) {
       filter = {
         where: {
-          location_id: 1
-        }
-      }
+          location_id: 1,
+        },
+      };
     }
     console.log(filter);
     return this.apartmentRepository.find(filter);
@@ -115,7 +115,8 @@ export class ApartmentController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Apartment, {exclude: 'where'}) filter?: FilterExcludingWhere<Apartment>
+    @param.filter(Apartment, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Apartment>,
   ): Promise<Apartment> {
     return this.apartmentRepository.findById(id, filter);
   }

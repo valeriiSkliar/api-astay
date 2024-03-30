@@ -8,7 +8,9 @@ export class AmenityRepository extends DefaultCrudRepository<
   typeof Amenity.prototype.id,
   AmenityRelations
 > {
-  constructor(@inject('datasources.local_mysql') dataSource: LocalMysqlDataSource) {
+  constructor(
+    @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
+  ) {
     super(Amenity, dataSource);
   }
 }

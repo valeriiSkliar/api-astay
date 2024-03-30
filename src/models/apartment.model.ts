@@ -1,7 +1,10 @@
 import {
   Entity,
   model,
-  property, belongsTo, hasMany} from '@loopback/repository';
+  property,
+  belongsTo,
+  hasMany,
+} from '@loopback/repository';
 import {Complex} from './complex.model';
 import {Locations} from './locations.model';
 import {Photo} from './photo.model';
@@ -119,7 +122,13 @@ export class Apartment extends Entity {
   @hasMany(() => Photo, {keyTo: 'apartment_id'})
   images: Photo[];
 
-  @hasMany(() => Amenity, {through: {model: () => AmenitiesList, keyFrom: 'apartment_id', keyTo: 'amenity_id'}})
+  @hasMany(() => Amenity, {
+    through: {
+      model: () => AmenitiesList,
+      keyFrom: 'apartment_id',
+      keyTo: 'amenity_id',
+    },
+  })
   amenities: Amenity[];
 
   @belongsTo(() => RoomType, {name: 'room_type'})
@@ -131,7 +140,6 @@ export class Apartment extends Entity {
   }
 }
 
-export interface ApartmentRelations {
-}
+export interface ApartmentRelations {}
 
 export type ApartmentWithRelations = Apartment & ApartmentRelations;

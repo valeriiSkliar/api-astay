@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Complex,
-  Apartment,
-} from '../models';
+import {Complex, Apartment} from '../models';
 import {ComplexRepository} from '../repositories';
 
 export class ComplexApartmentController {
   constructor(
-    @repository(ComplexRepository) protected complexRepository: ComplexRepository,
-  ) { }
+    @repository(ComplexRepository)
+    protected complexRepository: ComplexRepository,
+  ) {}
 
   @get('/api/complexes/{id}/apartments', {
     responses: {
@@ -61,11 +59,12 @@ export class ComplexApartmentController {
           schema: getModelSchemaRef(Apartment, {
             title: 'NewApartmentInComplex',
             exclude: ['id'],
-            optional: ['complex_id']
+            optional: ['complex_id'],
           }),
         },
       },
-    }) apartment: Omit<Apartment, 'id'>,
+    })
+    apartment: Omit<Apartment, 'id'>,
   ): Promise<Apartment> {
     return this.complexRepository.apartments(id).create(apartment);
   }
@@ -88,7 +87,8 @@ export class ComplexApartmentController {
       },
     })
     apartment: Partial<Apartment>,
-    @param.query.object('where', getWhereSchemaFor(Apartment)) where?: Where<Apartment>,
+    @param.query.object('where', getWhereSchemaFor(Apartment))
+    where?: Where<Apartment>,
   ): Promise<Count> {
     return this.complexRepository.apartments(id).patch(apartment, where);
   }
@@ -103,7 +103,8 @@ export class ComplexApartmentController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Apartment)) where?: Where<Apartment>,
+    @param.query.object('where', getWhereSchemaFor(Apartment))
+    where?: Where<Apartment>,
   ): Promise<Count> {
     return this.complexRepository.apartments(id).delete(where);
   }

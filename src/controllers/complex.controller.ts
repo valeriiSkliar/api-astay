@@ -23,7 +23,7 @@ import {ComplexRepository} from '../repositories';
 export class ComplexController {
   constructor(
     @repository(ComplexRepository)
-    public complexRepository : ComplexRepository,
+    public complexRepository: ComplexRepository,
   ) {}
 
   @post('/api/complexes')
@@ -52,9 +52,7 @@ export class ComplexController {
     description: 'Complex model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Complex) where?: Where<Complex>,
-  ): Promise<Count> {
+  async count(@param.where(Complex) where?: Where<Complex>): Promise<Count> {
     return this.complexRepository.count(where);
   }
 
@@ -106,7 +104,8 @@ export class ComplexController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Complex, {exclude: 'where'}) filter?: FilterExcludingWhere<Complex>
+    @param.filter(Complex, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Complex>,
   ): Promise<Complex> {
     return this.complexRepository.findById(id, filter);
   }

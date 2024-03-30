@@ -23,7 +23,7 @@ import {RoomTypeRepository} from '../repositories';
 export class RoomTypeController {
   constructor(
     @repository(RoomTypeRepository)
-    public roomTypeRepository : RoomTypeRepository,
+    public roomTypeRepository: RoomTypeRepository,
   ) {}
 
   @post('/api/room-types')
@@ -52,9 +52,7 @@ export class RoomTypeController {
     description: 'RoomType model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(RoomType) where?: Where<RoomType>,
-  ): Promise<Count> {
+  async count(@param.where(RoomType) where?: Where<RoomType>): Promise<Count> {
     return this.roomTypeRepository.count(where);
   }
 
@@ -106,7 +104,8 @@ export class RoomTypeController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(RoomType, {exclude: 'where'}) filter?: FilterExcludingWhere<RoomType>
+    @param.filter(RoomType, {exclude: 'where'})
+    filter?: FilterExcludingWhere<RoomType>,
   ): Promise<RoomType> {
     return this.roomTypeRepository.findById(id, filter);
   }

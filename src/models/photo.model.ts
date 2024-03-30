@@ -29,8 +29,6 @@ export class Photo extends Entity {
   })
   complex_id?: number;
 
-
-
   @property({
     type: 'string',
     default: null,
@@ -44,8 +42,6 @@ export class Photo extends Entity {
   }
 }
 
-export interface PhotoRelations {
-
-}
+export interface PhotoRelations {}
 
 export type PhotoWithRelations = Photo & PhotoRelations;

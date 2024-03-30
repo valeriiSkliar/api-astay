@@ -66,15 +66,11 @@ export class Complex extends Entity {
   @hasMany(() => Apartment, {keyTo: 'complex_id'})
   apartments: Apartment[];
 
-  
-
   constructor(data?: Partial<Complex>) {
     super(data);
   }
 }
 
-export interface ComplexRelations {
-
-}
+export interface ComplexRelations {}
 
 export type ComplexWithRelations = Complex & ComplexRelations;

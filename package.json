@@ -34,7 +34,9 @@
     "prestart": "npm run rebuild",
     "start": "node -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
-    "rebuild": "npm run clean && npm run build"
+    "rebuild": "npm run clean && npm run build",
+    "seeder:down": "db-migrate down --config database.json -e devdatabase",
+    "seeder:up": "db-migrate up --config database.json -e devdatabase"
   },
   "repository": {
     "type": "git",
@@ -58,12 +60,14 @@
     "@loopback/rest-crud": "^0.18.0",
     "@loopback/rest-explorer": "^7.0.0",
     "@loopback/service-proxy": "^7.0.0",
+    "db-migrate-mysql": "^2.3.2",
     "express": "^4.19.2",
     "loopback-connector-mongodb": "^7.0.0-alpha.1",
     "loopback-connector-mysql": "^7.0.8",
     "tslib": "^2.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@loopback/build": "^11.0.0",
     "@loopback/eslint-config": "^15.0.0",
     "@loopback/testlab": "^7.0.0",
