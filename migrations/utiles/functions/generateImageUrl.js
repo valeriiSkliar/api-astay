@@ -1,3 +1,5 @@
+var {generateRandomHexColor} = require('./generateRandomHexColor');
+
 function generateImageUrl(index) {
   let background_color = null;
   let font_color = null;

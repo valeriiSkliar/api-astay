@@ -1,8 +1,5 @@
 var fs = require('fs');
-var { generateImageUrl } = require('./functions/generateImageUrl.js');
-var { generateRandomHexColor } = require('./functions/generateRandomHexColor.js');
 var { generateApartmentData } = require('./functions/generateApartmentData.js');
-const { isBooleanObject } = require('util/types');
 
 function generateApartmentsContent(tableName) {
   const randomCount = Math.floor(Math.random() * (40 - 10 + 1)) + 10;
