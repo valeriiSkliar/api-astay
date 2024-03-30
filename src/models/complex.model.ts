@@ -9,6 +9,7 @@ import {Locations} from './locations.model';
 import {ComplexService} from './complex-service.model';
 import {Photo} from './photo.model';
 import {Apartment} from './apartment.model';
+import {Review} from './review.model';
 
 @model({
   // settings: {
@@ -65,6 +66,9 @@ export class Complex extends Entity {
 
   @hasMany(() => Apartment, {keyTo: 'complex_id'})
   apartments: Apartment[];
+
+  @hasMany(() => Review, {keyTo: 'complex_id'})
+  reviews: Review[];
 
   constructor(data?: Partial<Complex>) {
     super(data);

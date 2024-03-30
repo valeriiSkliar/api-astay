@@ -16,3 +16,5 @@ export * from './apartment-amenity.controller';
 export * from './room-type.controller';
 export * from './apartment-room-type.controller';
 export * from './review.controller';
+export * from './apartment-review.controller';
+export * from './complex-review.controller';
