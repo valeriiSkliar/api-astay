@@ -7,9 +7,10 @@ var fs = require('fs');
 var path = require('path');
 var Promise;
 
-
-var {generateApartmentsContent} = require('./utiles/generarateApartmentsContent.js');
-const { table } = require('console');
+var {
+  generateApartmentsContent,
+} = require('./utiles/generarateApartmentsContent.js');
+const {table} = require('console');
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.

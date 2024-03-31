@@ -15,7 +15,9 @@ import {
   Photo,
   Amenity,
   AmenitiesList,
-  RoomType, Review} from '../models';
+  RoomType,
+  Review,
+} from '../models';
 import {PhotoRepository} from './photo.repository';
 import {ComplexRepository} from './complex.repository';
 import {LocationsRepository} from './locations.repository';
@@ -56,7 +58,10 @@ export class ApartmentRepository extends DefaultCrudRepository<
     typeof Apartment.prototype.id
   >;
 
-  public readonly reviews: HasManyRepositoryFactory<Review, typeof Apartment.prototype.id>;
+  public readonly reviews: HasManyRepositoryFactory<
+    Review,
+    typeof Apartment.prototype.id
+  >;
 
   constructor(
     // @inject('datasources.mongo') dataSource: MongoDataSource,
@@ -72,10 +77,15 @@ export class ApartmentRepository extends DefaultCrudRepository<
     @repository.getter('AmenitiesListRepository')
     protected amenitiesListRepositoryGetter: Getter<AmenitiesListRepository>,
     @repository.getter('RoomTypeRepository')
-    protected roomTypeRepositoryGetter: Getter<RoomTypeRepository>, @repository.getter('ReviewRepository') protected reviewRepositoryGetter: Getter<ReviewRepository>,
+    protected roomTypeRepositoryGetter: Getter<RoomTypeRepository>,
+    @repository.getter('ReviewRepository')
+    protected reviewRepositoryGetter: Getter<ReviewRepository>,
   ) {
     super(Apartment, dataSource);
-    this.reviews = this.createHasManyRepositoryFactoryFor('reviews', reviewRepositoryGetter,);
+    this.reviews = this.createHasManyRepositoryFactoryFor(
+      'reviews',
+      reviewRepositoryGetter,
+    );
     this.registerInclusionResolver('reviews', this.reviews.inclusionResolver);
     this.room_type = this.createBelongsToAccessorFor(
       'room_type',

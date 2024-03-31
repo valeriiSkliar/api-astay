@@ -6,8 +6,7 @@ async function getConnection(query) {
     port: process.env.PORT,
     user: process.env.DATABASE_USER,
     password: process.env.PASSWORD,
-    database: process.env.DATABASE_NAME
-
+    database: process.env.DATABASE_NAME,
   });
 
   const [results] = await connection.query(query);

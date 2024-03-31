@@ -27,8 +27,7 @@ var generateApartmentData = function () {
     review_scores_rating: 6,
     location_id: 1,
     room_type_id: 1,
-  }
-
-}
+  };
+};
 
 exports.generateApartmentData = generateApartmentData;

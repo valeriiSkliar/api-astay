@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Apartment,
-  Review,
-} from '../models';
+import {Apartment, Review} from '../models';
 import {ApartmentRepository} from '../repositories';
 
 export class ApartmentReviewController {
   constructor(
-    @repository(ApartmentRepository) protected apartmentRepository: ApartmentRepository,
-  ) { }
+    @repository(ApartmentRepository)
+    protected apartmentRepository: ApartmentRepository,
+  ) {}
 
   @get('/apartments/{id}/reviews', {
     responses: {
@@ -61,11 +59,12 @@ export class ApartmentReviewController {
           schema: getModelSchemaRef(Review, {
             title: 'NewReviewInApartment',
             exclude: ['id'],
-            optional: ['listing_id']
+            optional: ['listing_id'],
           }),
         },
       },
-    }) review: Omit<Review, 'id'>,
+    })
+    review: Omit<Review, 'id'>,
   ): Promise<Review> {
     return this.apartmentRepository.reviews(id).create(review);
   }
@@ -88,7 +87,8 @@ export class ApartmentReviewController {
       },
     })
     review: Partial<Review>,
-    @param.query.object('where', getWhereSchemaFor(Review)) where?: Where<Review>,
+    @param.query.object('where', getWhereSchemaFor(Review))
+    where?: Where<Review>,
   ): Promise<Count> {
     return this.apartmentRepository.reviews(id).patch(review, where);
   }
@@ -103,7 +103,8 @@ export class ApartmentReviewController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Review)) where?: Where<Review>,
+    @param.query.object('where', getWhereSchemaFor(Review))
+    where?: Where<Review>,
   ): Promise<Count> {
     return this.apartmentRepository.reviews(id).delete(where);
   }

@@ -3,13 +3,13 @@ import {juggler} from '@loopback/repository';
 
 const config = {
   name: process.env.LB4_DATA_RESOURCE_NAME,
-  connector: process.env.DATABASE_CONNECTOR,
+  connector: 'mysql',
   url: '',
   host: process.env.HOST,
   port: process.env.PORT,
-  user: process.env.DATABASE_USER,
+  user: 'root',
   password: process.env.PASSWORD,
-  database: process.env.DATABASE_NAME,
+  database: 'astay_test',
 };
 
 // Observe application's life cycle to disconnect the datasource when

@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Complex,
-  Review,
-} from '../models';
+import {Complex, Review} from '../models';
 import {ComplexRepository} from '../repositories';
 
 export class ComplexReviewController {
   constructor(
-    @repository(ComplexRepository) protected complexRepository: ComplexRepository,
-  ) { }
+    @repository(ComplexRepository)
+    protected complexRepository: ComplexRepository,
+  ) {}
 
   @get('/complexes/{id}/reviews', {
     responses: {
@@ -61,11 +59,12 @@ export class ComplexReviewController {
           schema: getModelSchemaRef(Review, {
             title: 'NewReviewInComplex',
             exclude: ['id'],
-            optional: ['complex_id']
+            optional: ['complex_id'],
           }),
         },
       },
-    }) review: Omit<Review, 'id'>,
+    })
+    review: Omit<Review, 'id'>,
   ): Promise<Review> {
     return this.complexRepository.reviews(id).create(review);
   }
@@ -88,7 +87,8 @@ export class ComplexReviewController {
       },
     })
     review: Partial<Review>,
-    @param.query.object('where', getWhereSchemaFor(Review)) where?: Where<Review>,
+    @param.query.object('where', getWhereSchemaFor(Review))
+    where?: Where<Review>,
   ): Promise<Count> {
     return this.complexRepository.reviews(id).patch(review, where);
   }
@@ -103,7 +103,8 @@ export class ComplexReviewController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Review)) where?: Where<Review>,
+    @param.query.object('where', getWhereSchemaFor(Review))
+    where?: Where<Review>,
   ): Promise<Count> {
     return this.complexRepository.reviews(id).delete(where);
   }

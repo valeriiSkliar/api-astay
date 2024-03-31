@@ -20,7 +20,7 @@ export class Amenity extends Entity {
     type: 'string',
     default: null,
   })
-  image?: string;
+  icon?: string;
 
   @property({
     type: 'string',
