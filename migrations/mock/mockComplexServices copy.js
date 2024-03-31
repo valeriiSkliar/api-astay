@@ -102,10 +102,10 @@ const complexServices = [
     price: 25
   },
   {
-    icon: "Children's play area",
-    title: "Children's Play Area",
-    description: "Children's play area available",
-    price: 5
+    "icon": "Children\'s play area",
+    "title": "Children\'s Play Area",
+    "description": "Children\'s play area available",
+    "price": 5
   },
   {
     icon: 'Library',

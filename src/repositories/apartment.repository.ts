@@ -4,8 +4,7 @@ import {
   repository,
   BelongsToAccessor,
   HasManyRepositoryFactory,
-  HasManyThroughRepositoryFactory,
-} from '@loopback/repository';
+  HasManyThroughRepositoryFactory, ReferencesManyAccessor} from '@loopback/repository';
 import {LocalMysqlDataSource, MongoDataSource} from '../datasources';
 import {
   Apartment,
@@ -63,6 +62,8 @@ export class ApartmentRepository extends DefaultCrudRepository<
     typeof Apartment.prototype.id
   >;
 
+  public readonly amenitys: ReferencesManyAccessor<Amenity, typeof Apartment.prototype.id>;
+
   constructor(
     // @inject('datasources.mongo') dataSource: MongoDataSource,
     @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
@@ -82,6 +83,8 @@ export class ApartmentRepository extends DefaultCrudRepository<
     protected reviewRepositoryGetter: Getter<ReviewRepository>,
   ) {
     super(Apartment, dataSource);
+    this.amenitys = this.createReferencesManyAccessorFor('amenitys', amenityRepositoryGetter,);
+    this.registerInclusionResolver('amenitys', this.amenitys.inclusionResolver);
     this.reviews = this.createHasManyRepositoryFactoryFor(
       'reviews',
       reviewRepositoryGetter,

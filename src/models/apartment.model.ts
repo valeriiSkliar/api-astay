@@ -3,8 +3,7 @@ import {
   model,
   property,
   belongsTo,
-  hasMany,
-} from '@loopback/repository';
+  hasMany, referencesMany} from '@loopback/repository';
 import {Complex} from './complex.model';
 import {Locations} from './locations.model';
 import {Photo} from './photo.model';
@@ -137,6 +136,10 @@ export class Apartment extends Entity {
 
   @hasMany(() => Review, {keyTo: 'listing_id'})
   reviews: Review[];
+
+  @referencesMany(() => Amenity)
+  amenityIds: number[];
+  
   [prop: string]: any;
 
   constructor(data?: Partial<Apartment>) {

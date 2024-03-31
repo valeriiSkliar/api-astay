@@ -1,7 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 import {Complex} from './complex.model';
 import {Apartment} from './apartment.model';
-import {ComplexService} from './complex-service.model';
 
 @model()
 export class Photo extends Entity {
