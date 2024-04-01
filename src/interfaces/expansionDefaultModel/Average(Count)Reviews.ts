@@ -1,5 +1,5 @@
 import {Count} from '@loopback/repository';
 
-export interface AverageCountReviews extends Count {
+export interface AverageCountScoresReviews extends Count {
   average?: number;
 }
