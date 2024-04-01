@@ -4,7 +4,9 @@ import {
   repository,
   BelongsToAccessor,
   HasManyRepositoryFactory,
-  HasManyThroughRepositoryFactory, ReferencesManyAccessor} from '@loopback/repository';
+  HasManyThroughRepositoryFactory,
+  ReferencesManyAccessor
+} from '@loopback/repository';
 import {LocalMysqlDataSource, MongoDataSource} from '../datasources';
 import {
   Apartment,
@@ -13,7 +15,6 @@ import {
   Locations,
   Photo,
   Amenity,
-  AmenitiesList,
   RoomType,
   Review,
 } from '../models';
@@ -21,7 +22,7 @@ import {PhotoRepository} from './photo.repository';
 import {ComplexRepository} from './complex.repository';
 import {LocationsRepository} from './locations.repository';
 import {AmenityRepository} from './amenity.repository';
-import {AmenitiesListRepository} from './amenities-list.repository';
+// import {AmenitiesListRepository} from './amenities-list.repository';
 import {RoomTypeRepository} from './room-type.repository';
 import {ReviewRepository} from './review.repository';
 
@@ -45,13 +46,6 @@ export class ApartmentRepository extends DefaultCrudRepository<
     typeof Apartment.prototype.id
   >;
 
-  public readonly amenities: HasManyThroughRepositoryFactory<
-    Amenity,
-    typeof Amenity.prototype.id,
-    AmenitiesList,
-    typeof Apartment.prototype.id
-  >;
-
   public readonly room_type: BelongsToAccessor<
     RoomType,
     typeof Apartment.prototype.id
@@ -62,7 +56,10 @@ export class ApartmentRepository extends DefaultCrudRepository<
     typeof Apartment.prototype.id
   >;
 
-  public readonly amenitys: ReferencesManyAccessor<Amenity, typeof Apartment.prototype.id>;
+  public readonly amenities: ReferencesManyAccessor<Amenity, typeof Apartment.prototype.id>;
+  // TODO: Configuring a referencesMany relation
+  // TODO: Need format for sql query string
+  // TODO: Add indexex to DB tables
 
   constructor(
     // @inject('datasources.mongo') dataSource: MongoDataSource,
@@ -73,18 +70,15 @@ export class ApartmentRepository extends DefaultCrudRepository<
     protected locationsRepositoryGetter: Getter<LocationsRepository>,
     @repository.getter('PhotoRepository')
     protected photoRepositoryGetter: Getter<PhotoRepository>,
-    @repository.getter('AmenityRepository')
-    protected amenityRepositoryGetter: Getter<AmenityRepository>,
-    @repository.getter('AmenitiesListRepository')
-    protected amenitiesListRepositoryGetter: Getter<AmenitiesListRepository>,
     @repository.getter('RoomTypeRepository')
     protected roomTypeRepositoryGetter: Getter<RoomTypeRepository>,
     @repository.getter('ReviewRepository')
-    protected reviewRepositoryGetter: Getter<ReviewRepository>,
+    protected reviewRepositoryGetter: Getter<ReviewRepository>, @repository.getter('AmenityRepository') protected amenityRepositoryGetter: Getter<AmenityRepository>,
   ) {
     super(Apartment, dataSource);
-    this.amenitys = this.createReferencesManyAccessorFor('amenitys', amenityRepositoryGetter,);
-    this.registerInclusionResolver('amenitys', this.amenitys.inclusionResolver);
+    this.amenities = this.createReferencesManyAccessorFor('amenities', amenityRepositoryGetter,);
+    this.registerInclusionResolver('amenities', this.amenities.inclusionResolver);
+
     this.reviews = this.createHasManyRepositoryFactoryFor(
       'reviews',
       reviewRepositoryGetter,
@@ -98,15 +92,7 @@ export class ApartmentRepository extends DefaultCrudRepository<
       'room_type',
       this.room_type.inclusionResolver,
     );
-    this.amenities = this.createHasManyThroughRepositoryFactoryFor(
-      'amenities',
-      amenityRepositoryGetter,
-      amenitiesListRepositoryGetter,
-    );
-    this.registerInclusionResolver(
-      'amenities',
-      this.amenities.inclusionResolver,
-    );
+
     this.images = this.createHasManyRepositoryFactoryFor(
       'images',
       photoRepositoryGetter,

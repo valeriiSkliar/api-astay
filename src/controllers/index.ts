@@ -11,7 +11,6 @@ export * from './complex-apartment.controller';
 export * from './apartment-complex.controller';
 export * from './apartment-locations.controller';
 export * from './apartment-photo.controller';
-export * from './apartment-amenity.controller';
 export * from './room-type.controller';
 export * from './apartment-room-type.controller';
 export * from './review.controller';

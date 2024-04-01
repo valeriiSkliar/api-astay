@@ -8,7 +8,6 @@ import {Complex} from './complex.model';
 import {Locations} from './locations.model';
 import {Photo} from './photo.model';
 import {Amenity} from './amenity.model';
-import {AmenitiesList} from './amenities-list.model';
 import {RoomType} from './room-type.model';
 import {Review} from './review.model';
 
@@ -122,24 +121,14 @@ export class Apartment extends Entity {
   @hasMany(() => Photo, {keyTo: 'apartment_id'})
   images: Photo[];
 
-  @hasMany(() => Amenity, {
-    through: {
-      model: () => AmenitiesList,
-      keyFrom: 'apartment_id',
-      keyTo: 'amenity_id',
-    },
-  })
-  amenities: Amenity[];
-
   @belongsTo(() => RoomType, {name: 'room_type'})
   room_type_id: number;
 
   @hasMany(() => Review, {keyTo: 'listing_id'})
   reviews: Review[];
 
-  @referencesMany(() => Amenity)
+  @referencesMany(() => Amenity, {name: 'amenities'})
   amenityIds: number[];
-  
   [prop: string]: any;
 
   constructor(data?: Partial<Apartment>) {

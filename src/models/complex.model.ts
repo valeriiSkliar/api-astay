@@ -2,11 +2,11 @@ import {
   Entity,
   hasMany,
   model,
-  property,
-} from '@loopback/repository';
+  property, referencesMany} from '@loopback/repository';
 import {Photo} from './photo.model';
 import {Apartment} from './apartment.model';
 import {Review} from './review.model';
+import {ComplexServices} from './complex-services.model';
 
 @model()
 export class Complex extends Entity {
@@ -57,6 +57,9 @@ export class Complex extends Entity {
 
   @hasMany(() => Review, {keyTo: 'complex_id'})
   reviews: Review[];
+
+  @referencesMany(() => ComplexServices)
+  complexServicesIds: number[];
 
   constructor(data?: Partial<Complex>) {
     super(data);

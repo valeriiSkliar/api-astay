@@ -118,6 +118,7 @@ export class ApartmentController {
     @param.filter(Apartment, {exclude: 'where'})
     filter?: FilterExcludingWhere<Apartment>,
   ): Promise<Apartment> {
+    console.log(filter);
     return this.apartmentRepository.findById(id, filter);
   }
 

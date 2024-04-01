@@ -5,7 +5,6 @@ export * from './amenity.repository';
 export * from './customer.repository';
 export * from './test.repository';
 export * from './photo.repository';
-export * from './amenities-list.repository';
 export * from './room-type.repository';
 export * from './review.repository';
 export * from './complex-services.repository';

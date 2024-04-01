@@ -6,7 +6,6 @@ export * from './amenity.model';
 export * from './customer.model';
 export * from './test.model';
 export * from './photo.model';
-export * from './amenities-list.model';
 export * from './room-type.model';
 export * from './review.model';
 export * from './complex-services.model';

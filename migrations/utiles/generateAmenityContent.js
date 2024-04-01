@@ -6,7 +6,7 @@ const generateContent = (tableName) => {
   const amenitiesDataInstansesArray = amenities
     .map(({icon, title, description}) => {
 
-      return `('${icon}', '${title}', '${description}')`;
+      return `('${description}', '${title}', '${icon}')`;
     })
     .join(',\n');
 
