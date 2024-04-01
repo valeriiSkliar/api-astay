@@ -29,7 +29,7 @@ export class ApplicationController {
 
   ) {}
 
-  @post('/contact-us-submit')
+  @post('/api/contact-us-submit')
   async submitContactForm(
     @requestBody() contactData: Applications
   ) {
