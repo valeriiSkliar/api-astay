@@ -20,6 +20,14 @@ import {
 import {Apartment} from '../models';
 import {ApartmentRepository} from '../repositories';
 
+const cloger = () => {
+  let  counter = 0;
+  return () => {
+     counter += 1;
+     console.log(counter);
+  };
+};
+const requestCounter = cloger();
 export class ApartmentController {
   constructor(
     @repository(ApartmentRepository)
@@ -74,6 +82,7 @@ export class ApartmentController {
     @param.filter(Apartment) filter?: Filter<Apartment>,
     @param.array('location', 'query', {type: 'string'}) location: string[] = [],
   ): Promise<Apartment[]> {
+    requestCounter()
     if (location.length > 0) {
       filter = {
         where: {
