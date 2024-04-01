@@ -52,6 +52,12 @@ export class Review extends Entity {
   })
   name: string;
 
+  @property({
+    type: 'number',
+    required: true,
+  })
+  reiting_score: number;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
