@@ -4,24 +4,24 @@ function generateImageUrl(index) {
   let background_color = null;
   let font_color = null;
 
-  try {
-    background_color = generateRandomHexColor();
-    if (!background_color) {
-      throw new Error('background_color is null');
-    }
+  // try {
+  //   background_color = generateRandomHexColor();
+  //   if (!background_color) {
+  //     throw new Error('background_color is null');
+  //   }
 
-    font_color = generateRandomHexColor();
-    if (!font_color) {
-      throw new Error('font_color is null');
-    }
-  } catch (e) {
-    console.error('generateImageUrl failed', e);
-    throw e;
-  }
+  //   font_color = generateRandomHexColor();
+  //   if (!font_color) {
+  //     throw new Error('font_color is null');
+  //   }
+  // } catch (e) {
+  //   console.error('generateImageUrl failed', e);
+  //   throw e;
+  // }
+  const baseImageUrl = '${background_color}/${font_color}?text=${index}.webp';
+  const imageUrl = `https://fakeimg.pl/650x650/587246/fff?text=${index}`;
 
-  const imageUrl = `https://placehold.co/1920x1080@3x/${background_color}/${font_color}?text=${index}.webp`;
-
-  console.log(imageUrl);
+  // console.log(imageUrl);
   return imageUrl;
 }
 
