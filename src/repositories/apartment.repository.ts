@@ -16,8 +16,7 @@ import {
   Photo,
   Amenity,
   RoomType,
-  Review,
-} from '../models';
+  Review, RoomCategory} from '../models';
 import {PhotoRepository} from './photo.repository';
 import {ComplexRepository} from './complex.repository';
 import {LocationsRepository} from './locations.repository';
@@ -25,6 +24,7 @@ import {AmenityRepository} from './amenity.repository';
 // import {AmenitiesListRepository} from './amenities-list.repository';
 import {RoomTypeRepository} from './room-type.repository';
 import {ReviewRepository} from './review.repository';
+import {RoomCategoryRepository} from './room-category.repository';
 
 export class ApartmentRepository extends DefaultCrudRepository<
   Apartment,
@@ -57,6 +57,8 @@ export class ApartmentRepository extends DefaultCrudRepository<
   >;
 
   public readonly amenities: ReferencesManyAccessor<Amenity, typeof Apartment.prototype.id>;
+
+  public readonly roomCategory: BelongsToAccessor<RoomCategory, typeof Apartment.prototype.id>;
   // TODO: Configuring a referencesMany relation
   // TODO: Need format for sql query string
   // TODO: Add indexex to DB tables
@@ -73,9 +75,11 @@ export class ApartmentRepository extends DefaultCrudRepository<
     @repository.getter('RoomTypeRepository')
     protected roomTypeRepositoryGetter: Getter<RoomTypeRepository>,
     @repository.getter('ReviewRepository')
-    protected reviewRepositoryGetter: Getter<ReviewRepository>, @repository.getter('AmenityRepository') protected amenityRepositoryGetter: Getter<AmenityRepository>,
+    protected reviewRepositoryGetter: Getter<ReviewRepository>, @repository.getter('AmenityRepository') protected amenityRepositoryGetter: Getter<AmenityRepository>, @repository.getter('RoomCategoryRepository') protected roomCategoryRepositoryGetter: Getter<RoomCategoryRepository>,
   ) {
     super(Apartment, dataSource);
+    this.roomCategory = this.createBelongsToAccessorFor('roomCategory', roomCategoryRepositoryGetter,);
+    this.registerInclusionResolver('roomCategory', this.roomCategory.inclusionResolver);
     this.amenities = this.createReferencesManyAccessorFor('amenities', amenityRepositoryGetter,);
     this.registerInclusionResolver('amenities', this.amenities.inclusionResolver);
 

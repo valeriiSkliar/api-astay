@@ -6,7 +6,7 @@ var seed;
 var fs = require('fs');
 var path = require('path');
 var Promise;
-var {generateContent} = require('../migrations/utiles/generateComplexServicesContent.js');
+var {generateContent} = require('./utiles/generateComplexServicesContent.js');
 /**
   * We receive the dbmigrate dependency from dbmigrate initially.
   * This enables us to not have to rely on NODE_PATH.
@@ -19,7 +19,7 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db) {
-  var filePath = path.join(__dirname, 'sqls', '20240331183555-ComplexServices-up.sql');
+  var filePath = path.join(__dirname, 'sqls', '20240329134855-ComplexServices-up.sql');
   return new Promise( async function( resolve, reject ) {
     fs.writeFileSync(filePath, await generateContent('ComplexServices'));
     fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
@@ -35,7 +35,7 @@ exports.up = function(db) {
 };
 
 exports.down = function(db) {
-  var filePath = path.join(__dirname, 'sqls', '20240331183555-ComplexServices-down.sql');
+  var filePath = path.join(__dirname, 'sqls', '20240329134855-ComplexServices-down.sql');
   return new Promise( function( resolve, reject ) {
     fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
       if (err) return reject(err);

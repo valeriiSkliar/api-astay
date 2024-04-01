@@ -26,7 +26,7 @@ export class ComplexServicesController {
     public complexServicesRepository : ComplexServicesRepository,
   ) {}
 
-  @post('/complex-services')
+  @post('/api/complex-services')
   @response(200, {
     description: 'ComplexServices model instance',
     content: {'application/json': {schema: getModelSchemaRef(ComplexServices)}},
@@ -47,7 +47,7 @@ export class ComplexServicesController {
     return this.complexServicesRepository.create(complexServices);
   }
 
-  @get('/complex-services/count')
+  @get('/api/complex-services/count')
   @response(200, {
     description: 'ComplexServices model count',
     content: {'application/json': {schema: CountSchema}},
@@ -58,7 +58,7 @@ export class ComplexServicesController {
     return this.complexServicesRepository.count(where);
   }
 
-  @get('/complex-services')
+  @get('/api/complex-services')
   @response(200, {
     description: 'Array of ComplexServices model instances',
     content: {
@@ -76,7 +76,7 @@ export class ComplexServicesController {
     return this.complexServicesRepository.find(filter);
   }
 
-  @patch('/complex-services')
+  @patch('/api/complex-services')
   @response(200, {
     description: 'ComplexServices PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -95,7 +95,7 @@ export class ComplexServicesController {
     return this.complexServicesRepository.updateAll(complexServices, where);
   }
 
-  @get('/complex-services/{id}')
+  @get('/api/complex-services/{id}')
   @response(200, {
     description: 'ComplexServices model instance',
     content: {
@@ -111,7 +111,7 @@ export class ComplexServicesController {
     return this.complexServicesRepository.findById(id, filter);
   }
 
-  @patch('/complex-services/{id}')
+  @patch('/api/complex-services/{id}')
   @response(204, {
     description: 'ComplexServices PATCH success',
   })
@@ -129,7 +129,7 @@ export class ComplexServicesController {
     await this.complexServicesRepository.updateById(id, complexServices);
   }
 
-  @put('/complex-services/{id}')
+  @put('/api/complex-services/{id}')
   @response(204, {
     description: 'ComplexServices PUT success',
   })
@@ -140,7 +140,7 @@ export class ComplexServicesController {
     await this.complexServicesRepository.replaceById(id, complexServices);
   }
 
-  @del('/complex-services/{id}')
+  @del('/api/complex-services/{id}')
   @response(204, {
     description: 'ComplexServices DELETE success',
   })

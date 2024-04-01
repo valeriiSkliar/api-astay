@@ -24,7 +24,7 @@ export class ApartmentReviewController {
     protected apartmentRepository: ApartmentRepository,
   ) {}
 
-  @get('/apartments/{id}/reviews', {
+  @get('/api/apartments/{id}/reviews', {
     responses: {
       '200': {
         description: 'Array of Apartment has many Review',
@@ -43,7 +43,7 @@ export class ApartmentReviewController {
     return this.apartmentRepository.reviews(id).find(filter);
   }
 
-  @post('/apartments/{id}/reviews', {
+  @post('/api/apartments/{id}/reviews', {
     responses: {
       '200': {
         description: 'Apartment model instance',
@@ -69,7 +69,7 @@ export class ApartmentReviewController {
     return this.apartmentRepository.reviews(id).create(review);
   }
 
-  @patch('/apartments/{id}/reviews', {
+  @patch('/api/apartments/{id}/reviews', {
     responses: {
       '200': {
         description: 'Apartment.Review PATCH success count',
@@ -93,7 +93,7 @@ export class ApartmentReviewController {
     return this.apartmentRepository.reviews(id).patch(review, where);
   }
 
-  @del('/apartments/{id}/reviews', {
+  @del('/api/apartments/{id}/reviews', {
     responses: {
       '200': {
         description: 'Apartment.Review DELETE success count',

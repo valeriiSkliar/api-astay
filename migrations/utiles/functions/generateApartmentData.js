@@ -1,8 +1,23 @@
-var {faker, fa} = require('@faker-js/faker');
+var {faker} = require('@faker-js/faker');
+var { amenities } = require('../../mock/mockApartmentAmenities.js');
+var { getConnection } = require('../functions/dataBaseConnection.js');
 
-const randomName = faker.person.fullName();
+var generateApartmentData = async function () {
+  var allAmenities = await getConnection('SELECT * FROM Amenity;')
+  // console.log(allAmenities);
 
-var generateApartmentData = function () {
+  var amenitiesIds = allAmenities.map(({id}) => id);
+
+  // Generate a random count between 10 and the length of the amenitiesIds array
+  var count = Math.floor(Math.random() * (amenitiesIds.length - 10 + 1)) + 10;
+
+  // Shuffle the amenitiesIds array to randomize selection
+  amenitiesIds = shuffleArray(amenitiesIds);
+
+  // Select the first 'count' elements as random amenity IDs
+  var randomAmenityIds = amenitiesIds.slice(0, count);
+  console.log(JSON.stringify(randomAmenityIds));
+  // return null;
   return {
     id: Math.floor(Math.random() * (40 - 10 + 1)) + 10,
     name: faker.lorem.words(10),
@@ -27,7 +42,17 @@ var generateApartmentData = function () {
     review_scores_rating: 6,
     location_id: 1,
     room_type_id: 1,
+    amenityIds: JSON.stringify(randomAmenityIds),
   };
 };
 
+function shuffleArray(array) {
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
 exports.generateApartmentData = generateApartmentData;

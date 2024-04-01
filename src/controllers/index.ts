@@ -17,3 +17,5 @@ export * from './review.controller';
 export * from './apartment-review.controller';
 export * from './complex-review.controller';
 export * from './complex-services.controller';
+export * from './room-category.controller';
+export * from './apartment-room-category.controller';

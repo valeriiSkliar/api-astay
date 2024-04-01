@@ -9,3 +9,4 @@ export * from './photo.model';
 export * from './room-type.model';
 export * from './review.model';
 export * from './complex-services.model';
+export * from './room-category.model';

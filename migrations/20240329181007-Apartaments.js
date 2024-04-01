@@ -29,9 +29,9 @@ exports.up = function (db) {
     'sqls',
     '20240329181007-Apartaments-up.sql',
   );
-  return new Promise(function (resolve, reject) {
+  return new Promise(async function (resolve, reject) {
     var tableName = 'Apartment';
-    fs.writeFileSync(filePath, generateApartmentsContent(tableName));
+    fs.writeFileSync(filePath,await generateApartmentsContent(tableName));
     fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
       if (err) return reject(err);
       console.log('received data: ' + data);

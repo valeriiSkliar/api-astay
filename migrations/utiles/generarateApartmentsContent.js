@@ -1,11 +1,11 @@
 var fs = require('fs');
 var {generateApartmentData} = require('./functions/generateApartmentData.js');
 
-function generateApartmentsContent(tableName) {
+async function generateApartmentsContent(tableName) {
   const randomCount = Math.floor(Math.random() * (40 - 10 + 1)) + 10;
   let apartments = [];
   for (let i = 0; i < randomCount; i++) {
-    var apartmentsRow = generateApartmentData();
+    var apartmentsRow = await generateApartmentData();
     apartments.push(Object.values(apartmentsRow));
   }
 
@@ -27,7 +27,7 @@ function generateApartmentsContent(tableName) {
     })
     .join(',\n');
 
-  const sqlContent = `INSERT INTO ${tableName} (name, description, host_name, guests, bathrooms, bedrooms, beds, neighborhood, disabledDates, price, price_low_season, price_high_season, discount, isAvailable, complex_id, isVisible, oldPrice, number_of_reviews, availability_365, review_scores_rating, location_id, room_type_id) VALUES\n${values};`;
+  const sqlContent = `INSERT INTO ${tableName} (name, description, host_name, guests, bathrooms, bedrooms, beds, neighborhood, disabledDates, price, price_low_season, price_high_season, discount, isAvailable, complex_id, isVisible, oldPrice, number_of_reviews, availability_365, review_scores_rating, location_id, room_type_id, amenityIds) VALUES\n${values};`;
 
   console.log('SQL file generated successfully!');
 

@@ -9,7 +9,7 @@ export class ApartmentRoomTypeController {
     public apartmentRepository: ApartmentRepository,
   ) {}
 
-  @get('/apartments/{id}/room-type', {
+  @get('/api/apartments/{id}/room-type', {
     responses: {
       '200': {
         description: 'RoomType belonging to Apartment',

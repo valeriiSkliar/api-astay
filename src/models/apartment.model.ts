@@ -10,6 +10,7 @@ import {Photo} from './photo.model';
 import {Amenity} from './amenity.model';
 import {RoomType} from './room-type.model';
 import {Review} from './review.model';
+import {RoomCategory} from './room-category.model';
 
 @model()
 export class Apartment extends Entity {
@@ -129,6 +130,9 @@ export class Apartment extends Entity {
 
   @referencesMany(() => Amenity, {name: 'amenities'})
   amenityIds: number[];
+
+  @belongsTo(() => RoomCategory)
+  roomCategoryId: number;
   [prop: string]: any;
 
   constructor(data?: Partial<Apartment>) {

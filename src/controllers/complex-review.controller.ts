@@ -24,7 +24,7 @@ export class ComplexReviewController {
     protected complexRepository: ComplexRepository,
   ) {}
 
-  @get('/complexes/{id}/reviews', {
+  @get('/api/complexes/{id}/reviews', {
     responses: {
       '200': {
         description: 'Array of Complex has many Review',
@@ -43,7 +43,7 @@ export class ComplexReviewController {
     return this.complexRepository.reviews(id).find(filter);
   }
 
-  @post('/complexes/{id}/reviews', {
+  @post('/api/complexes/{id}/reviews', {
     responses: {
       '200': {
         description: 'Complex model instance',
@@ -69,7 +69,7 @@ export class ComplexReviewController {
     return this.complexRepository.reviews(id).create(review);
   }
 
-  @patch('/complexes/{id}/reviews', {
+  @patch('/api/complexes/{id}/reviews', {
     responses: {
       '200': {
         description: 'Complex.Review PATCH success count',
@@ -93,7 +93,7 @@ export class ComplexReviewController {
     return this.complexRepository.reviews(id).patch(review, where);
   }
 
-  @del('/complexes/{id}/reviews', {
+  @del('/api/complexes/{id}/reviews', {
     responses: {
       '200': {
         description: 'Complex.Review DELETE success count',
