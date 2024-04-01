@@ -6,6 +6,7 @@ var seed;
 var fs = require('fs');
 var path = require('path');
 var Promise;
+var {generateContent} = require('./utiles/generateRoomTypesContent.js');
 
 /**
   * We receive the dbmigrate dependency from dbmigrate initially.
@@ -21,6 +22,7 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db) {
   var filePath = path.join(__dirname, 'sqls', '20240329134856-RoomType-up.sql');
   return new Promise( function( resolve, reject ) {
+    fs.writeFileSync(filePath, generateContent('RoomType'));
     fs.readFile(filePath, {encoding: 'utf-8'}, function(err,data){
       if (err) return reject(err);
       console.log('received data: ' + data);
