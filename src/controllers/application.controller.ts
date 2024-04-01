@@ -30,6 +30,10 @@ export class ApplicationController {
   ) {}
 
   @post('/api/contact-us-submit')
+  // @response(200, {
+  //   description: 'Applications model instance',
+  //   content: {'application/json': {schema: getModelSchemaRef(Applications)}},
+  // })
   async submitContactForm(
     @requestBody() contactData: Applications
   ) {

@@ -77,3 +77,4 @@ docker-build
 CURL_HTTP_VERSION_1_1,
 GET,
 true,
+/hostinger_DNS_servers_name

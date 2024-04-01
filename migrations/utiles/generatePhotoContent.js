@@ -13,8 +13,8 @@ async function generateContent(tableName) {
           complex_id: null,
           service_id: null,
         });
+        imageCounter += 1;
       }
-      imageCounter += 1;
       return photosData
         .map(photo => {
           return `('${photo.url}', ${photo?.apartment_id}, ${photo?.complex_id ? `'${photo.complex_id}'` : 'NULL'}, ${photo?.service_id ? `'${photo.service_id}'` : 'NULL'})`;
