@@ -90,7 +90,7 @@ export class ApartmentController {
         },
       };
     }
-    console.log(filter);
+    // console.log(filter);
     return this.apartmentRepository.find(filter);
   }
 
