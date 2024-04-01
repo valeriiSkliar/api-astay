@@ -50,9 +50,12 @@ export class ReviewController {
   @get('/api/reviews/count')
   @response(200, {
     description: 'Review model count',
-    content: {'application/json': {schema: CountSchema}},
+    content: {'application/json': {
+      schema: CountSchema
+    }},
   })
   async count(@param.where(Review) where?: Where<Review>): Promise<Count> {
+    console.log('where', where);
     return this.reviewRepository.count(where);
   }
 

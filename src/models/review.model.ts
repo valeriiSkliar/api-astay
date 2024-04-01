@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+// TODO: SCORE - property
 
 @model({settings: {strict: false}})
 export class Review extends Entity {
