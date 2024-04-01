@@ -1,6 +1,6 @@
 import {inject} from '@loopback/core';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {Error: bad inputDataSource} from '../datasources';
+import {LocalMysqlDataSource} from '../datasources';
 import {RoomCategory, RoomCategoryRelations} from '../models';
 
 export class RoomCategoryRepository extends DefaultCrudRepository<
@@ -9,7 +9,7 @@ export class RoomCategoryRepository extends DefaultCrudRepository<
   RoomCategoryRelations
 > {
   constructor(
-    @inject('datasources.') dataSource: Error: bad inputDataSource,
+    @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource
   ) {
     super(RoomCategory, dataSource);
   }
