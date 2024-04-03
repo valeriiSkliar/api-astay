@@ -20,3 +20,5 @@ export * from './complex-services.controller';
 export * from './room-category.controller';
 export * from './apartment-room-category.controller';
 export * from './application.controller';
+export * from './file-upload.controller';
+export * from './file-download.controller';

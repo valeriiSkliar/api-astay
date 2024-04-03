@@ -43,16 +43,19 @@ export class ApartmentController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Apartment, {
-            title: 'NewApartment',
+          data: {
+            schema: getModelSchemaRef(Apartment, {
+              title: 'NewApartment',
             exclude: ['id'],
-          }),
+            }),
+          }
         },
       },
     })
-    apartment: Omit<Apartment, 'id'>,
+    {data}: Omit<Apartment, 'id'>,
   ): Promise<Apartment> {
-    return this.apartmentRepository.create(apartment);
+    console.log(data);
+    return this.apartmentRepository.create(data);
   }
 
   @get('/api/apartments/count')
