@@ -47,7 +47,7 @@ export class FileDownloadController {
     return files;
   }
 
-  @get('/files/{filename}')
+  @get('/api/files/{filename}')
   @oas.response.file()
   downloadFile(
     @param.path.string('filename') fileName: string,

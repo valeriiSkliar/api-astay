@@ -1,6 +1,7 @@
 import {
   Count,
   CountSchema,
+  EntityNotFoundError,
   Filter,
   FilterExcludingWhere,
   repository,
@@ -83,17 +84,12 @@ export class ApartmentController {
   })
   async find(
     @param.filter(Apartment) filter?: Filter<Apartment>,
-    @param.array('location', 'query', {type: 'string'}) location: string[] = [],
   ): Promise<Apartment[]> {
     requestCounter()
-    if (location.length > 0) {
       filter = {
-        where: {
-          location_id: 1,
-        },
+        ...filter,
+        include: [{"relation": 'images'}, {"relation": 'reviews'}]
       };
-    }
-    // console.log(filter);
     return this.apartmentRepository.find(filter);
   }
 
@@ -149,6 +145,8 @@ export class ApartmentController {
     })
     apartment: Apartment,
   ): Promise<void> {
+    console.log(apartment, id);
+
     await this.apartmentRepository.updateById(id, apartment);
   }
 
@@ -170,4 +168,47 @@ export class ApartmentController {
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.apartmentRepository.deleteById(id);
   }
+
+  @patch('/api/apartments/{id}/update-disabled-dates')
+  @response(204, {
+    description: 'Apartment PATCH success',
+  })
+  async updateDisabledDatesById(
+    @param.path.number('id') id: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              propertyName: {
+                type: 'string',
+              },
+              disabledDates: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+            },
+            required: ['propertyName', 'disabledDates'],
+          },
+        },
+      },
+    })
+    data: { propertyName: string; disabledDates: string[] },
+  ): Promise<void> {
+    const apartment = await this.apartmentRepository.findById(id);
+    if (!apartment) {
+      throw new EntityNotFoundError(Apartment, id);
+    }
+    console.log(data);
+
+    apartment[data.propertyName] = data.disabledDates;
+    console.log(apartment.disabledDates);
+
+    await this.apartmentRepository.update(apartment);
+  }
+
+
 }
