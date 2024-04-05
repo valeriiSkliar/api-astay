@@ -170,6 +170,10 @@ export class ApartmentController {
   }
 
   @patch('/api/apartments/{id}/update-disabled-dates')
+  @response(200, {
+    description: 'Apartment PATCH success',
+    content: {'application/json': {schema: getModelSchemaRef(Apartment)}},
+  })
   @response(204, {
     description: 'Apartment PATCH success',
   })
@@ -202,10 +206,8 @@ export class ApartmentController {
     if (!apartment) {
       throw new EntityNotFoundError(Apartment, id);
     }
-    console.log(data);
 
     apartment[data.propertyName] = data.disabledDates;
-    console.log(apartment.disabledDates);
 
     await this.apartmentRepository.update(apartment);
   }

@@ -103,7 +103,11 @@ export class ApartmentPhotoController {
   async delete(
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(Photo)) where?: Where<Photo>,
+    @param.query.string('photoId') photoId?: string,
   ): Promise<Count> {
-    return this.apartmentRepository.images(id).delete(where);
+    if (photoId) {
+      where = {id: photoId};
+    }
+      return this.apartmentRepository.images(id).delete(where);
   }
 }

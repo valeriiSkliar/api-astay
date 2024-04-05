@@ -4,6 +4,7 @@ var { getConnection } = require('../functions/dataBaseConnection.js');
 var generateApartmentData = async function () {
   var allAmenities = await getConnection('SELECT * FROM Amenity;')
   var allRoomTypes = await getConnection('SELECT * FROM RoomType;')
+  var allComplexes = await getConnection('SELECT * FROM Complex;')
   var allRoomCategories = await getConnection('SELECT * FROM RoomCategory;')
 
   var amenitiesIds = allAmenities.map(({id}) => id);
@@ -30,7 +31,7 @@ var generateApartmentData = async function () {
     price_high_season: faker.finance.amount(),
     discount: faker.number.int(0, 20),
     isAvailable: true,
-    complex_id: 1,
+    complex_id: allComplexes[Math.floor(Math.random() * allComplexes.length)]?.id || allComplexes[0].id,
     isVisible: true,
     oldPrice: faker.finance.amount(),
     number_of_reviews: 20,
