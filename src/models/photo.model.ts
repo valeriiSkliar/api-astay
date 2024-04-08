@@ -15,7 +15,7 @@ export class Photo extends Entity {
     type: 'number',
     required: true,
   })
-  order: number;
+  order_number: number;
 
   @property({
     type: 'string',

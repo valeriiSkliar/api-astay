@@ -1,10 +1,9 @@
-INSERT INTO Complex (name, description, images, address, geo_data)
-VALUES
-  ('Pattaya Complex',
-  '<p>This is a beautiful and modern complex located in the heart of Pattaya, Thailand. It offers stunning views of the surrounding area and is close to all the best attractions. The complex features a variety of amenities, including a swimming pool, fitness center, and spa. The units are spacious and well-appointed, making it the perfect place to relax and enjoy your vacation.</p>',
-  '["https://images.unsplash.com/photo-1612838320304-4"]',
-  '123 Beach Road, Pattaya, Thailand', '[{"lat":12.9235,"lng":100.8825}]');
-
-
-
-
+INSERT INTO Complex (name, description, images, address, geo_data, location_id) VALUES 
+    ('New Work Complex 1', '<pModern complex located in New Work. It offers stunning views of the surrounding area and is close to all the best attractions.</p>', '["https://images.unsplash.com/photo-1612838320304-4"]', '123 New Work Street, New York, USA', '[{"lat":40.7128,"lng":-74.0060}]', '19'),
+('New Work Complex 2', '<pModern complex located in New Work. It offers stunning views of the surrounding area and is close to all the best attractions.</p>', '["https://images.unsplash.com/photo-1612838320304-4"]', '223 New Work Street, New York, USA', '[{"lat":40.7128,"lng":-74.0060}]', '19'),
+('London Complex 1', '<pModern complex located in London. It offers stunning views of the surrounding area and is close to all the best attractions.</p>', '["https://images.unsplash.com/photo-1612838320304-4"]', '123 London Street, London, UK', '[{"lat":51.5074,"lng":-0.1278}]', '20'),
+('London Complex 2', '<pModern complex located in London. It offers stunning views of the surrounding area and is close to all the best attractions.</p>', '["https://images.unsplash.com/photo-1612838320304-4"]', '223 London Street, London, UK', '[{"lat":51.5074,"lng":-0.1278}]', '20'),
+('Paris Complex 1', '<pModern complex located in Paris. It offers stunning views of the surrounding area and is close to all the best attractions.</p>', '["https://images.unsplash.com/photo-1612838320304-4"]', '123 Paris Street, Paris, France', '[{"lat":48.8566,"lng":2.3522}]', '21'),
+('Paris Complex 2', '<pModern complex located in Paris. It offers stunning views of the surrounding area and is close to all the best attractions.</p>', '["https://images.unsplash.com/photo-1612838320304-4"]', '223 Paris Street, Paris, France', '[{"lat":48.8566,"lng":2.3522}]', '21'),
+('Pattaya 5 Complex 1', '<pModern complex located in Pattaya 5. It offers stunning views of the surrounding area and is close to all the best attractions.</p>', '["https://images.unsplash.com/photo-1612838320304-4"]', '123 Pattaya 5 Street, Pattaya, Tailand', '[{"lat":15.7749,"lng":-100.4194}]', '22'),
+('Pattaya 5 Complex 2', '<pModern complex located in Pattaya 5. It offers stunning views of the surrounding area and is close to all the best attractions.</p>', '["https://images.unsplash.com/photo-1612838320304-4"]', '223 Pattaya 5 Street, Pattaya, Tailand', '[{"lat":15.7749,"lng":-100.4194}]', '22');
