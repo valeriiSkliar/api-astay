@@ -11,9 +11,14 @@ export class Applications extends Entity {
 
   @property({
     type: 'string',
+  })
+  pageName?: string;
+
+  @property({
+    type: 'string',
     required: true,
   })
-  type: string;
+  name: string;
 
   @property({
     type: 'string',
@@ -23,9 +28,8 @@ export class Applications extends Entity {
 
   @property({
     type: 'string',
-    required: true,
   })
-  phone: string;
+  phone?: string;
 
   @property({
     type: 'string',
@@ -34,14 +38,21 @@ export class Applications extends Entity {
 
   @property({
     type: 'boolean',
-
+    default: false,
   })
   isProcessed?: boolean;
 
   @property({
     type: 'boolean',
+    default: false,
   })
   isOpened?: boolean;
+
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  createdAt?: Date;
 
   // Define well-known properties here
 
