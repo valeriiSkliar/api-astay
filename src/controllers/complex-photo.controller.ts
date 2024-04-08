@@ -103,7 +103,11 @@ export class ComplexPhotoController {
   async delete(
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(Photo)) where?: Where<Photo>,
+    @param.query.string('photoId') photoId?: string,
   ): Promise<Count> {
+    if (photoId) {
+      where = {id: photoId};
+    }
     return this.complexRepository.photos(id).delete(where);
   }
 }

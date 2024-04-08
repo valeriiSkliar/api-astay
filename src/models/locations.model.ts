@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Complex} from './complex.model';
 
 @model({settings: {strict: false}})
 export class Locations extends Entity {
@@ -17,13 +18,11 @@ export class Locations extends Entity {
 
   @property({
     type: 'string',
-    required: true,
   })
   latitude: string;
 
   @property({
     type: 'string',
-    required: true,
   })
   longitude: string;
 
@@ -39,6 +38,8 @@ export class Locations extends Entity {
   })
   country?: string;
 
+  @hasMany(() => Complex, {keyTo: 'location_id'})
+  complexes: Complex[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

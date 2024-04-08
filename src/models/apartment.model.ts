@@ -63,6 +63,9 @@ export class Apartment extends Entity {
   @property.array(Date)
   disabledDates?: Date[];
 
+  @property.array(Date)
+  hostDisabledDates?: Date[];
+
   @property({
     type: 'number',
   })
@@ -83,7 +86,7 @@ export class Apartment extends Entity {
   })
   discount?: number;
 
-  @property({
+@property({
     type: 'boolean',
   })
   isAvailable?: boolean;

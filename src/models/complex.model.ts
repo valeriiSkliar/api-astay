@@ -2,11 +2,14 @@ import {
   Entity,
   hasMany,
   model,
-  property, referencesMany} from '@loopback/repository';
+  property, referencesMany, belongsTo} from '@loopback/repository';
 import {Photo} from './photo.model';
 import {Apartment} from './apartment.model';
 import {Review} from './review.model';
 import {ComplexServices} from './complex-services.model';
+import {Locations} from './locations.model';
+
+// TODO : Add location relationship location_id
 
 @model()
 export class Complex extends Entity {
@@ -60,6 +63,9 @@ export class Complex extends Entity {
 
   @referencesMany(() => ComplexServices)
   complexServicesIds: number[];
+
+  @belongsTo(() => Locations, {name: 'locationDetails'})
+  location_id: number;
 
   constructor(data?: Partial<Complex>) {
     super(data);

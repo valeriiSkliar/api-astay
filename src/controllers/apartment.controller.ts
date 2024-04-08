@@ -86,10 +86,10 @@ export class ApartmentController {
     @param.filter(Apartment) filter?: Filter<Apartment>,
   ): Promise<Apartment[]> {
     requestCounter()
-      filter = {
-        ...filter,
-        include: [{"relation": 'images'}, {"relation": 'reviews'}]
-      };
+      // filter = {
+      //   ...filter,
+      //   include: [{"relation": 'images'}, {"relation": 'reviews'}]
+      // };
     return this.apartmentRepository.find(filter);
   }
 

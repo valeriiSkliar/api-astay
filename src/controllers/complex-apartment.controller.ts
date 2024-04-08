@@ -103,9 +103,12 @@ export class ComplexApartmentController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Apartment))
-    where?: Where<Apartment>,
+    @param.query.object('where', getWhereSchemaFor(Apartment)) where?: Where<Apartment>,
   ): Promise<Count> {
+    if (where && 'id' in where) {
+      where = {id: where.id};
+    }
     return this.complexRepository.apartments(id).delete(where);
+
   }
 }

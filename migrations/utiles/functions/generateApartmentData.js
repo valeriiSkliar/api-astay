@@ -14,7 +14,7 @@ var generateApartmentData = async function () {
   amenitiesIds = shuffleArray(amenitiesIds);
 
   var randomAmenityIds = amenitiesIds.slice(0, count);
-
+// TODO make different guests and room counts for each apartment
   return {
     id: Math.floor(Math.random() * (40 - 10 + 1)) + 10,
     name: faker.lorem.words(10),

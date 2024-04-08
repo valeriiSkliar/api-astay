@@ -101,7 +101,7 @@ export class PhotoController {
     },
   })
   async findById(
-    @param.path.string('id') id: string,
+    @param.path.string('id') id: number,
     @param.filter(Photo, {exclude: 'where'})
     filter?: FilterExcludingWhere<Photo>,
   ): Promise<Photo> {
@@ -113,7 +113,7 @@ export class PhotoController {
     description: 'Photo PATCH success',
   })
   async updateById(
-    @param.path.string('id') id: string,
+    @param.path.string('id') id: number,
     @requestBody({
       content: {
         'application/json': {
@@ -131,7 +131,7 @@ export class PhotoController {
     description: 'Photo PUT success',
   })
   async replaceById(
-    @param.path.string('id') id: string,
+    @param.path.string('id') id: number,
     @requestBody() photo: Photo,
   ): Promise<void> {
     await this.photoRepository.replaceById(id, photo);
@@ -141,7 +141,7 @@ export class PhotoController {
   @response(204, {
     description: 'Photo DELETE success',
   })
-  async deleteById(@param.path.string('id') id: string): Promise<void> {
+  async deleteById(@param.path.string('id') id: number): Promise<void> {
     await this.photoRepository.deleteById(id);
   }
 }

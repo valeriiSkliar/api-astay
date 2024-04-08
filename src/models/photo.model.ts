@@ -9,7 +9,13 @@ export class Photo extends Entity {
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
+
+  @property({
+    type: 'number',
+    required: true,
+  })
+  order: number;
 
   @property({
     type: 'string',

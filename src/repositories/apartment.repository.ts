@@ -75,7 +75,9 @@ export class ApartmentRepository extends DefaultCrudRepository<
     @repository.getter('RoomTypeRepository')
     protected roomTypeRepositoryGetter: Getter<RoomTypeRepository>,
     @repository.getter('ReviewRepository')
-    protected reviewRepositoryGetter: Getter<ReviewRepository>, @repository.getter('AmenityRepository') protected amenityRepositoryGetter: Getter<AmenityRepository>, @repository.getter('RoomCategoryRepository') protected roomCategoryRepositoryGetter: Getter<RoomCategoryRepository>,
+    protected reviewRepositoryGetter: Getter<ReviewRepository>,
+    @repository.getter('AmenityRepository') protected amenityRepositoryGetter: Getter<AmenityRepository>,
+    @repository.getter('RoomCategoryRepository') protected roomCategoryRepositoryGetter: Getter<RoomCategoryRepository>,
   ) {
     super(Apartment, dataSource);
     this.roomCategory = this.createBelongsToAccessorFor('roomCategory', roomCategoryRepositoryGetter,);
