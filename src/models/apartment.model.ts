@@ -134,9 +134,9 @@ export class Apartment extends Entity {
   @referencesMany(() => Amenity, {name: 'amenities'})
   amenityIds: number[];
 
-  @belongsTo(() => RoomCategory)
+  @belongsTo(() => RoomCategory, {name: 'roomCategory'})
   roomCategoryId: number;
-  
+
   [prop: string]: any;
 
   constructor(data?: Partial<Apartment>) {

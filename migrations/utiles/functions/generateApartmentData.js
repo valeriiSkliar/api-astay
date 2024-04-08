@@ -12,7 +12,8 @@ var generateApartmentData = async function () {
   var complex = allComplexes[Math.floor(Math.random() * allComplexes.length)] || allComplexes[0]
   console.log(complex)
   var count = Math.floor(Math.random() * (amenitiesIds.length - 10 + 1)) + 10;
-
+  var roomType = allRoomTypes[Math.floor(Math.random() * allRoomTypes.length)] || allRoomTypes[0]
+  var roomCategory = allRoomCategories[Math.floor(Math.random() * allRoomCategories.length)] || allRoomCategories[0]
   amenitiesIds = shuffleArray(amenitiesIds);
 
   var randomAmenityIds = amenitiesIds.slice(0, count);
@@ -41,8 +42,8 @@ var generateApartmentData = async function () {
     review_scores_rating: 6,
     location_id: complex.location_id,
     amenityIds: JSON.stringify(randomAmenityIds),
-    room_type_id : Math.floor(Math.random() * (allRoomTypes.length - 1 + 1)) + 1,
-    roomCategoryId: Math.floor(Math.random() * (allRoomCategories.length - 1 + 1)) + 1,
+    room_type_id : roomType.id,
+    roomCategoryId: roomCategory.id,
     hostDisabledDates: JSON.stringify([faker.date.future()]),
   };
 };
