@@ -18,7 +18,7 @@ import {
   response,
 } from '@loopback/rest';
 import {Review} from '../models';
-import {ReviewRepository} from '../repositories';
+import {ApartmentRepository, ReviewRepository} from '../repositories';
 import {AverageCountScoresReviews} from '../interfaces/expansionDefaultModel/Average(Count)Reviews';
 import {calculateAverageRating} from '../services/reviews/calculateAverageRating.service';
 export class ReviewController {
@@ -54,9 +54,13 @@ export class ReviewController {
       schema: CountSchema
     }},
   })
-  async count(@param.where(Review) where?: Where<Review> & { average?: boolean }): Promise<AverageCountScoresReviews> {
+  async count(@param.where(Review) where?: Where<Review> & { average?: boolean, listing_id?: number }): Promise<AverageCountScoresReviews> {
     if (where && where.average) {
       const reviews = await this.reviewRepository.find();
+      const averageRating = calculateAverageRating(reviews);
+      return { count: reviews.length, average: averageRating } ;
+    } else if (where && where.listing_id) {
+      const reviews = await this.reviewRepository.find({where: {listing_id: where.listing_id}});
       const averageRating = calculateAverageRating(reviews);
       return { count: reviews.length, average: averageRating } ;
     }
