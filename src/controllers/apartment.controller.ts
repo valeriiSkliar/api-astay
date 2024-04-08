@@ -97,7 +97,11 @@ export class ApartmentController {
     requestCounter()
       // filter = {
       //   ...filter,
-      //   include: [{"relation": 'images'}, {"relation": 'reviews'}]
+      //   fields: {
+      //     "name": true,
+      //     "in_complex": true
+      //   }
+      // //   include: [{"relation": 'images'}, {"relation": 'reviews'}]
       // };
     const apartments = await this.apartmentRepository.find(filter);
     return { count: apartments.length, apartments };

@@ -17,11 +17,6 @@ export class Applications extends Entity {
 
   @property({
     type: 'string',
-  })
-  pageName?: string;
-
-  @property({
-    type: 'string',
     required: true,
   })
   email: string;
@@ -36,6 +31,17 @@ export class Applications extends Entity {
     type: 'string',
   })
   message?: string;
+
+  @property({
+    type: 'boolean',
+
+  })
+  isProcessed?: boolean;
+
+  @property({
+    type: 'boolean',
+  })
+  isOpened?: boolean;
 
   // Define well-known properties here
 

@@ -136,6 +136,7 @@ export class Apartment extends Entity {
 
   @belongsTo(() => RoomCategory)
   roomCategoryId: number;
+  
   [prop: string]: any;
 
   constructor(data?: Partial<Apartment>) {

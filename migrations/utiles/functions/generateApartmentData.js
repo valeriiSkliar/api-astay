@@ -4,26 +4,28 @@ var { getConnection } = require('../functions/dataBaseConnection.js');
 var generateApartmentData = async function () {
   var allAmenities = await getConnection('SELECT * FROM Amenity;')
   var allRoomTypes = await getConnection('SELECT * FROM RoomType;')
+  var allRoomCategories = await getConnection('SELECT * FROM RoomType;')
   var allComplexes = await getConnection('SELECT * FROM Complex;')
   var allRoomCategories = await getConnection('SELECT * FROM RoomCategory;')
 
   var amenitiesIds = allAmenities.map(({id}) => id);
-
+  var complex = allComplexes[Math.floor(Math.random() * allComplexes.length)] || allComplexes[0]
+  console.log(complex)
   var count = Math.floor(Math.random() * (amenitiesIds.length - 10 + 1)) + 10;
 
   amenitiesIds = shuffleArray(amenitiesIds);
 
   var randomAmenityIds = amenitiesIds.slice(0, count);
-// TODO make different guests and room counts for each apartment
+
   return {
     id: Math.floor(Math.random() * (40 - 10 + 1)) + 10,
     name: faker.lorem.words(10),
     description: faker.lorem.sentence(40),
     host_name: `${faker.person.firstName()}`,
-    guests: Math.floor(Math.random() * (4 - 1 + 1)) + 10,
-    bathrooms: Math.floor(Math.random() * (2 - 1 + 1)) + 10,
-    bedrooms: Math.floor(Math.random() * (3 - 1 + 1)) + 10,
-    beds: Math.floor(Math.random() * (4 - 1 + 1)) + 10,
+    guests: Math.floor(Math.random() * (10 - 1 + 1)) + 1,
+    bathrooms: Math.floor(Math.random() * (2 - 1 + 1)) + 1,
+    bedrooms: Math.floor(Math.random() * (5 - 1 + 1)) + 1,
+    beds: Math.floor(Math.random() * (4 - 1 + 1)) + 1,
     neighborhood: JSON.stringify([faker.location.direction()]),
     disabledDates: JSON.stringify([faker.date.future()]),
     price: faker.finance.amount(),
@@ -31,16 +33,17 @@ var generateApartmentData = async function () {
     price_high_season: faker.finance.amount(),
     discount: faker.number.int(0, 20),
     isAvailable: true,
-    complex_id: allComplexes[Math.floor(Math.random() * allComplexes.length)]?.id || allComplexes[0].id,
+    complex_id: complex.id,
     isVisible: true,
     oldPrice: faker.finance.amount(),
     number_of_reviews: 20,
     availability_365: 365,
     review_scores_rating: 6,
-    location_id: 1,
-    room_type_id: Math.floor(Math.random() * (allRoomTypes.length - 1 + 1)) + 1,
+    location_id: complex.location_id,
     amenityIds: JSON.stringify(randomAmenityIds),
-    roomCategoryId: Math.floor(Math.random() * (allRoomCategories.length - 1 + 1)) + 1
+    room_type_id : Math.floor(Math.random() * (allRoomTypes.length - 1 + 1)) + 1,
+    roomCategoryId: Math.floor(Math.random() * (allRoomCategories.length - 1 + 1)) + 1,
+    hostDisabledDates: JSON.stringify([faker.date.future()]),
   };
 };
 
