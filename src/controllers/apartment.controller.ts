@@ -76,21 +76,31 @@ export class ApartmentController {
     content: {
       'application/json': {
         schema: {
-          type: 'array',
-          items: getModelSchemaRef(Apartment, {includeRelations: true}),
+          type: 'object',
+          properties: {
+            count: {
+              type: 'number',
+              description: 'Count of Apartment model instances',
+            },
+            apartments: {
+              type: 'array',
+              items: getModelSchemaRef(Apartment, {includeRelations: true}),
+            },
+          },
         },
       },
     },
   })
   async find(
     @param.filter(Apartment) filter?: Filter<Apartment>,
-  ): Promise<Apartment[]> {
+  ): Promise<{count: number; apartments: Apartment[]}> {
     requestCounter()
       // filter = {
       //   ...filter,
       //   include: [{"relation": 'images'}, {"relation": 'reviews'}]
       // };
-    return this.apartmentRepository.find(filter);
+    const apartments = await this.apartmentRepository.find(filter);
+    return { count: apartments.length, apartments };
   }
 
   @patch('/api/apartments')
