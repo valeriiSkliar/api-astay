@@ -34,10 +34,26 @@ export class ApplicationController {
   //   description: 'Applications model instance',
   //   content: {'application/json': {schema: getModelSchemaRef(Applications)}},
   // })
+  
   async submitContactForm(
     @requestBody() contactData: Applications
-  ) {
+  ): Promise<{ message: string }> {
     try {
+      const { pageName, name, email, phone, message } = contactData;
+
+      if (!pageName || !email || !phone || !name) {
+        throw new HttpErrors.BadRequest('Missing required fields');
+      }
+      const newApplication = new Applications({
+        pageName,
+        name,
+        email,
+        phone,
+        message,
+      });
+
+      await this.applicationsRepository.create(newApplication);
+
       // await contactData.validateData(); // Call model validation
       // Additional checks (spam check, data sanitization) can be done here
       // Implement logic to store data securely (e.g., using a repository)
@@ -51,6 +67,7 @@ export class ApplicationController {
       }
     }
   }
+
   // TODO Block ebble to creare new applications from admin panel
   @post('/api/applications')
   @response(200, {

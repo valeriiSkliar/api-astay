@@ -15,7 +15,7 @@ async function generateComplexesContent(tableName) {
       // Generate two complexes for each location
       for (let i = 1; i <= 2; i++) {
         let complexName = `${location.name} Complex ${i}`;
-        let description = `<pModern complex located in ${location.name}. It offers stunning views of the surrounding area and is close to all the best attractions.</p>`;
+        let description = `<p>Modern complex located in ${location.name}. lorem ipsum dolor sit amet, consectetur adipiscing elit. It offers stunning views of the surrounding area and is close to all the best attractions.</p>`;
         let address = `${i}23 ${location.name} Street, ${location.city}, ${location.country}`;
         let geoData = `[{"lat":${location.latitude},"lng":${location.longitude}}]`;
         let location_id = location.id;
