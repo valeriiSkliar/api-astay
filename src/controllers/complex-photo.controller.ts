@@ -15,16 +15,18 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {Complex, Photo} from '../models';
+import {
+  Complex,
+  Photo,
+} from '../models';
 import {ComplexRepository} from '../repositories';
 
 export class ComplexPhotoController {
   constructor(
-    @repository(ComplexRepository)
-    protected complexRepository: ComplexRepository,
-  ) {}
+    @repository(ComplexRepository) protected complexRepository: ComplexRepository,
+  ) { }
 
-  @get('/api/complexes/{id}/photos', {
+  @get('/complexes/{id}/photos', {
     responses: {
       '200': {
         description: 'Array of Complex has many Photo',
@@ -40,10 +42,10 @@ export class ComplexPhotoController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Photo>,
   ): Promise<Photo[]> {
-    return this.complexRepository.photos(id).find(filter);
+    return this.complexRepository.images(id).find(filter);
   }
 
-  @post('/api/complexes/{id}/photos', {
+  @post('/complexes/{id}/photos', {
     responses: {
       '200': {
         description: 'Complex model instance',
@@ -59,17 +61,16 @@ export class ComplexPhotoController {
           schema: getModelSchemaRef(Photo, {
             title: 'NewPhotoInComplex',
             exclude: ['id'],
-            optional: ['complex_id'],
+            optional: ['complex_id']
           }),
         },
       },
-    })
-    photo: Omit<Photo, 'id'>,
+    }) photo: Omit<Photo, 'id'>,
   ): Promise<Photo> {
-    return this.complexRepository.photos(id).create(photo);
+    return this.complexRepository.images(id).create(photo);
   }
 
-  @patch('/api/complexes/{id}/photos', {
+  @patch('/complexes/{id}/photos', {
     responses: {
       '200': {
         description: 'Complex.Photo PATCH success count',
@@ -89,10 +90,10 @@ export class ComplexPhotoController {
     photo: Partial<Photo>,
     @param.query.object('where', getWhereSchemaFor(Photo)) where?: Where<Photo>,
   ): Promise<Count> {
-    return this.complexRepository.photos(id).patch(photo, where);
+    return this.complexRepository.images(id).patch(photo, where);
   }
 
-  @del('/api/complexes/{id}/photos', {
+  @del('/complexes/{id}/photos', {
     responses: {
       '200': {
         description: 'Complex.Photo DELETE success count',
@@ -103,11 +104,7 @@ export class ComplexPhotoController {
   async delete(
     @param.path.number('id') id: number,
     @param.query.object('where', getWhereSchemaFor(Photo)) where?: Where<Photo>,
-    @param.query.string('photoId') photoId?: string,
   ): Promise<Count> {
-    if (photoId) {
-      where = {id: photoId};
-    }
-    return this.complexRepository.photos(id).delete(where);
+    return this.complexRepository.images(id).delete(where);
   }
 }

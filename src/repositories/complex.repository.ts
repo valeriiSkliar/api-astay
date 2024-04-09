@@ -16,11 +16,6 @@ export class ComplexRepository extends DefaultCrudRepository<
   typeof Complex.prototype.id,
   ComplexRelations
 > {
-  public readonly photos: HasManyRepositoryFactory<
-    Photo,
-    typeof Complex.prototype.id
-  >;
-
   public readonly apartments: HasManyRepositoryFactory<
     Apartment,
     typeof Complex.prototype.id
@@ -35,6 +30,8 @@ export class ComplexRepository extends DefaultCrudRepository<
 
   public readonly locationDetails: BelongsToAccessor<Locations, typeof Complex.prototype.id>;
 
+  public readonly images: HasManyRepositoryFactory<Photo, typeof Complex.prototype.id>;
+
   constructor(
     @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
     @repository.getter('PhotoRepository')
@@ -45,6 +42,9 @@ export class ComplexRepository extends DefaultCrudRepository<
     protected reviewRepositoryGetter: Getter<ReviewRepository>, @repository.getter('ComplexServicesRepository') protected complexServicesRepositoryGetter: Getter<ComplexServicesRepository>, @repository.getter('LocationsRepository') protected locationsRepositoryGetter: Getter<LocationsRepository>,
   ) {
     super(Complex, dataSource);
+    this.images = this.createHasManyRepositoryFactoryFor('images', photoRepositoryGetter,);
+    this.registerInclusionResolver('images', this.images.inclusionResolver);
+
     this.locationDetails = this.createBelongsToAccessorFor('locationDetails', locationsRepositoryGetter,);
     this.registerInclusionResolver('locationDetails', this.locationDetails.inclusionResolver);
     this.complexServicess = this.createReferencesManyAccessorFor('complexServicess', complexServicesRepositoryGetter,);
@@ -62,10 +62,5 @@ export class ComplexRepository extends DefaultCrudRepository<
       'apartments',
       this.apartments.inclusionResolver,
     );
-    this.photos = this.createHasManyRepositoryFactoryFor(
-      'photos',
-      photoRepositoryGetter,
-    );
-    this.registerInclusionResolver('photos', this.photos.inclusionResolver);
   }
 }

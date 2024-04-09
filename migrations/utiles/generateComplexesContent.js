@@ -8,7 +8,7 @@ async function generateComplexesContent(tableName) {
 
     // Define an array to store SQL statements for each complex
     let sqlStatements = [];
-    let sqlStatement = `INSERT INTO ${tableName} (name, description, images, address, geo_data, location_id) VALUES `;
+    let sqlStatement = `INSERT INTO ${tableName} (name, description, address, geo_data, location_id) VALUES `;
 
     // Iterate over each location
     for (let location of allLocations) {
@@ -16,13 +16,12 @@ async function generateComplexesContent(tableName) {
       for (let i = 1; i <= 2; i++) {
         let complexName = `${location.name} Complex ${i}`;
         let description = `<pModern complex located in ${location.name}. It offers stunning views of the surrounding area and is close to all the best attractions.</p>`;
-        let images = '["https://images.unsplash.com/photo-1612838320304-4"]';
         let address = `${i}23 ${location.name} Street, ${location.city}, ${location.country}`;
         let geoData = `[{"lat":${location.latitude},"lng":${location.longitude}}]`;
         let location_id = location.id;
 
         // Construct the SQL INSERT statement
-        sqlValue= `('${complexName}', '${description}', '${images}', '${address}', '${geoData}', '${location_id}')`;
+        sqlValue= `('${complexName}', '${description}', '${address}', '${geoData}', '${location_id}')`;
 
         sqlStatements.push(sqlValue);
         // console.log(sqlStatements);

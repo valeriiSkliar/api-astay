@@ -42,19 +42,13 @@ export class Complex extends Entity {
   @property({
     type: 'array',
     itemType: 'object',
-    default: [],
-  })
-  images?: object[];
-
-  @property({
-    type: 'array',
-    itemType: 'object',
     required: true,
   })
   geo_data?: Array<{lat: number; lng: number}>;
 
-  @hasMany(() => Photo, {keyTo: 'complex_id'})
-  photos: Photo[];
+  // @hasMany(() => Photo, {keyTo: 'complex_id'})
+  // photos: Photo[];
+
 
   @hasMany(() => Apartment, {keyTo: 'complex_id'})
   apartments: Apartment[];
@@ -62,11 +56,15 @@ export class Complex extends Entity {
   @hasMany(() => Review, {keyTo: 'complex_id'})
   reviews: Review[];
 
+  @hasMany(() => Photo, {keyTo: 'complex_id'})
+  images: Photo[];
+  
   @referencesMany(() => ComplexServices)
   complexServicesIds: number[];
 
   @belongsTo(() => Locations, {name: 'locationDetails'})
   location_id: number;
+
 
   constructor(data?: Partial<Complex>) {
     super(data);
