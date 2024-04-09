@@ -22,7 +22,7 @@ import {
 import {MongoDataSource} from './datasources';
 import {LocalMysqlDataSource} from './datasources/local-mysql.datasource';
 import {CrudRestComponent} from '@loopback/rest-crud';
-import {SubmissionTrackingServiceService} from './services';
+import {SubmitTrackingService} from './services';
 
 export {ApplicationConfig};
 
@@ -37,7 +37,9 @@ export class ApiApplication extends BootMixin(
     this.dataSource(LocalMysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     // Set up the custom sequence
     this.sequence(MySequence);
-
+    this.bind('services.submit-tracking',)
+      .toClass(SubmitTrackingService)
+      
     // Set up default home page
     this.static('/api', path.join(__dirname, '../public'));
 
@@ -47,7 +49,6 @@ export class ApiApplication extends BootMixin(
     });
     this.component(RestExplorerComponent);
     this.configureFileUpload(options.fileStorageDirectory);
-    this.bind('services.SubmissionTrackingServiceService').toClass(SubmissionTrackingServiceService);
 
 
     this.projectRoot = __dirname;

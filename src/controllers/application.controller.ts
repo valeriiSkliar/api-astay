@@ -21,7 +21,7 @@ import {
 } from '@loopback/rest';
 import {Applications} from '../models';
 import {ApplicationsRepository} from '../repositories';
-import { SubmissionTrackingServiceService } from '../services/index';
+import { SubmissionTrackingServiceService, SUBMIT_TRACKING_SERVICE } from '../services/index';
 import {inject} from '@loopback/context';
 import {Request, request, Response} from 'express';
 
@@ -30,8 +30,7 @@ export class ApplicationController {
   constructor(
     @repository(ApplicationsRepository)
     public applicationsRepository : ApplicationsRepository,
-    @inject('services.SubmissionTrackingServiceService')
-    private submissionTrackingService: SubmissionTrackingServiceService,
+    @inject(SUBMIT_TRACKING_SERVICE) private submissionTrackingService: SubmissionTrackingServiceService,
     @inject(RestBindings.Http.REQUEST)
     private request: Request,
   ) {}
@@ -47,7 +46,9 @@ export class ApplicationController {
   ): Promise<{ message: string }> {
 
     const clientIp = this.request.ip;
-    console.log('clientIp', clientIp);
+    if(clientIp) {
+      this.submissionTrackingService.incrementSubmissionCount(clientIp);
+    }
 
     if(clientIp && this.submissionTrackingService.hasExceededLimit(clientIp, 2)) {
       throw new HttpErrors.BadRequest('Too many requests. Please try again later.');
