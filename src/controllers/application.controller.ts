@@ -17,27 +17,47 @@ import {
   requestBody,
   response,
   HttpErrors,
+  RestBindings,
 } from '@loopback/rest';
 import {Applications} from '../models';
 import {ApplicationsRepository} from '../repositories';
+import { SubmissionTrackingServiceService } from '../services/index';
+import {inject} from '@loopback/context';
+import {Request, request, Response} from 'express';
 
 
 export class ApplicationController {
   constructor(
     @repository(ApplicationsRepository)
     public applicationsRepository : ApplicationsRepository,
-
+    @inject('services.SubmissionTrackingServiceService')
+    private submissionTrackingService: SubmissionTrackingServiceService,
+    @inject(RestBindings.Http.REQUEST)
+    private request: Request,
   ) {}
 
   @post('/api/contact-us-submit')
   // @response(200, {
   //   description: 'Applications model instance',
   //   content: {'application/json': {schema: getModelSchemaRef(Applications)}},
-  // })
-  
+// })
+
   async submitContactForm(
     @requestBody() contactData: Applications
   ): Promise<{ message: string }> {
+
+    const clientIp = this.request.ip;
+    console.log('clientIp', clientIp);
+
+    if(clientIp && this.submissionTrackingService.hasExceededLimit(clientIp, 2)) {
+      throw new HttpErrors.BadRequest('Too many requests. Please try again later.');
+    }
+
+    if(clientIp) {
+      console.log('incrementSubmissionCount', clientIp);
+      this.submissionTrackingService.incrementSubmissionCount(clientIp);
+    };
+
     try {
       const { pageName, name, email, phone, message } = contactData;
 

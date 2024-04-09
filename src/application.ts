@@ -22,6 +22,7 @@ import {
 import {MongoDataSource} from './datasources';
 import {LocalMysqlDataSource} from './datasources/local-mysql.datasource';
 import {CrudRestComponent} from '@loopback/rest-crud';
+import {SubmissionTrackingServiceService} from './services';
 
 export {ApplicationConfig};
 
@@ -46,6 +47,7 @@ export class ApiApplication extends BootMixin(
     });
     this.component(RestExplorerComponent);
     this.configureFileUpload(options.fileStorageDirectory);
+    this.bind('services.SubmissionTrackingServiceService').toClass(SubmissionTrackingServiceService);
 
 
     this.projectRoot = __dirname;

@@ -1,5 +1,6 @@
 var fs = require('fs');
 var { getConnection } = require('./functions/dataBaseConnection.js');
+import { SubmissionTrackingService } from '../services/SubmissionTrackingService';
 
 async function generateComplexesContent(tableName) {
   try {
