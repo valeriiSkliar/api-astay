@@ -18,6 +18,7 @@ import {
   response,
   HttpErrors,
   RestBindings,
+  sanitizeJsonParse,
 } from '@loopback/rest';
 import {Applications} from '../models';
 import {ApplicationsRepository} from '../repositories';
@@ -42,7 +43,13 @@ export class ApplicationController {
 // })
 
   async submitContactForm(
-    @requestBody() contactData: Applications
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Applications, {exclude: ['id', 'createdAt', 'isProcessed', 'isArchived', 'isOpened']}),
+        },
+      }
+    }) contactData: Applications
   ): Promise<{ message: string }> {
 
     const clientIp = this.request.ip;
@@ -75,12 +82,13 @@ export class ApplicationController {
 
       await this.applicationsRepository.create(newApplication);
 
-      // await contactData.validateData(); // Call model validation
-      // Additional checks (spam check, data sanitization) can be done here
-      // Implement logic to store data securely (e.g., using a repository)
       return { message: 'Form submitted successfully!' };
     } catch (err) {
-      // Handle validation errors or other exceptions
+      if (err.name === 'ValidationError') {
+        const fields: string[] = Object.keys(err.details.constraints);
+        const errorMessages = fields.map((field) => err.details.constraints[field]);
+        throw new HttpErrors.UnprocessableEntity(errorMessages.join(', '));
+      }
       if (err.message) {
         throw new HttpErrors.BadRequest(err.message);
       } else {
@@ -89,12 +97,11 @@ export class ApplicationController {
     }
   }
 
-  // TODO Block ebble to creare new applications from admin panel
-  @post('/api/applications')
-  @response(200, {
-    description: 'Applications model instance',
-    content: {'application/json': {schema: getModelSchemaRef(Applications)}},
-  })
+  // @post('/api/applications')
+  // @response(200, {
+  //   description: 'Applications model instance',
+  //   content: {'application/json': {schema: getModelSchemaRef(Applications)}},
+  // })
   async create(
     @requestBody({
       content: {

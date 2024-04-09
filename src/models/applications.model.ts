@@ -17,22 +17,42 @@ export class Applications extends Entity {
   @property({
     type: 'string',
     required: true,
+    jsonSchema: {
+      minLength: 5,
+      maxLength: 50,
+      pattern: '^[a-zA-Zа-яА-Я0-9]+$'
+    }
   })
   name: string;
 
   @property({
     type: 'string',
     required: true,
+    jsonSchema: {
+      format: 'email',
+      maxLength: 50,
+
+    }
   })
   email: string;
 
   @property({
     type: 'string',
+    jsonSchema: {
+      minLength: 10,
+      maxLength: 20,
+      pattern: '^[+]?[0-9]{10,12}$'
+    }
   })
   phone?: string;
 
   @property({
     type: 'string',
+    jsonSchema: {
+      minLength: 10,
+      maxLength: 2000,
+      pattern: '^[a-zA-Zа-яА-Я0-9.,!?;:\\-\'"\\s]+$',
+    }
   })
   message?: string;
 
