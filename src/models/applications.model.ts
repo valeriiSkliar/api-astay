@@ -46,6 +46,12 @@ export class Applications extends Entity {
     type: 'boolean',
     default: false,
   })
+  isArchived?: boolean;
+
+  @property({
+    type: 'boolean',
+    default: false,
+  })
   isOpened?: boolean;
 
   @property({
