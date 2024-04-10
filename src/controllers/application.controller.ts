@@ -52,19 +52,21 @@ export class ApplicationController {
     }) contactData: Applications
   ): Promise<{ message: string }> {
 
-    const clientIp = this.request.ip;
-    if(clientIp) {
-      this.submissionTrackingService.incrementSubmissionCount(clientIp);
-    }
+    // TODO: turn on this code when ready
+    
+    // const clientIp = this.request.ip;
+    // if(clientIp) {
+    //   this.submissionTrackingService.incrementSubmissionCount(clientIp);
+    // }
 
-    if(clientIp && this.submissionTrackingService.hasExceededLimit(clientIp, 5)) {
-      throw new HttpErrors.BadRequest('Too many requests. Please try again later.');
-    }
+    // if(clientIp && this.submissionTrackingService.hasExceededLimit(clientIp, 5)) {
+    //   throw new HttpErrors.BadRequest('Too many requests. Please try again later.');
+    // }
 
-    if(clientIp) {
-      console.log('incrementSubmissionCount', clientIp);
-      this.submissionTrackingService.incrementSubmissionCount(clientIp);
-    };
+    // if(clientIp) {
+    //   console.log('incrementSubmissionCount', clientIp);
+    //   this.submissionTrackingService.incrementSubmissionCount(clientIp);
+    // };
 
     try {
       const { pageName, name, email, phone, message } = contactData;
