@@ -40,6 +40,12 @@ export class Photo extends Entity {
   })
   service_id?: string;
 
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  createdAt?: Date;
+
   [prop: string]: any;
 
   constructor(data?: Partial<Photo>) {

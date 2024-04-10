@@ -136,6 +136,12 @@ export class Apartment extends Entity {
 
   @belongsTo(() => RoomCategory, {name: 'roomCategory'})
   roomCategoryId: number;
+  
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  createdAt?: Date;
 
   [prop: string]: any;
 

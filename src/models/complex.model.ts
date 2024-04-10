@@ -58,12 +58,18 @@ export class Complex extends Entity {
 
   @hasMany(() => Photo, {keyTo: 'complex_id'})
   images: Photo[];
-  
+
   @referencesMany(() => ComplexServices)
   complexServicesIds: number[];
 
   @belongsTo(() => Locations, {name: 'locationDetails'})
   location_id: number;
+
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  createdAt?: Date;
 
 
   constructor(data?: Partial<Complex>) {
