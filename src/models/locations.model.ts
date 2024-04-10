@@ -16,15 +16,15 @@ export class Locations extends Entity {
   })
   name: string;
 
-  @property({
-    type: 'string',
-  })
-  latitude: string;
+  // @property({
+  //   type: 'string',
+  // })
+  // latitude?: string;
 
-  @property({
-    type: 'string',
-  })
-  longitude: string;
+  // @property({
+  //   type: 'string',
+  // })
+  // longitude?: string;
 
   @property({
     type: 'string',

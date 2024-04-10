@@ -20,7 +20,7 @@ export class Applications extends Entity {
     jsonSchema: {
       minLength: 5,
       maxLength: 50,
-      pattern: '^[a-zA-Zа-яА-Я0-9]+$'
+      pattern: '^[a-zA-Zа-яА-Я0-9.,!?;:\\-\'"\\s]+$',
     }
   })
   name: string;
@@ -31,7 +31,6 @@ export class Applications extends Entity {
     jsonSchema: {
       format: 'email',
       maxLength: 50,
-
     }
   })
   email: string;
@@ -41,7 +40,7 @@ export class Applications extends Entity {
     jsonSchema: {
       minLength: 10,
       maxLength: 20,
-      pattern: '^[+]?[0-9]{10,12}$'
+      pattern: '^[+]?[0-9]{6,20}$'
     }
   })
   phone?: string;
