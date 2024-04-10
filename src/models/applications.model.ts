@@ -50,7 +50,7 @@ export class Applications extends Entity {
     jsonSchema: {
       minLength: 10,
       maxLength: 2000,
-      pattern: '^[a-zA-Zа-яА-Я0-9.,!?;:\-\'"\s]+$',
+      pattern: '^[a-zA-Zа-яА-Я0-9.,!?;:\\-\'"\\s]+$',
     }
   })
   message?: string;
