@@ -57,7 +57,7 @@ export class ApplicationController {
       this.submissionTrackingService.incrementSubmissionCount(clientIp);
     }
 
-    if(clientIp && this.submissionTrackingService.hasExceededLimit(clientIp, 2)) {
+    if(clientIp && this.submissionTrackingService.hasExceededLimit(clientIp, 5)) {
       throw new HttpErrors.BadRequest('Too many requests. Please try again later.');
     }
 
