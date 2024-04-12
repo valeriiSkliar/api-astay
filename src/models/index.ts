@@ -11,3 +11,6 @@ export * from './review.model';
 export * from './complex-services.model';
 export * from './room-category.model';
 export * from './applications.model';
+export * from './host-contacts.model';
+export * from './booking.model';
+export * from './transfer.model';

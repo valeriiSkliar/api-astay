@@ -10,3 +10,5 @@ export * from './review.repository';
 export * from './complex-services.repository';
 export * from './room-category.repository';
 export * from './applications.repository';
+export * from './host-contacts.repository';
+export * from './transfer.repository';

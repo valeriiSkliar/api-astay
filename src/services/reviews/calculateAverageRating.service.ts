@@ -4,5 +4,6 @@ export function calculateAverageRating(reviews: (Review & ReviewRelations)[]): n
   const totalRating = reviews.reduce((sum, review) => {
     return sum + review.reiting_score;
   }, 0);
-  return totalRating / reviews.length;
+  return Math.round(totalRating / reviews.length * 100) / 100;
 }
+

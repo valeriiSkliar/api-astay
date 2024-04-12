@@ -18,7 +18,7 @@ export class Applications extends Entity {
     type: 'string',
     required: true,
     jsonSchema: {
-      minLength: 5,
+      // minLength: 5,
       maxLength: 50,
       // pattern: '/^[ёЁъЪа-яА-Я-\'"?!,:;@№#$%&*()=\\+\\.\\s\\w]+$/gi'
     }
@@ -48,7 +48,7 @@ export class Applications extends Entity {
   @property({
     type: 'string',
     jsonSchema: {
-      minLength: 10,
+      // minLength: 10,
       maxLength: 2000,
       // pattern: '/^[ёЁъЪа-яА-Я-\'"?!,:;@№#$%&*()=\\+\\.\\s\\w]+$/gi'
     }

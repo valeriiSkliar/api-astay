@@ -23,3 +23,5 @@ export * from './file-download.controller';
 export * from './complex-locations.controller';
 export * from './locations-complex.controller';
 export * from './complex-photo.controller';
+export * from './host-contacts.controller';
+export * from './transfer.controller';

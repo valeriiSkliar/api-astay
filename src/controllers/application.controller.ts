@@ -25,6 +25,7 @@ import {ApplicationsRepository} from '../repositories';
 import { SubmissionTrackingServiceService, SUBMIT_TRACKING_SERVICE } from '../services/index';
 import {inject} from '@loopback/context';
 import {Request, request, Response} from 'express';
+import axios from 'axios';
 
 
 export class ApplicationController {
@@ -53,7 +54,7 @@ export class ApplicationController {
   ): Promise<{ message: string }> {
 
     // TODO: turn on this code when ready
-    
+
     // const clientIp = this.request.ip;
     // if(clientIp) {
     //   this.submissionTrackingService.incrementSubmissionCount(clientIp);
@@ -83,6 +84,19 @@ export class ApplicationController {
       });
 
       await this.applicationsRepository.create(newApplication);
+      // Send request to admin panel app
+      const adminPanelUrl = 'https://adminpanelapp.com/api/notifications';
+      const notificationData = {
+        message: 'New application submitted',
+        application: newApplication, // Assuming newApplication is the newly created application object
+      };
+
+      try {
+        const response = await axios.put('http://localhost:3000/api/aplications', notificationData);
+      } catch (error) {
+        console.error('Error making external request:', error);
+        throw new Error('Failed to fetch data from external API');
+      }
 
       return { message: 'Form submitted successfully!' };
     } catch (err) {
