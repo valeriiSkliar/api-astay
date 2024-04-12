@@ -32,7 +32,7 @@ export class Review extends Entity {
     type: 'string',
     required: true,
   })
-  roomName: string;
+  roomType: string;
 
   @property({
     type: 'date',
@@ -57,6 +57,12 @@ export class Review extends Entity {
     required: true,
   })
   reiting_score: number;
+
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  createdAt?: string;
 
   // Define well-known properties here
 
