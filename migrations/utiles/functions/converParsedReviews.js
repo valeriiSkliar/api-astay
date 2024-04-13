@@ -9,13 +9,16 @@ function convertToReview(selectedObject) {
       avatar: review.avatar || "NULL",
       roomType: review.roomName || "NULL",
       reviewDate: getDate(review.reviewDate) || new Date().toISOString().split('T')[0],
-      review: `${review.positiveText ? `<p>Positive: ${review.positiveText.replace(/\n/g, ' ')}</p>` : ''}${review.negativeText ? `<p>Negative: ${review.negativeText.replace(/\n/g, ' ')}</p>` : ''}`,
+      review: `${review.positiveText ? `${review.positiveText.replace(/\n/g, '')}` : ''}${review.negativeText ? `${review.negativeText.replace(/\n/g, '')}` : ''}`,
+      positive_review: review.positiveText || "NULL",
+      negative_review: review.negativeText || "NULL",
       name: review.clientInfo.clintName || "NULL",
       reiting_score: parseIntFromString(review.reviewScore),
       createdAt: new Date().toISOString().split('T')[0],
     }
   });
 
+  console.log(convertedReview[0]);
   return convertedReview;
 }
 function getDate(dateString) {
@@ -26,7 +29,7 @@ function getDate(dateString) {
   // if (parts.length !== 4 || parts[0] !== "Дата" || parts[2] !== "отзыва:") {
   //   return null;
   // }
-  console.log(parts[2], parts[3], parts[4]);
+  // console.log(parts[2], parts[3], parts[4]);
   // Extract month and year as integers
   let month;
   try {
@@ -86,7 +89,7 @@ function parseIntFromString(string) {
   if (Number.isNaN(parsedInt)) {
     return null;
   }
-  return parsedInt;
+  return Math.round(parsedInt / 2);
 }
 
 // // Example usage

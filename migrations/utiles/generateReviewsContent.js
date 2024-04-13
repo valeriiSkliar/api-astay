@@ -20,11 +20,11 @@ async function generateContent(tableName) {
         Math.random() * allApartments.length,
       );
       const apartmentToReview = allApartments[randomApartmentIndex];
-      return `("${apartmentToReview.listing_id}", "${apartmentToReview.complex_id}", "${review.avatar}", "${review.roomType}", "${review.reviewDate}", "${review.review}", "${review.name}", "${review.reiting_score}", "${review.createdAt}")`;
+      return `("${apartmentToReview.listing_id}", "${apartmentToReview.complex_id}", "${review.avatar}", "${review.roomType}", "${review.reviewDate}", "${review.review || 'No text review'}", "${review.positive_review}", "${review.negative_review}", "${review.name}", "${review.reiting_score}", "${review.createdAt}")`;
     })
     .join(',\n');
 
-  const sqlContent = `INSERT INTO ${tableName} (listing_id, complex_id, avatar, roomType,reviewDate,review, name, reiting_score, createdAt) VALUES\n${convertedReviews}`;
+  const sqlContent = `INSERT INTO ${tableName} (listing_id, complex_id, avatar, roomType,reviewDate, review, positive_review, negative_review, name, reiting_score, createdAt) VALUES\n${convertedReviews}`;
 
   return sqlContent;
 }

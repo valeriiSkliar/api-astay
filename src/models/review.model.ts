@@ -42,7 +42,7 @@ export class Review extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    default: 'No text review',
     mysql: {
       columnName: 'review',
       dataType: 'text',
@@ -50,6 +50,26 @@ export class Review extends Entity {
     },
   })
   review: string;
+
+  @property({
+    type: 'string',
+    mysql: {
+      columnName: 'positive_review',
+      dataType: 'text',
+      nullable: 'Y',
+    },
+  })
+  positive_review: string;
+
+  @property({
+    type: 'string',
+    mysql: {
+      columnName: 'negative_review',
+      dataType: 'text',
+      nullable: 'Y',
+    },
+  })
+  negative_review: string;
 
   @property({
     type: 'string',
