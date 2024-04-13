@@ -19,6 +19,7 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
         price: faker.number.bigInt(100, 1000),
         discount: faker.number.int(1, 20),
       },
@@ -35,6 +36,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -51,6 +54,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -67,6 +72,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -83,6 +90,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -99,6 +108,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -115,6 +126,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -131,6 +144,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -147,6 +162,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -163,6 +180,8 @@ async function generateTransfersContent(tableName) {
         time: faker.date.future().toISOString().split('T')[0],
         comments: faker.lorem.sentence(4),
         status: Number(false),
+        isArchived: Number(false),
+
         price: faker.number.int(1, 100),
         discount: faker.number.int(1, 20),
       },
@@ -171,7 +190,7 @@ async function generateTransfersContent(tableName) {
 
     // Define an array to store SQL statements for each transfer
     const sqlStatements = [];
-    const sqlStatement = `INSERT INTO ${tableName} (type, date, flightNumber, nameOfSignage, guests, amountBags, phone, city, departure, time, comments, status, price, discount) VALUES `;
+    const sqlStatement = `INSERT INTO ${tableName} (type, date, flightNumber, nameOfSignage, guests, amountBags, phone, city, departure, time, comments, status, isArchived, price, discount) VALUES `;
 
     // Iterate over each transfer
     for (const transfer of transfers) {
