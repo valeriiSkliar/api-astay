@@ -2166,7 +2166,7 @@ const parsedReviewsArray = [
     "reviewDate": "Дата отзыва: 31 августа 2022",
     "reviewScore": "6,0",
     "positiveText": "The flat is clean and spacious, with a partial sea view. It has an efficient kitchenette and a balcony with a table and chairs as well as a washing machine. Wifi is fast and the AC's are in good working order. You can also use the gym. The host is very pleasant and accommodating and will quickly respond to any requests. The location is good: right along the main road in an upscale section of condos where you can catch taxis up and down Pattaya/Jomtien. It's quiet and there are a few good Western restaurants and a full supermarket within walking distance.",
-    "negativeText": "There were some hidden charges that weren't included in the rate advertised on Booking.com that were added when I booked the room, reminiscent of other sites that begin with the letter \"A.\" I expect more consistent transparency from Booking.com. Security in this development can be a bit oppressive, but better than the alternative. My room had no toilet paper, nor soap or shampoo. Because the area is upscale, there aren't many local food options nearby."
+    "negativeText": "There were some hidden charges that weren't included in the rate advertised on Booking.com that were added when I booked the room, reminiscent of other sites that begin with the letter. I expect more consistent transparency from Booking.com. Security in this development can be a bit oppressive, but better than the alternative. My room had no toilet paper, nor soap or shampoo. Because the area is upscale, there aren't many local food options nearby."
   },
   {
     "avatar": "https://xx.bstatic.com/static/img/review/avatars/ava-m.png",

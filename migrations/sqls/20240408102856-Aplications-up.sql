@@ -1,11 +1,11 @@
 INSERT INTO Applications (email, phone, name, message, isProcessed, isOpened, pageName) VALUES 
-    ('Madeline83@gmail.com', '38095-167-233', 'Rose Yost', 'Veniam demulceo.', '1', '0', 'transfers'),
-('Holly_Kuhic@yahoo.com', '38095-805-362', 'Suzanne Kreiger', 'Solutio denique.', '0', '1', 'forOwners'),
-('Tamia_Walsh66@gmail.com', '38095-334-681', 'Pat Collier', 'Trucido angustus.', '1', '0', 'main'),
-('Sheila_Ruecker19@yahoo.com', '38095-372-716', 'Lavinia Brown', 'Tabella catena.', '1', '1', 'forOwners'),
-('Thad74@hotmail.com', '38095-717-540', 'Okey Boyer', 'Deficio tolero.', '1', '0', 'abousUs'),
-('Julien.Paucek8@gmail.com', '38095-108-366', 'Freddie Mante', 'Quod inflammatio.', '0', '0', 'complexes'),
-('Colten.Kilback23@yahoo.com', '38095-866-820', 'Marquise Schamberger', 'Textilis triumphus.', '1', '1', 'forOwners'),
-('Emile_Yost-MacGyver38@hotmail.com', '38095-927-930', 'Samir Considine', 'Adflicto avaritia.', '0', '0', 'main'),
-('Golda.Monahan@gmail.com', '38095-028-188', 'Eula Nolan', 'Quia sto.', '0', '1', 'complexes'),
-('Edwardo94@hotmail.com', '38095-239-474', 'Preston Kassulke', 'Alter suscipio.', '0', '0', 'forOwners');
+    ('Emely_Morar46@gmail.com', '38095-816-624', 'Lazaro Conroy', 'Aequitas uterque.', '0', '0', 'complexes'),
+('Toby23@hotmail.com', '38095-591-829', 'Adelle Weissnat', 'Uredo vae.', '0', '0', 'complexes'),
+('Josephine57@hotmail.com', '38095-236-933', 'Mary Lueilwitz', 'Voluptates tego.', '1', '0', 'main'),
+('Esta_Swift86@hotmail.com', '38095-859-693', 'Immanuel Rohan', 'Concido asper.', '1', '0', 'abousUs'),
+('Peter10@yahoo.com', '38095-400-510', 'Jany Leffler', 'Dolores attero.', '0', '1', 'abousUs'),
+('Justen_Konopelski@hotmail.com', '38095-246-348', 'Blanca Aufderhar', 'Calculus commodi.', '1', '1', 'complexes'),
+('Sage.Carter83@yahoo.com', '38095-396-462', 'Kylee Boyer', 'Carpo tantum.', '0', '0', 'abousUs'),
+('Ernesto.Dibbert@gmail.com', '38095-634-017', 'Boris Rempel', 'Conqueror est.', '0', '0', 'main'),
+('Trudie.Johns58@yahoo.com', '38095-751-445', 'Charlene Will', 'Crepusculum desipio.', '1', '0', 'complexes'),
+('Elroy27@hotmail.com', '38095-470-702', 'Jazlyn Moore', 'Turba studio.', '1', '1', 'abousUs');

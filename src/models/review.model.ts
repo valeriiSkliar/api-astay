@@ -43,6 +43,11 @@ export class Review extends Entity {
   @property({
     type: 'string',
     required: true,
+    mysql: {
+      columnName: 'review',
+      dataType: 'text',
+      nullable: 'Y',
+    },
   })
   review: string;
 

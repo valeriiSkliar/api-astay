@@ -6,12 +6,12 @@ function convertToReview(selectedObject) {
     return {
       apartment_id: null,
       complex_id: null,
-      avatar: review.avatar,
-      roomType: review.roomName,
-      reviewDate: getDate(review.reviewDate),
-      review: `<p>Positive: ${review.positiveText}</p><p>Negative: ${review.negativeText}</p>`,
-      name: review.clientInfo.clintName,
-      reiting_score: Math.ceil((parseIntFromString(review.reviewScore)/ 10) * 5), // converting rating from 10 to 5
+      avatar: review.avatar || "NULL",
+      roomType: review.roomName || "NULL",
+      reviewDate: getDate(review.reviewDate) || new Date().toISOString().split('T')[0],
+      review: `${review.positiveText ? `<p>Positive: ${review.positiveText.replace(/\n/g, ' ')}</p>` : ''}${review.negativeText ? `<p>Negative: ${review.negativeText.replace(/\n/g, ' ')}</p>` : ''}`,
+      name: review.clientInfo.clintName || "NULL",
+      reiting_score: parseIntFromString(review.reviewScore),
       createdAt: new Date().toISOString().split('T')[0],
     }
   });
@@ -23,25 +23,26 @@ function getDate(dateString) {
   const parts = dateString.trim().split(' ');
 
   // Check if the string has the expected format (4 parts)
-  if (parts.length !== 4 || parts[0] !== "Дата" || parts[2] !== "отзыва:") {
-    return null;
-  }
-
+  // if (parts.length !== 4 || parts[0] !== "Дата" || parts[2] !== "отзыва:") {
+  //   return null;
+  // }
+  console.log(parts[2], parts[3], parts[4]);
   // Extract month and year as integers
   let month;
   try {
-    month = getMonthNumber(parts[1]);
+    month = getMonthNumber(parts[3]);
     if (month === null) {
       return null;
     }
   } catch (error) {
     return null;
   }
-  const year = parseInt(parts[3]);
+  const year = parseInt(parts[4]);
+  const day = parseInt(parts[2]);
 
   // Try creating a date object. If the day is invalid (e.g., 31st of February), a RangeError will be thrown.
   try {
-    return new Date(year, month - 1, 1);  // Create date object with day set to 1
+    return new Date(year, month - 1, day).toISOString().split('T')[0];  // Create date object with day set to 1
   } catch (error) {
     return null;
   }
@@ -50,18 +51,18 @@ function getDate(dateString) {
 function getMonthNumber(monthName) {
 
   const months = {
-    "января": 1,
-    "февраля": 2,
-    "марта": 3,
-    "апреля": 4,
-    "мая": 5,
-    "июня": 6,
-    "июля": 7,
-    "августа": 8,
-    "сентября": 9,
-    "октября": 10,
-    "ноября": 11,
-    "декабря": 12
+    "января": 0,
+    "февраля": 1,
+    "марта": 2,
+    "апреля": 3,
+    "мая": 4,
+    "июня": 5,
+    "июля": 6,
+    "августа": 7,
+    "сентября": 8,
+    "октября": 9,
+    "ноября": 10,
+    "декабря": 11
   };
   return months[monthName.toLowerCase()] || null;
 }
@@ -71,9 +72,9 @@ const dateString = "Дата отзыва: 7 марта 2024";
 const dateObj = getDate(dateString);
 
 if (dateObj) {
-  console.log(dateObj);  // Output: 2024-03-01 (assuming March 7th is a valid date)
+  // console.log(dateObj);  // Output: 2024-03-01 (assuming March 7th is a valid date)
 } else {
-  console.log("Invalid date format");
+  // console.log("Invalid date format");
 }
 
 
@@ -81,18 +82,24 @@ if (dateObj) {
 
 function parseIntFromString(string) {
 
-  const parsedFloat = parseFloat(string);
-  return parsedFloat % 1 === 0 ? parseInt(string) : null;
+  const parsedInt = parseInt(string, 10);
+  if (Number.isNaN(parsedInt)) {
+    return null;
+  }
+  return parsedInt;
 }
 
-// Example usage
-const stringValue = "8.0";
-const intValue = parseIntFromString(stringValue);
+// // Example usage
+// const stringValue = "8.0";
+// const intValue = parseIntFromString(stringValue);
 
-if (intValue !== null) {
-  console.log("Parsed integer:", intValue);
-} else {
-  console.log("Could not parse integer from:", stringValue);
-}
+// if (intValue !== null) {
+//   // console.log("Parsed integer:", intValue);
+// } else {
+//   // console.log("Could not parse integer from:", stringValue);
+// }
 
 exports.convertToReview = convertToReview;
+
+
+
