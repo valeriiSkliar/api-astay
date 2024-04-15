@@ -92,7 +92,7 @@ export class ApplicationController {
       };
 
       try {
-        const response = await axios.put('http://localhost:3000/api/aplications', notificationData);
+        const response = await axios.put('http://localhost:3000/api/applications', notificationData);
       } catch (error) {
         console.error('Error making external request:', error);
         throw new Error('Failed to fetch data from external API');

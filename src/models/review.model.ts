@@ -1,4 +1,7 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Apartment} from './apartment.model';
+import {Complex} from './complex.model';
+
 // TODO: SCORE - property
 
 @model({settings: {strict: false}})
@@ -8,23 +11,15 @@ export class Review extends Entity {
     id: true,
     generated: true,
   })
+  
   id?: number;
-
-  @property({
-    type: 'number',
-    required: true,
-  })
-  listing_id: number;
-
-  @property({
-    type: 'number',
-    required: true,
-  })
-  complex_id: number;
-
   @property({
     type: 'string',
-    required: true,
+    mysql: {
+      columnName: 'avatar',
+      dataType: 'text',
+      nullable: 'Y',
+    },
   })
   avatar: string;
 
@@ -36,7 +31,7 @@ export class Review extends Entity {
 
   @property({
     type: 'date',
-    required: true,
+    default: () => new Date().toISOString().split('T')[0],
   })
   reviewDate: string;
 
@@ -84,11 +79,28 @@ export class Review extends Entity {
   reiting_score: number;
 
   @property({
+    type: 'boolean',
+    default: false,
+  })
+  isArchived?: boolean;
+
+  @property({
+    type: 'boolean',
+    default: false,
+  })
+  status?: boolean;
+
+  @property({
     type: 'date',
     default: () => new Date(),
   })
   createdAt?: string;
 
+  @belongsTo(() => Apartment, {name: 'apartment'})
+  listing_id: number;
+
+  @belongsTo(() => Complex, {name: 'complex'})
+  complex_id: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

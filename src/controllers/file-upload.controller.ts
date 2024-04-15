@@ -2,19 +2,25 @@ import {inject} from '@loopback/core';
 import {
   post,
   Request,
+  RequestBody,
   requestBody,
   Response,
   RestBindings,
 } from '@loopback/rest';
 import {FILE_UPLOAD_SERVICE} from '../keys';
 import {FileUploadHandler} from '../types';
+import {repository} from '@loopback/repository';
+import {PhotoRepository} from '../repositories';
 
 export class FileUploadController {
   /**
    * Constructor
    * @param handler - Inject an express request handler to deal with the request
++   * @param photoRepo - Inject the photo repository to perform DB operations
    */
   constructor(
+    @repository(PhotoRepository)
+    public photoRepository: PhotoRepository,
     @inject(FILE_UPLOAD_SERVICE) private handler: FileUploadHandler,
   ) {}
   @post('/api/files', {
@@ -29,7 +35,40 @@ export class FileUploadController {
         },
         description: 'Files and fields',
       },
+      request: {
+        description: 'Request object',
+        content: {
+          'multipart/form-data': {
+            schema: {
+              type: 'object',
+              properties: {
+                files: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
+                    format: 'binary',
+                  },
+                },
+                body: {
+                  type: 'object',
+                  properties: {
+                    apartment_id: {
+                      type: 'integer',
+                      nullable: true,
+                    },
+                    complex_id: {
+                      type: 'integer',
+                      nullable: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        }
+      }
     },
+
   })
   async fileUpload(
     @requestBody.file()
@@ -40,7 +79,26 @@ export class FileUploadController {
       this.handler(request, response, (err: unknown) => {
         if (err) reject(err);
         else {
-          resolve(FileUploadController.getFilesAndFields(request));
+          const {files, fields} = FileUploadController.getFilesAndFields(request);
+          const photosEnteties = new Promise((resolveInner, rejectInner) => {
+
+            const {apartment_id, complex_id} = fields;
+
+            const photos = files.map(async (f: any, i: number) => {
+              return await this.photoRepository.create({
+                fileName: f.originalname,
+                // order_number: i,
+                url: f.path,
+                ...fields,
+                // apartment_id: apartment_id,
+                // complex_id: complex_id,
+              })
+            });
+            Promise.all(photos).then(resolveInner).catch(rejectInner);
+            return photos;
+            // resolve(photos);
+          })
+            .then((photos) => resolve(photos as object))
         }
       });
     });
@@ -58,6 +116,7 @@ export class FileUploadController {
       encoding: f.encoding,
       mimetype: f.mimetype,
       size: f.size,
+      path: f.path,
     });
     let files: object[] = [];
     if (Array.isArray(uploadedFiles)) {
@@ -70,3 +129,4 @@ export class FileUploadController {
     return {files, fields: request.body};
   }
 }
+

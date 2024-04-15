@@ -1,6 +1,5 @@
 var fs = require('fs');
 var { getConnection } = require('./functions/dataBaseConnection.js');
-import { SubmissionTrackingService } from '../services/SubmissionTrackingService';
 
 async function generateComplexesContent(tableName) {
   try {
@@ -18,7 +17,7 @@ async function generateComplexesContent(tableName) {
         let complexName = `${location.name} Complex ${i}`;
         let description = `<p>Modern complex located in ${location.name}. lorem ipsum dolor sit amet, consectetur adipiscing elit. It offers stunning views of the surrounding area and is close to all the best attractions.</p>`;
         let address = `${i}23 ${location.name} Street, ${location.city}, ${location.country}`;
-        let geoData = `[{"lat":${location.latitude},"lng":${location.longitude}}]`;
+        let geoData = `[{"lat":${12.34},"lng":${100.12}}]`;
         let location_id = location.id;
 
         // Construct the SQL INSERT statement

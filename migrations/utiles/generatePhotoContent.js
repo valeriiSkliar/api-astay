@@ -44,8 +44,9 @@ async function generateContent(tableName) {
         })
         .join(',\n');
     })
-    const photoDataInstansesArray = apartmentPhotoDataArray.concat(complexPhotoDataArray).join(',\n');
 
+    const photoDataInstansesArray = apartmentPhotoDataArray.concat(complexPhotoDataArray).join(',\n');
+    console.log(photoDataInstansesArray);
   const sqlContent = `INSERT INTO ${tableName} (url, apartment_id, complex_id, service_id, order_number) VALUES\n${photoDataInstansesArray};`;
   return sqlContent;
 }

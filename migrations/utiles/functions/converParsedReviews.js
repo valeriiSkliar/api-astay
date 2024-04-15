@@ -6,15 +6,17 @@ function convertToReview(selectedObject) {
     return {
       apartment_id: null,
       complex_id: null,
-      avatar: review.avatar || "NULL",
-      roomType: review.roomName || "NULL",
+      avatar: review.avatar ?? null,
+      roomType: review.roomName || "",
       reviewDate: getDate(review.reviewDate) || new Date().toISOString().split('T')[0],
       review: `${review.positiveText ? `${review.positiveText.replace(/\n/g, '')}` : ''}${review.negativeText ? `${review.negativeText.replace(/\n/g, '')}` : ''}`,
-      positive_review: review.positiveText || "NULL",
-      negative_review: review.negativeText || "NULL",
-      name: review.clientInfo.clintName || "NULL",
+      positive_review: review.positiveText ?? null,
+      negative_review: review.negativeText ?? null,
+      name: review.clientInfo.clintName || "",
       reiting_score: parseIntFromString(review.reviewScore),
       createdAt: new Date().toISOString().split('T')[0],
+      isArchived: false,
+      status: true
     }
   });
 

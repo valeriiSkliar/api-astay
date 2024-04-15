@@ -1,6 +1,7 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, repository} from '@loopback/repository';
 import {Complex} from './complex.model';
 import {Apartment} from './apartment.model';
+import {PhotoRepository} from '../repositories';
 
 @model()
 export class Photo extends Entity {
@@ -10,6 +11,12 @@ export class Photo extends Entity {
     generated: true,
   })
   id?: number;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  fileName: string; // Имя файла
 
   @property({
     type: 'number',
@@ -22,6 +29,13 @@ export class Photo extends Entity {
     required: true,
   })
   url: string;
+
+  // @property({
+  //   type: 'string',
+  //   required: false,
+  //   default: 'pending',
+  // })
+  // status?: 'uploading' | 'done' | 'error';
 
   @property({
     type: 'number',
@@ -48,9 +62,11 @@ export class Photo extends Entity {
 
   [prop: string]: any;
 
-  constructor(data?: Partial<Photo>) {
-    super(data);
+  constructor(
+    data?: Partial<Photo>) {
+        super(data);
   }
+
 }
 
 export interface PhotoRelations {}

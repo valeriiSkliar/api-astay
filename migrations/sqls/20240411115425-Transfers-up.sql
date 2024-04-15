@@ -1,11 +1,11 @@
 INSERT INTO Transfer (type, date, flightNumber, nameOfSignage, guests, amountBags, phone, city, departure, time, comments, status, isArchived, price, discount) VALUES 
-('arrival', '2024-06-10', 'Ryan', 'Schoen Abagail', 0, 0, 340212044, 'East Maevecester', 'JFK', '2024-08-23', 'Tertius architecto aeternus utrum.', 0, 0, 59, 1),
-('Arrival', '2024-08-25', 'Logan', 'Hammes Brianne', 0, 1, 667994314, 'New Tannermouth', 'JFK', '2024-11-09', 'Arcus alias deserunt pariatur.', 0, 0, 1, 1),
-('Arrival', '2024-12-02', 'Emerson', 'Wisozk Tatyana', 1, 0, 948039969, 'Randifort', 'JFK', '2025-03-05', 'Vesper voluptate crinis demens.', 0, 0, 1, 0),
-('Arrival', '2024-10-15', 'Dakota', 'Walter Quincy', 0, 1, 406645619, 'Bednarberg', 'JFK', '2024-05-07', 'Supplanto aegrotatio claustrum aetas.', 0, 0, 0, 1),
-('Arrival', '2025-03-17', 'Brooklyn', 'Wilderman Joanny', 0, 0, 410913628, 'Coon Rapids', 'JFK', '2025-03-06', 'Absens tabgo amplexus super.', 0, 0, 1, 0),
-('Arrival', '2024-06-25', 'Austin', 'Welch Jensen', 0, 1, 585002202, 'San Clemente', 'JFK', '2025-03-27', 'Nihil combibo velociter eos.', 0, 0, 1, 1),
-('Arrival', '2024-07-29', 'Charlie', 'Bayer Theodora', 1, 1, 310138353, 'Quintonstad', 'JFK', '2024-09-14', 'Vita comburo considero alveus.', 0, 0, 0, 1),
-('Departure', '2024-06-09', 'Dakota', 'Effertz Susanna', 1, 0, 964797241, 'Fort Berneice', 'JFK', '2024-10-20', 'Vis volutabrum apparatus unus.', 0, 0, 1, 0),
-('Departure', '2024-09-15', 'Robin', 'Cremin Clay', 1, 0, 525747436, 'South Durward', 'JFK', '2024-12-07', 'Libero creber congregatio vereor.', 0, 0, 0, 1),
-('Arrival', '2024-11-24', 'Emerson', 'Howe-Schinner Lysanne', 0, 0, 715343263, 'Schultzboro', 'JFK', '2024-12-26', 'Abscido patria defaeco adhaero.', 0, 0, 1, 0);
+('arrival', '2024-06-15', 'Skyler', 'Franecki Thalia', 1, 0, 132359961, 'Port Damon', 'JFK', '2024-07-05', 'Illum aequus quis coruscus.', 0, 0, 25, 1),
+('Arrival', '2024-12-04', 'August', 'Blanda-Mohr Barrett', 1, 0, 898392936, 'Jordanecester', 'JFK', '2025-02-08', 'Deludo arbitro verbum accendo.', 0, 0, 0, 0),
+('Arrival', '2024-06-23', 'Shawn', 'Franecki Violette', 0, 0, 391858738, 'East Jarret', 'JFK', '2024-12-17', 'Tonsor nesciunt agnitio vallum.', 0, 0, 1, 0),
+('Departure', '2024-06-09', 'Corey', 'Rippin Ella', 1, 1, 187345966, 'East Stefanieport', 'JFK', '2025-01-26', 'Subseco nisi quo ago.', 0, 0, 1, 1),
+('Departure', '2025-02-20', 'Kennedy', 'Kunze Shana', 1, 0, 197978686, 'Marksport', 'JFK', '2024-05-27', 'Trans aequus acceptus utilis.', 0, 0, 1, 1),
+('Departure', '2024-08-03', 'Reign', 'Cummings Chad', 0, 0, 257739963, 'Margaretchester', 'JFK', '2025-01-01', 'Ascisco curia abscido textilis.', 0, 0, 0, 0),
+('Departure', '2024-05-01', 'Leslie', 'Kertzmann Lupe', 1, 1, 611629516, 'West Gustaveworth', 'JFK', '2024-05-10', 'Eos caelum amoveo tenuis.', 0, 0, 0, 0),
+('Departure', '2025-03-14', 'Ryan', 'Medhurst Orin', 1, 0, 571325319, 'Fort Noblebury', 'JFK', '2024-09-27', 'Vigor vero doloremque solio.', 0, 0, 0, 1),
+('Departure', '2024-09-11', 'Riley', 'Hahn Gail', 0, 1, 368694407, 'McCulloughton', 'JFK', '2024-11-19', 'Cibus atrox vetus odit.', 0, 0, 1, 0),
+('Arrival', '2024-11-15', 'Micah', 'Schinner Bailey', 0, 1, 198125240, 'New Freddieworth', 'JFK', '2025-04-08', 'Adhaero caritas varietas varietas.', 0, 0, 1, 1);

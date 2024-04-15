@@ -33,6 +33,7 @@ export class Applications extends Entity {
       maxLength: 50,
     }
   })
+  // TODO: make not requeired
   email: string;
 
   @property({
