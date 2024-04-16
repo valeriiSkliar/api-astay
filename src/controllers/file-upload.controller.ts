@@ -112,6 +112,7 @@ export class FileUploadController {
             console.log(`Successfully deleted the original image: ${f.path}`);
           }
         });
+        console.log(BASE_URL)
 
       return await this.photoRepository.create({
         fileName: f.fieldname.replace(/\.[^/.]+$/, "") + ".webp",
