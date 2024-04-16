@@ -14,6 +14,9 @@ import {PhotoRepository} from '../repositories';
 import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+dotenv.config();
+const {BASE_URL} = process.env;
 
 export class FileUploadController {
   /**
@@ -113,7 +116,7 @@ export class FileUploadController {
       return await this.photoRepository.create({
         fileName: f.fieldname.replace(/\.[^/.]+$/, "") + ".webp",
         order_number: i,
-        url: `[::1]:3030/api${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, "/").slice(2)}`,
+        url: `${BASE_URL}${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, "/").slice(2)}`,
         ...fields,
       })
     });
