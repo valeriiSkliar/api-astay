@@ -47,6 +47,9 @@ export class PhotoController {
     return this.photoRepository.create(photo);
   }
 
+
+
+
   @get('/api/photos/count')
   @response(200, {
     description: 'Photo model count',
@@ -143,5 +146,34 @@ export class PhotoController {
   })
   async deleteById(@param.path.string('id') id: number): Promise<void> {
     await this.photoRepository.deleteById(id);
+  }
+
+  @put('/api/photos/update-order')
+  @response(204, {
+    description: 'Bulk update of the order of Photos',
+  })async updateOrder(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                id: { type: 'number' },
+                order_number: { type: 'number' },
+              },
+              required: ['id', 'order_number'],
+            },
+          },
+        },
+      },
+    })
+    orderUpdates: Array<{id: number; order_number: number}>,
+  ):Promise<void> {
+     await Promise.all(orderUpdates.map(async (orderUpdate) => {
+       this.photoRepository.updateById(orderUpdate.id, {
+         order_number: orderUpdate.order_number,
+     })}));
   }
 }

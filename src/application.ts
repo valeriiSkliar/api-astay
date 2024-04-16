@@ -39,9 +39,10 @@ export class ApiApplication extends BootMixin(
     this.sequence(MySequence);
     this.bind('services.submit-tracking',)
       .toClass(SubmitTrackingService)
-      
+
     // Set up default home page
     this.static('/api', path.join(__dirname, '../public'));
+    this.static('/api/public/uploads/', path.join(__dirname, '../public/uploads'));
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
@@ -65,7 +66,7 @@ export class ApiApplication extends BootMixin(
   }
   protected configureFileUpload(destination?: string) {
         // Upload files to `dist/.sandbox` by default
-        destination = destination ?? path.join(__dirname, '../.sandbox');
+        destination = destination ?? path.join(__dirname, '../public/uploads');
         this.bind(STORAGE_DIRECTORY).to(destination);
         const multerOptions: multer.Options = {
           storage: multer.diskStorage({

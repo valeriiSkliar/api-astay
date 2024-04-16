@@ -11,12 +11,15 @@ import {FILE_UPLOAD_SERVICE} from '../keys';
 import {FileUploadHandler} from '../types';
 import {repository} from '@loopback/repository';
 import {PhotoRepository} from '../repositories';
+import sharp from 'sharp';
+import fs from 'fs';
+import path from 'path';
 
 export class FileUploadController {
   /**
    * Constructor
    * @param handler - Inject an express request handler to deal with the request
-+   * @param photoRepo - Inject the photo repository to perform DB operations
+   * @param photoRepo - Inject the photo repository to perform DB operations
    */
   constructor(
     @repository(PhotoRepository)
@@ -80,28 +83,41 @@ export class FileUploadController {
         if (err) reject(err);
         else {
           const {files, fields} = FileUploadController.getFilesAndFields(request);
-          const photosEnteties = new Promise((resolveInner, rejectInner) => {
-
-            const {apartment_id, complex_id} = fields;
-
-            const photos = files.map(async (f: any, i: number) => {
-              return await this.photoRepository.create({
-                fileName: f.originalname,
-                // order_number: i,
-                url: f.path,
-                ...fields,
-                // apartment_id: apartment_id,
-                // complex_id: complex_id,
-              })
-            });
-            Promise.all(photos).then(resolveInner).catch(rejectInner);
-            return photos;
-            // resolve(photos);
-          })
-            .then((photos) => resolve(photos as object))
+          this.createPhotosEnteties(files, fields)
+            .then(resolve)
+            .catch(reject);
         }
       });
     });
+  }
+
+  private async createPhotosEnteties(
+    files: Array<any>,
+    fields: object
+  ): Promise<object> {
+    const photos = files.map(async (f: any, i: number) => {
+      const targetPath = path.join(path.dirname(f.path), `${f.filename}.webp`);
+      await sharp(f.path)
+        .resize(200, 200)
+        .webp({quality: 80})
+        .toFile(targetPath);
+
+        fs.unlink(f.path, (err) => {
+          if (err) {
+            console.error(`Failed to delete the original image: ${f.path}`, err);
+          } else {
+            console.log(`Successfully deleted the original image: ${f.path}`);
+          }
+        });
+
+      return await this.photoRepository.create({
+        fileName: f.fieldname.replace(/\.[^/.]+$/, "") + ".webp",
+        order_number: i,
+        url: `[::1]:3030/api${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, "/").slice(2)}`,
+        ...fields,
+      })
+    });
+    return Promise.all(photos).then((photos) => photos as object);
   }
 
   /**
@@ -113,10 +129,12 @@ export class FileUploadController {
     const mapper = (f: globalThis.Express.Multer.File) => ({
       fieldname: f.fieldname,
       originalname: f.originalname,
+      filename: `${f.originalname}_${Date.now().toLocaleString()}`,
       encoding: f.encoding,
       mimetype: f.mimetype,
       size: f.size,
       path: f.path,
+      destination: f.destination,
     });
     let files: object[] = [];
     if (Array.isArray(uploadedFiles)) {
@@ -126,7 +144,9 @@ export class FileUploadController {
         files.push(...uploadedFiles[filename].map(mapper));
       }
     }
-    return {files, fields: request.body};
+    return {files, fields: JSON.parse(request.body.body)};
   }
 }
+
+
 
