@@ -114,6 +114,7 @@ export class FileUploadController {
         fs.mkdirSync(path.join(uploadFolderPath, 'original'), {recursive: true});
       }
       await sharp(f.path)
+      .webp({quality: 50})
       .toFile(originalPath);
 
       const photoSizes: Record<string, string | null> = {};
