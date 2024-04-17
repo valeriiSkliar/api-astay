@@ -16,7 +16,7 @@ export class Photo extends Entity {
     type: 'string',
     required: true,
   })
-  fileName: string; // Имя файла
+  fileName: string;
 
   @property({
     type: 'number',
@@ -29,6 +29,19 @@ export class Photo extends Entity {
     required: true,
   })
   url: string;
+
+
+  @property({
+    type: 'object',
+    required: false,
+  })
+  sizes?: {
+    s650: string;
+    s720: string;
+    s1920: string;
+    s1366: string;
+  };
+
 
   // @property({
   //   type: 'string',

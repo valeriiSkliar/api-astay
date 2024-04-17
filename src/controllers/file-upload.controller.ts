@@ -9,12 +9,13 @@ import {
 } from '@loopback/rest';
 import {FILE_UPLOAD_SERVICE} from '../keys';
 import {FileUploadHandler} from '../types';
-import {repository} from '@loopback/repository';
+import {DataObject, repository} from '@loopback/repository';
 import {PhotoRepository} from '../repositories';
 import sharp from 'sharp';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
+import {Photo} from '../models';
 dotenv.config();
 const {BASE_URL} = process.env;
 
@@ -99,30 +100,72 @@ export class FileUploadController {
     fields: object
   ): Promise<object> {
     const photos = files.map(async (f: any, i: number) => {
-      const targetPath = path.join(path.dirname(f.path), `${f.filename}.webp`);
+      const sizes = [
+        {name:'s650', scales: {width: 650, height: 650}},
+        {name:'s720', scales: {width: 720, height: 480}},
+        {name:'s1920', scales: {width: 1920, height: 1080}},
+        {name:'s1366', scales: {width: 1366, height: 768}}
+      ];
+      // const {apartment_id, complex_id} = fields;
+      const uploadFolderPath = f.path.split('/').slice(0, -1).join('/');
+      const originalPath = path.join(uploadFolderPath, 'original', `${f.filename}_${'original'}.webp`);
+      const uploadFolder = path.dirname(originalPath);
+      if (!fs.existsSync(path.join(uploadFolderPath, 'original'))) {
+        fs.mkdirSync(path.join(uploadFolderPath, 'original'), {recursive: true});
+      }
       await sharp(f.path)
-        .resize(200, 200)
-        .webp({quality: 80})
-        .toFile(targetPath);
+      .toFile(originalPath);
 
-        fs.unlink(f.path, (err) => {
-          if (err) {
-            console.error(`Failed to delete the original image: ${f.path}`, err);
-          } else {
-            console.log(`Successfully deleted the original image: ${f.path}`);
+      const photoSizes: Record<string, string | null> = {};
+      const createSizes = async () => {
+        await Promise.all(sizes.map(async ({name, scales}) => {
+          const targetPath =  path.join(uploadFolderPath, name, `${f.filename}_${name}.webp`);
+          if (!fs.existsSync(path.join(uploadFolderPath, name))) {
+            fs.mkdirSync(path.join(uploadFolderPath, name), {recursive: true});
           }
-        });
-        console.log(BASE_URL)
+          const result = await sharp(originalPath)
+            .resize(scales.width, scales.height)
+            .webp({quality: 70})
+            .toFile(targetPath);
+            photoSizes[name] = result ? `${BASE_URL}${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, "/").slice(2)}` : null;
+        }))
+      }
+      await createSizes();
+      // sizes.forEach(async ({name, scales}) => {
+      //   const targetPath =  path.join(uploadFolderPath, name, `${f.filename}_${name}.webp`);
+      //   if (!fs.existsSync(path.join(uploadFolderPath, name))) {
+      //     fs.mkdirSync(path.join(uploadFolderPath, name), {recursive: true});
+      //   }
+      //   const result = await sharp(f.path)
+      //     .resize(scales.width, scales.height)
+      //     .webp({quality: 70})
+      //     .toFile(targetPath);
+      //     photoSizes[name] = result ? `${BASE_URL}${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, "/").slice(2)}` : null;
+      // console.log('photoSizes', photoSizes);
+
+      // })
+
+
+      //   fs.unlink(f.path, (err) => {
+      //     if (err) {
+      //       console.error(`Failed to delete the original image: ${f.path}`, err);
+      //     } else {
+      //       console.log(`Successfully deleted the original image: ${f.path}`);
+      //     }
+      //   });
+      console.log('photoSizes', photoSizes);
 
       return await this.photoRepository.create({
-        fileName: f.fieldname.replace(/\.[^/.]+$/, "") + ".webp",
+        fileName: f.filename,
         order_number: i,
-        url: `${BASE_URL}${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, "/").slice(2)}`,
+        sizes: photoSizes,
+        url: `${BASE_URL}${path.relative(path.dirname(__dirname), originalPath).replace(/\\/g, "/").slice(2)}`,
         ...fields,
-      })
+      } as DataObject<Photo>);
     });
     return Promise.all(photos).then((photos) => photos as object);
   }
+
 
   /**
    * Get files and fields for the request
@@ -133,7 +176,7 @@ export class FileUploadController {
     const mapper = (f: globalThis.Express.Multer.File) => ({
       fieldname: f.fieldname,
       originalname: f.originalname,
-      filename: `${f.originalname}_${Date.now().toLocaleString()}`,
+      filename: `${f.originalname}`,
       encoding: f.encoding,
       mimetype: f.mimetype,
       size: f.size,
