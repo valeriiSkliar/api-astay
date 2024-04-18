@@ -95,14 +95,14 @@ export class ApartmentController {
     @param.filter(Apartment) filter?: Filter<Apartment>,
   ): Promise<{count: number; apartments: Apartment[]}> {
     requestCounter()
-      // filter = {
+      filter = {
       //   ...filter,
       //   fields: {
       //     "name": true,
       //     "in_complex": true
       //   }
-      // //   include: [{"relation": 'images'}, {"relation": 'reviews'}]
-      // };
+        include: [{"relation": 'images', "scope": {"order": ["order_number ASC"]}}],
+      };
     const apartments = await this.apartmentRepository.find(filter);
     return { count: apartments.length, apartments };
   }
