@@ -72,6 +72,10 @@ export class PhotoController {
     },
   })
   async find(@param.filter(Photo) filter?: Filter<Photo>): Promise<Photo[]> {
+    filter = {
+      ...filter,
+      order: ['order_number ASC'],
+    };
     return this.photoRepository.find(filter);
   }
 
@@ -91,10 +95,7 @@ export class PhotoController {
     photo: Photo,
     @param.where(Photo) where?: Where<Photo>,
   ): Promise<Count> {
-    where = {
-      ...where,
-      sort: [{field: 'order_number', order: 'ASC'}],
-    };
+
     return this.photoRepository.updateAll(photo, where);
   }
 
