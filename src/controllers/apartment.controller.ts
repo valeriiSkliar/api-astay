@@ -4,6 +4,7 @@ import {
   EntityNotFoundError,
   Filter,
   FilterExcludingWhere,
+  InclusionFilter,
   repository,
   Where,
 } from '@loopback/repository';
@@ -95,13 +96,18 @@ export class ApartmentController {
     @param.filter(Apartment) filter?: Filter<Apartment>,
   ): Promise<{count: number; apartments: Apartment[]}> {
     requestCounter()
+    const apartmentsImagesScope = {
+      "order": ['order_number ASC'],
+    }
+    const imageLelation = filter?.include ? filter.include.push({"relation": 'images', "scope": {"order": ["order_number ASC"]}}): filter?.include
+
       filter = {
-      //   ...filter,
+        ...filter,
       //   fields: {
       //     "name": true,
       //     "in_complex": true
       //   }
-        include: [{"relation": 'images', "scope": {"order": ["order_number ASC"]}}],
+        include: imageLelation as InclusionFilter[] ,
       };
     const apartments = await this.apartmentRepository.find(filter);
     return { count: apartments.length, apartments };
