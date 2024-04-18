@@ -91,6 +91,10 @@ export class PhotoController {
     photo: Photo,
     @param.where(Photo) where?: Where<Photo>,
   ): Promise<Count> {
+    where = {
+      ...where,
+      sort: [{field: 'order_number', order: 'ASC'}],
+    };
     return this.photoRepository.updateAll(photo, where);
   }
 
@@ -151,7 +155,8 @@ export class PhotoController {
   @put('/api/photos/update-order')
   @response(204, {
     description: 'Bulk update of the order of Photos',
-  })async updateOrder(
+  })
+  async updateOrder(
     @requestBody({
       content: {
         'application/json': {
