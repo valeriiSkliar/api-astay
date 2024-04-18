@@ -29,6 +29,9 @@ export class Apartment extends Entity {
 
   @property({
     type: 'string',
+    mysql: {
+      dataType: 'text',
+    }
   })
   description?: string;
 
@@ -136,7 +139,7 @@ export class Apartment extends Entity {
 
   @belongsTo(() => RoomCategory, {name: 'roomCategory'})
   roomCategoryId: number;
-  
+
   @property({
     type: 'date',
     default: () => new Date(),
