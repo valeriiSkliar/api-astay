@@ -37,6 +37,7 @@ export class Apartment extends Entity {
 
   @property({
     type: 'string',
+    default: 'AstayHome',
   })
   host_name?: string;
 
@@ -61,13 +62,13 @@ export class Apartment extends Entity {
   beds?: number;
 
   @property.array(String)
-  neighborhood?: string[];
+  neighborhood?: string[] = [];
 
   @property.array(Date)
-  disabledDates?: Date[];
+  disabledDates?: Date[] = [];
 
   @property.array(Date)
-  hostDisabledDates?: Date[];
+  hostDisabledDates?: Date[] = [];
 
   @property({
     type: 'number',
@@ -112,16 +113,19 @@ export class Apartment extends Entity {
 
   @property({
     type: 'number',
+    default: 0,
   })
   number_of_reviews?: number;
 
   @property({
     type: 'number',
+    default: 365,
   })
   availability_365?: number;
 
   @property({
     type: 'number',
+    default: 5,
   })
   review_scores_rating?: number;
 
