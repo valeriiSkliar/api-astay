@@ -144,6 +144,13 @@ export class ApartmentController {
     filter?: FilterExcludingWhere<Apartment>,
   ): Promise<Apartment> {
     console.log(filter);
+    const apartmentsImagesScope = {
+      "order": ['order_number ASC'],
+    }
+      filter = {
+        ...filter,
+        include: filter?.include ? [...filter.include, {"relation": 'images', "scope": {"order": ["order_number ASC"]}}] : [{"relation": 'images', "scope": {"order": ["order_number ASC"]}}],
+      };
     return this.apartmentRepository.findById(id, filter);
   }
 
