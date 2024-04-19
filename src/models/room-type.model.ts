@@ -26,6 +26,14 @@ export class RoomType extends Entity {
     default: null,
   })
   color?: string;
+
+  @property({
+    type: 'object',
+    default: { en: { category: 'new Type'}, ru: { category: 'новый тип'}},
+    mysql: {columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+  })
+  translations?: object;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data

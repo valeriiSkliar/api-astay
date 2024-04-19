@@ -28,6 +28,13 @@ export class Amenity extends Entity {
   })
   title?: string;
 
+  @property({
+    type: 'object',
+    default: { en: { title: 'new Amenity'}, ru: { title: 'новое удобство'}},
+    mysql: { columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+  })
+  translations?: object;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data

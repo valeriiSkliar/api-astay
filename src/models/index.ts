@@ -14,3 +14,4 @@ export * from './applications.model';
 export * from './host-contacts.model';
 export * from './booking.model';
 export * from './transfer.model';
+export * from './complex-en.model';

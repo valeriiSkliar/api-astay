@@ -16,16 +16,6 @@ export class Locations extends Entity {
   })
   name: string;
 
-  // @property({
-  //   type: 'string',
-  // })
-  // latitude?: string;
-
-  // @property({
-  //   type: 'string',
-  // })
-  // longitude?: string;
-
   @property({
     type: 'string',
     required: true,
@@ -37,6 +27,13 @@ export class Locations extends Entity {
     default: 'Thailand',
   })
   country?: string;
+
+  @property({
+    type: 'object',
+    default: {en: {name: 'Thailand', city: 'Pattaya', country: 'Thailand'}, ru: { name: 'Таиланд', city: 'Паттайя', country: 'Таиланд'}},
+    mysql: {columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+  })
+  translations?: object;
 
   @hasMany(() => Complex, {keyTo: 'location_id'})
   complexes: Complex[];
