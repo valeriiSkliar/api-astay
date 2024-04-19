@@ -71,6 +71,13 @@ export class Complex extends Entity {
   })
   createdAt?: Date;
 
+  @property({
+    type: 'object',
+    default: {en: {name: 'new complex', description: 'Add new complex description', address: 'Add address'}, ru: {name: 'новый комплекс', description: 'Добавьте описание комплекса', address: 'Добавьте адрес'}},
+    mysql: { columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+  })
+  translations?: object;
+
 
   constructor(data?: Partial<Complex>) {
     super(data);

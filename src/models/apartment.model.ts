@@ -23,9 +23,10 @@ export class Apartment extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
+    default: 'AstayHome',
   })
-  name: string;
+  name?: string; //1
 
   @property({
     type: 'string',
@@ -33,7 +34,7 @@ export class Apartment extends Entity {
       dataType: 'text',
     }
   })
-  description?: string;
+  description?: string; //2
 
   @property({
     type: 'string',
@@ -149,6 +150,13 @@ export class Apartment extends Entity {
     default: () => new Date(),
   })
   createdAt?: Date;
+
+  @property({
+    type: 'object',
+    default: {en: {name: 'Add new apartment name', description: 'Add short description'}, ru: {name: 'Добавьте название квартиры', description: 'Добавьте краткое описание',}},
+    mysql: { columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+  })
+  translations?: object;
 
   [prop: string]: any;
 
