@@ -21,14 +21,6 @@ import {
 import {Apartment} from '../models';
 import {ApartmentRepository} from '../repositories';
 
-const cloger = () => {
-  let  counter = 0;
-  return () => {
-     counter += 1;
-     console.log(counter);
-  };
-};
-const requestCounter = cloger();
 export class ApartmentController {
   constructor(
     @repository(ApartmentRepository)
@@ -94,7 +86,6 @@ export class ApartmentController {
   async find(
     @param.filter(Apartment) filter?: Filter<Apartment>,
   ): Promise<{count: number; apartments: Apartment[]}> {
-    requestCounter()
     const apartmentsImagesScope = {
       "order": ['order_number ASC'],
     }
@@ -167,9 +158,8 @@ export class ApartmentController {
         },
       },
     })
-    apartment: Apartment,
+    apartment: Partial<Apartment>,
   ): Promise<void> {
-    console.log(apartment, id);
 
     await this.apartmentRepository.updateById(id, apartment);
   }
@@ -219,21 +209,24 @@ export class ApartmentController {
                 },
               },
             },
-            required: ['propertyName', 'disabledDates'],
+            required: ['propertyName', 'hostDisabledDates'],
           },
         },
       },
     })
-    data: { propertyName: string; disabledDates: string[] },
+    data: { propertyName: string; hostDisabledDates: string[] },
   ): Promise<void> {
+    console.log('data', data);
+    console.log('id', id);
     const apartment = await this.apartmentRepository.findById(id);
     if (!apartment) {
       throw new EntityNotFoundError(Apartment, id);
     }
 
-    apartment[data.propertyName] = data.disabledDates;
+    apartment[data.propertyName] = data.hostDisabledDates;
+    console.log('apartment', apartment);
 
-    await this.apartmentRepository.update(apartment);
+    await this.apartmentRepository.updateById(id, apartment);
   }
 
 

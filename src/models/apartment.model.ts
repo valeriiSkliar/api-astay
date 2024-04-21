@@ -66,10 +66,10 @@ export class Apartment extends Entity {
   neighborhood?: string[] = [];
 
   @property.array(Date)
-  disabledDates?: Date[] = [];
+  disabledDates?: Date[];
 
   @property.array(Date)
-  hostDisabledDates?: Date[] = [];
+  hostDisabledDates?: Date[];
 
   @property({
     type: 'number',

@@ -45,6 +45,7 @@ var generateApartmentData = async function () {
     room_type_id : roomType.id,
     roomCategoryId: roomCategory.id,
     hostDisabledDates: JSON.stringify([faker.date.future()]),
+    translations: JSON.stringify({en: {name: faker.lorem.words(10), description: faker.lorem.sentence(40)}}),
   };
 };
 
