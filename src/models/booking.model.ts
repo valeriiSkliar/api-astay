@@ -1,5 +1,6 @@
-import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
 import {Apartment} from './apartment.model';
+import {Transfer} from './transfer.model';
 
 @model({settings: {strict: false}})
 export class Booking extends Entity {
@@ -18,6 +19,11 @@ export class Booking extends Entity {
 
   @property({
     type: 'string',
+    required: false,
+  })
+  location?: string;
+  @property({
+    type: 'string',
     required: true,
   })
   email: string;
@@ -26,7 +32,7 @@ export class Booking extends Entity {
     type: 'string',
     required: true,
   })
-  phone?: string;
+  phoneNumber?: string;
 
 
   @property({
@@ -48,11 +54,33 @@ export class Booking extends Entity {
   paymmentStatus?: boolean;
 
   @property({
+    type: 'boolean',
+    required: false,
+  })
+  isAvailableApart?: boolean
+
+  @property({
     type: 'string',
   })
   paymentUrl?: string;
 
+  @property({
+    type: 'object',
+    required: false,
+  })
+  guests?: object;
 
+  @property({
+    type: 'number',
+    required: false,
+  })
+  maxGuests?: number;
+
+  @property({
+    type: 'number',
+    required: false,
+  })
+  maxRooms?: number;
 
   @property({
     type: 'number',
@@ -85,6 +113,9 @@ export class Booking extends Entity {
     default: () => new Date(),
   })
   createdAt?: Date;
+
+  @hasMany(() => Transfer)
+  transfers?: Transfer[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

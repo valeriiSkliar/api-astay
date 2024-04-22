@@ -98,6 +98,10 @@ export class Transfer extends Entity {
   })
   createdAt?: string;
 
+  @property({
+    type: 'number',
+  })
+  bookingId?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data
