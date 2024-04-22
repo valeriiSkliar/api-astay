@@ -39,9 +39,9 @@ export class ApartmentController {
           data: {
             schema: getModelSchemaRef(Apartment, {
               title: 'NewApartment',
-            exclude: ['id'],
+              exclude: ['id'],
             }),
-          }
+          },
         },
       },
     })
@@ -86,20 +86,45 @@ export class ApartmentController {
   async find(
     @param.filter(Apartment) filter?: Filter<Apartment>,
   ): Promise<{count: number; apartments: Apartment[]}> {
-    const apartmentsImagesScope = {
-      "order": ['order_number ASC'],
+    let apartmentsImagesScope: Filter<Apartment> = {
+      order: ['order_number ASC'],
+    };
+    let reviewsScope: Filter<Apartment> = {
+      order: ['reviewDate DESC'],
+    };
+    if (!filter) {
+      filter = {};
     }
-      filter = {
-        ...filter,
-      //   fields: {
-      //     "name": true,
-      //     "in_complex": true
-      //   }
-        include: filter?.include ? [...filter.include, {"relation": 'images', "scope": {"order": ["order_number ASC"]}}] : [{"relation": 'images', "scope": {"order": ["order_number ASC"]}}],
-      };
+    if (!filter.include) {
+      filter.include = [];
+    }
+    if (!Array.isArray(filter.include)) {
+      throw new Error('filter.include should be an Array');
+    }
+    apartmentsImagesScope = {
+      order: ['order_number ASC'],
+    };
+    reviewsScope = {
+      order: ['reviewDate DESC'],
+    };
+    filter.include.push({
+      relation: 'images',
+      scope: apartmentsImagesScope,
+    });
+    filter.include.push({
+      relation: 'reviews',
+      scope: reviewsScope,
+    });
     const apartments = await this.apartmentRepository.find(filter);
-    return { count: apartments.length, apartments };
+    if (!apartments) {
+      throw new Error('apartments is null');
+    }
+    if (!Array.isArray(apartments)) {
+      throw new Error('apartments is not an Array');
+    }
+    return {count: apartments.length, apartments};
   }
+
 
   @patch('/api/apartments')
   @response(200, {
@@ -134,16 +159,40 @@ export class ApartmentController {
     @param.filter(Apartment, {exclude: 'where'})
     filter?: FilterExcludingWhere<Apartment>,
   ): Promise<Apartment> {
-    console.log(filter);
-    const apartmentsImagesScope = {
-      "order": ['order_number ASC'],
+    if (!id) {
+      throw new EntityNotFoundError('Apartment', id);
     }
-      filter = {
-        ...filter,
-        include: filter?.include ? [...filter.include, {"relation": 'images', "scope": {"order": ["order_number ASC"]}}] : [{"relation": 'images', "scope": {"order": ["order_number ASC"]}}],
-      };
-    return this.apartmentRepository.findById(id, filter);
+
+    const reviewsScope = {
+      order: ['reviewDate DESC'],
+    };
+
+    let include = filter?.include ?? [];
+    include = [
+      ...include,
+      {relation: 'images', scope: {order: ['order_number ASC']}},
+    ];
+
+    if (include.includes('reviews')) {
+      include = include.map((i) =>
+        i === 'reviews' ? {relation: 'reviews', scope: reviewsScope} : i,
+      );
+    } else {
+      include.push({relation: 'reviews', scope: reviewsScope});
+    }
+
+    filter = {...filter, include};
+
+    try {
+      return await this.apartmentRepository.findById(id, filter);
+    } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw err;
+      }
+      throw new Error(`Failed to find apartment by id ${id}\n${err.stack}`);
+    }
   }
+
 
   @patch('/api/apartments/{id}')
   @response(204, {
@@ -160,7 +209,6 @@ export class ApartmentController {
     })
     apartment: Partial<Apartment>,
   ): Promise<void> {
-
     await this.apartmentRepository.updateById(id, apartment);
   }
 
@@ -214,7 +262,7 @@ export class ApartmentController {
         },
       },
     })
-    data: { propertyName: string; hostDisabledDates: string[] },
+    data: {propertyName: string; hostDisabledDates: string[]},
   ): Promise<void> {
     console.log('data', data);
     console.log('id', id);
@@ -228,6 +276,4 @@ export class ApartmentController {
 
     await this.apartmentRepository.updateById(id, apartment);
   }
-
-
 }

@@ -50,19 +50,26 @@ export class ReviewController {
   @get('/api/reviews/count')
   @response(200, {
     description: 'Review model count',
-    content: {'application/json': {
-      schema: CountSchema
-    }},
+    content: {
+      'application/json': {
+        schema: CountSchema,
+      },
+    },
   })
-  async count(@param.where(Review) where?: Where<Review> & { average?: boolean, listing_id?: number }): Promise<AverageCountScoresReviews> {
+  async count(
+    @param.where(Review)
+    where?: Where<Review> & {average?: boolean; listing_id?: number},
+  ): Promise<AverageCountScoresReviews> {
     if (where && where.average) {
       const reviews = await this.reviewRepository.find();
       const averageRating = calculateAverageRating(reviews);
-      return { count: reviews.length, average: averageRating } ;
+      return {count: reviews.length, average: averageRating};
     } else if (where && where.listing_id) {
-      const reviews = await this.reviewRepository.find({where: {listing_id: where.listing_id}});
+      const reviews = await this.reviewRepository.find({
+        where: {listing_id: where.listing_id},
+      });
       const averageRating = calculateAverageRating(reviews);
-      return { count: reviews.length, average: averageRating } ;
+      return {count: reviews.length, average: averageRating};
     }
     return this.reviewRepository.count(where);
   }
@@ -80,7 +87,22 @@ export class ReviewController {
     },
   })
   async find(@param.filter(Review) filter?: Filter<Review>): Promise<Review[]> {
-    return this.reviewRepository.find(filter);
+    if (!filter) {
+      filter = {};
+    }
+    filter.order = filter.order || [];
+    if (!Array.isArray(filter.order)) {
+      filter.order = [filter.order];
+    }
+    filter.order.push('reviewDate DESC');
+    try {
+      return await this.reviewRepository.find(filter);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Error in ReviewController.find: ${error.message}`);
+      }
+      throw error;
+    }
   }
 
   @patch('/api/reviews')
