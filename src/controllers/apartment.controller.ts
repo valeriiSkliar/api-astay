@@ -125,7 +125,6 @@ export class ApartmentController {
     return {count: apartments.length, apartments};
   }
 
-
   @patch('/api/apartments')
   @response(200, {
     description: 'Apartment PATCH success count',
@@ -174,7 +173,7 @@ export class ApartmentController {
     ];
 
     if (include.includes('reviews')) {
-      include = include.map((i) =>
+      include = include.map(i =>
         i === 'reviews' ? {relation: 'reviews', scope: reviewsScope} : i,
       );
     } else {
@@ -192,7 +191,6 @@ export class ApartmentController {
       throw new Error(`Failed to find apartment by id ${id}\n${err.stack}`);
     }
   }
-
 
   @patch('/api/apartments/{id}')
   @response(204, {

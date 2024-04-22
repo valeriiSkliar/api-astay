@@ -12,7 +12,24 @@ export class Applications extends Entity {
   @property({
     type: 'string',
   })
-  pageName?: string;
+  pageLink?: string;
+
+  @property({
+    type: 'string',
+    required: true,
+    jsonSchema: {
+      enum: [
+        'apartment',
+        'complex',
+        'transfer',
+        'aboutUs',
+        'forOwners',
+        'main',
+        'forOwners-short',
+      ],
+    },
+  })
+  type: string;
 
   @property({
     type: 'string',
@@ -33,8 +50,7 @@ export class Applications extends Entity {
       maxLength: 50,
     },
   })
-  // TODO: make not requeired
-  email: string;
+  email?: string;
 
   @property({
     type: 'string',

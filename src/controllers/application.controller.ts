@@ -78,15 +78,17 @@ export class ApplicationController {
     //   console.log('incrementSubmissionCount', clientIp);
     //   this.submissionTrackingService.incrementSubmissionCount(clientIp);
     // };
+    console.log('contactData', contactData);
 
     try {
-      const {pageName, name, email, phone, message} = contactData;
+      const {type, pageLink, name, email, phone, message} = contactData;
 
-      if (!pageName || !email || !phone || !name) {
+      if (!type || !pageLink || !email || !phone || !name) {
         throw new HttpErrors.BadRequest('Missing required fields');
       }
       const newApplication = new Applications({
-        pageName,
+        type,
+        pageLink,
         name,
         email,
         phone,
@@ -95,21 +97,21 @@ export class ApplicationController {
 
       await this.applicationsRepository.create(newApplication);
       // Send request to admin panel app
-      const adminPanelUrl = 'https://adminpanelapp.com/api/notifications';
-      const notificationData = {
-        message: 'New application submitted',
-        application: newApplication, // Assuming newApplication is the newly created application object
-      };
+      // const adminPanelUrl = 'https://adminpanelapp.com/api/notifications';
+      // const notificationData = {
+      //   message: 'New application submitted',
+      //   application: newApplication, // Assuming newApplication is the newly created application object
+      // };
 
-      try {
-        const response = await axios.put(
-          'http://localhost:3000/api/applications',
-          notificationData,
-        );
-      } catch (error) {
-        console.error('Error making external request:', error);
-        throw new Error('Failed to fetch data from external API');
-      }
+      // try {
+      //   const response = await axios.put(
+      //     'http://localhost:3000/api/applications',
+      //     notificationData,
+      //   );
+      // } catch (error) {
+      //   console.error('Error making external request:', error);
+      //   throw new Error('Failed to fetch data from external API');
+      // }
 
       return {message: 'Form submitted successfully!'};
     } catch (err) {
@@ -128,11 +130,11 @@ export class ApplicationController {
     }
   }
 
-  // @post('/api/applications')
-  // @response(200, {
-  //   description: 'Applications model instance',
-  //   content: {'application/json': {schema: getModelSchemaRef(Applications)}},
-  // })
+  @post('/api/applications')
+  @response(200, {
+    description: 'Applications model instance',
+    content: {'application/json': {schema: getModelSchemaRef(Applications)}},
+  })
   async create(
     @requestBody({
       content: {

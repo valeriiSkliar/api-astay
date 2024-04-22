@@ -61,13 +61,13 @@ export class ReviewController {
     }
 
     const averageRating = calculateAverageRating(reviewsForListing);
-    console.log(averageRating);
+    
     await this.apartmentRepository
       .updateById(listingId, {
         review_scores_rating: averageRating,
         number_of_reviews: reviewsForListing.length,
       })
-      .catch((error) => {
+      .catch(error => {
         throw new Error(
           `Failed to update apartment with ID ${listingId}: ${error}`,
         );
@@ -75,9 +75,6 @@ export class ReviewController {
 
     return newReview;
   }
-
-
-
 
   @get('/api/reviews/count')
   @response(200, {
