@@ -25,6 +25,8 @@ export class ReviewController {
   constructor(
     @repository(ReviewRepository)
     public reviewRepository: ReviewRepository,
+    @repository(ApartmentRepository)
+    public apartmentRepository: ApartmentRepository,
   ) {}
 
   @post('/api/reviews')
@@ -37,7 +39,6 @@ export class ReviewController {
       content: {
         'application/json': {
           schema: getModelSchemaRef(Review, {
-            title: 'NewReview',
             exclude: ['id'],
           }),
         },
@@ -45,8 +46,39 @@ export class ReviewController {
     })
     review: Omit<Review, 'id'>,
   ): Promise<Review> {
-    return this.reviewRepository.create(review);
+    const listingId = review.listing_id;
+
+    const newReview = await this.reviewRepository.create(review);
+    if (!newReview) {
+      throw new Error('New review is null or undefined');
+    }
+
+    const reviewsForListing = await this.reviewRepository.find({
+      where: {listing_id: listingId},
+    });
+    if (!reviewsForListing) {
+      throw new Error('Reviews for listing are null or undefined');
+    }
+
+    const averageRating = calculateAverageRating(reviewsForListing);
+    console.log(averageRating);
+    await this.apartmentRepository
+      .updateById(listingId, {
+        review_scores_rating: averageRating,
+        number_of_reviews: reviewsForListing.length,
+      })
+      .catch((error) => {
+        throw new Error(
+          `Failed to update apartment with ID ${listingId}: ${error}`,
+        );
+      });
+
+    return newReview;
   }
+
+
+
+
   @get('/api/reviews/count')
   @response(200, {
     description: 'Review model count',
