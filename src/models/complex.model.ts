@@ -23,15 +23,17 @@ export class Complex extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
+    default: 'Add complex name',
   })
-  name: string;
+  name?: string;
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
+    default: 'Add complex description',
   })
-  description: string;
+  description?: string;
 
   @property({
     type: 'string',
@@ -45,9 +47,6 @@ export class Complex extends Entity {
     required: true,
   })
   geo_data?: Array<{lat: number; lng: number}>;
-
-  // @hasMany(() => Photo, {keyTo: 'complex_id'})
-  // photos: Photo[];
 
 
   @hasMany(() => Apartment, {keyTo: 'complex_id'})
