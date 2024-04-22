@@ -30,8 +30,18 @@ export class Locations extends Entity {
 
   @property({
     type: 'object',
-    default: {en: {name: 'Thailand', city: 'Pattaya', country: 'Thailand'}, ru: { name: 'Таиланд', city: 'Паттайя', country: 'Таиланд'}},
-    mysql: {columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+    default: {
+      en: {name: 'Thailand', city: 'Pattaya', country: 'Thailand'},
+      ru: {name: 'Таиланд', city: 'Паттайя', country: 'Таиланд'},
+    },
+    mysql: {
+      columnName: 'translations',
+      dataType: 'json',
+      dataLength: null,
+      dataPrecision: null,
+      dataScale: null,
+      nullable: 'Y',
+    },
   })
   translations?: object;
 

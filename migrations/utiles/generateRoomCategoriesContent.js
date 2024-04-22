@@ -1,11 +1,8 @@
 const {roomCategories} = require('../mock/roomCategories.js');
 
-const generateContent = (tableName) => {
-
-
+const generateContent = tableName => {
   const roomCategoriesDataInstansesArray = roomCategories
     .map(({category, description, color}) => {
-
       return `('${category}', '${description}', '${color}')`;
     })
     .join(',\n');

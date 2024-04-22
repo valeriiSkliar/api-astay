@@ -16,7 +16,6 @@ export class SubmissionTrackingServiceService {
     }
   }
 
-
   public getSubmissionCount(clientIp: string): number {
     return this.ipCache?.get(clientIp) || 0;
   }

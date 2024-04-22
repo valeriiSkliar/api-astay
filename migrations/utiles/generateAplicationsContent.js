@@ -1,29 +1,28 @@
 var fs = require('fs');
-var  {faker} = require( '@faker-js/faker');
+var {faker} = require('@faker-js/faker');
 
-
-
-async function generateAplicationsContent(tableName, numberOfApplications = 10) {
+async function generateAplicationsContent(
+  tableName,
+  numberOfApplications = 10,
+) {
   const pages = ['main', 'abousUs', 'complexes', 'transfers', 'forOwners'];
   try {
-
     const sqlStatements = [];
     let sqlStatement = `INSERT INTO ${tableName} (email, phone, name, message, isProcessed, isOpened, pageName) VALUES `;
 
-      for (let i = 1; i <= numberOfApplications; i++) {
+    for (let i = 1; i <= numberOfApplications; i++) {
+      const email = faker.internet.email();
+      const phone = faker.phone.number('38095-###-###');
+      const name = faker.person.firstName() + ' ' + faker.person.lastName();
+      const message = faker.lorem.sentence(2);
+      const isProcessed = faker.datatype.boolean();
+      const isOpened = faker.datatype.boolean();
+      const pageName = pages[Math.floor(Math.random() * pages.length)];
 
-        const email = faker.internet.email();
-        const phone = faker.phone.number('38095-###-###');
-        const name = faker.person.firstName() + ' ' + faker.person.lastName();
-        const message =faker.lorem.sentence(2);
-        const isProcessed = faker.datatype.boolean();
-        const isOpened = faker.datatype.boolean();
-        const pageName = pages[Math.floor(Math.random() * pages.length)];
+      sqlValue = `('${email}', '${phone}', '${name}', '${message}', '${Number(isProcessed)}', '${Number(isOpened)}', '${pageName}')`;
 
-        sqlValue= `('${email}', '${phone}', '${name}', '${message}', '${Number(isProcessed)}', '${Number(isOpened)}', '${pageName}')`;
-
-        sqlStatements.push(sqlValue);
-      }
+      sqlStatements.push(sqlValue);
+    }
     const values = sqlStatements.join(',\n');
 
     const sqlContent = `${sqlStatement}
@@ -38,8 +37,4 @@ async function generateAplicationsContent(tableName, numberOfApplications = 10) 
   }
 }
 
-
-
-
 exports.generateAplicationsContent = generateAplicationsContent;
-

@@ -187,7 +187,6 @@ async function generateTransfersContent(tableName) {
       },
     ];
 
-
     // Define an array to store SQL statements for each transfer
     const sqlStatements = [];
     const sqlStatement = `INSERT INTO ${tableName} (type, date, flightNumber, nameOfSignage, guests, amountBags, phone, city, departure, time, comments, status, isArchived, price, discount) VALUES `;
@@ -195,7 +194,7 @@ async function generateTransfersContent(tableName) {
     // Iterate over each transfer
     for (const transfer of transfers) {
       const values = Object.values(transfer)
-        .map(value => typeof value === 'string' ? `'${value}'` : value)
+        .map(value => (typeof value === 'string' ? `'${value}'` : value))
         .join(', ');
 
       // Construct the SQL INSERT statement
@@ -212,10 +211,10 @@ async function generateTransfersContent(tableName) {
 
     // Return the SQL content
     return sqlContent;
-} catch (error) {
+  } catch (error) {
     // Log error message
     console.error('Error generating SQL file:', error);
-}
+  }
 }
 
 exports.generateTransfersContent = generateTransfersContent;

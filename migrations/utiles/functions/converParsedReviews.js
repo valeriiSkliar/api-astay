@@ -1,23 +1,24 @@
-const { parsedReviewsArray } = require("../../mock/mockReviews");
+const {parsedReviewsArray} = require('../../mock/mockReviews');
 
 function convertToReview(selectedObject) {
   // console.log(selectedObject);
-  const convertedReview = selectedObject.map((review) => {
+  const convertedReview = selectedObject.map(review => {
     return {
       apartment_id: null,
       complex_id: null,
       avatar: review.avatar ?? null,
-      roomType: review.roomName || "",
-      reviewDate: getDate(review.reviewDate) || new Date().toISOString().split('T')[0],
+      roomType: review.roomName || '',
+      reviewDate:
+        getDate(review.reviewDate) || new Date().toISOString().split('T')[0],
       review: `${review.positiveText ? `${review.positiveText.replace(/\n/g, '')}` : ''}${review.negativeText ? `${review.negativeText.replace(/\n/g, '')}` : ''}`,
       positive_review: review.positiveText ?? null,
       negative_review: review.negativeText ?? null,
-      name: review.clientInfo.clintName || "",
+      name: review.clientInfo.clintName || '',
       reiting_score: parseIntFromString(review.reviewScore),
       createdAt: new Date().toISOString().split('T')[0],
       isArchived: false,
-      status: true
-    }
+      status: true,
+    };
   });
 
   console.log(convertedReview[0]);
@@ -47,33 +48,32 @@ function getDate(dateString) {
 
   // Try creating a date object. If the day is invalid (e.g., 31st of February), a RangeError will be thrown.
   try {
-    return new Date(year, month - 1, day).toISOString().split('T')[0];  // Create date object with day set to 1
+    return new Date(year, month - 1, day).toISOString().split('T')[0]; // Create date object with day set to 1
   } catch (error) {
     return null;
   }
 }
 
 function getMonthNumber(monthName) {
-
   const months = {
-    "января": 0,
-    "февраля": 1,
-    "марта": 2,
-    "апреля": 3,
-    "мая": 4,
-    "июня": 5,
-    "июля": 6,
-    "августа": 7,
-    "сентября": 8,
-    "октября": 9,
-    "ноября": 10,
-    "декабря": 11
+    января: 0,
+    февраля: 1,
+    марта: 2,
+    апреля: 3,
+    мая: 4,
+    июня: 5,
+    июля: 6,
+    августа: 7,
+    сентября: 8,
+    октября: 9,
+    ноября: 10,
+    декабря: 11,
   };
   return months[monthName.toLowerCase()] || null;
 }
 
 // Example usage
-const dateString = "Дата отзыва: 7 марта 2024";
+const dateString = 'Дата отзыва: 7 марта 2024';
 const dateObj = getDate(dateString);
 
 if (dateObj) {
@@ -82,11 +82,7 @@ if (dateObj) {
   // console.log("Invalid date format");
 }
 
-
-
-
 function parseIntFromString(string) {
-
   const parsedInt = parseInt(string, 10);
   if (Number.isNaN(parsedInt)) {
     return null;
@@ -105,6 +101,3 @@ function parseIntFromString(string) {
 // }
 
 exports.convertToReview = convertToReview;
-
-
-

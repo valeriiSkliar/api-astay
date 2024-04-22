@@ -31,7 +31,7 @@ exports.up = function (db) {
   );
   return new Promise(async function (resolve, reject) {
     var tableName = 'Apartment';
-    fs.writeFileSync(filePath,await generateApartmentsContent(tableName));
+    fs.writeFileSync(filePath, await generateApartmentsContent(tableName));
     fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
       if (err) return reject(err);
       console.log('received data: ' + data);

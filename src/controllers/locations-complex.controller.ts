@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Locations,
-  Complex,
-} from '../models';
+import {Locations, Complex} from '../models';
 import {LocationsRepository} from '../repositories';
 
 export class LocationsComplexController {
   constructor(
-    @repository(LocationsRepository) protected locationsRepository: LocationsRepository,
-  ) { }
+    @repository(LocationsRepository)
+    protected locationsRepository: LocationsRepository,
+  ) {}
 
   @get('/locations/{id}/complexes', {
     responses: {
@@ -61,11 +59,12 @@ export class LocationsComplexController {
           schema: getModelSchemaRef(Complex, {
             title: 'NewComplexInLocations',
             exclude: ['id'],
-            optional: ['location_id']
+            optional: ['location_id'],
           }),
         },
       },
-    }) complex: Omit<Complex, 'id'>,
+    })
+    complex: Omit<Complex, 'id'>,
   ): Promise<Complex> {
     return this.locationsRepository.complexes(id).create(complex);
   }
@@ -88,7 +87,8 @@ export class LocationsComplexController {
       },
     })
     complex: Partial<Complex>,
-    @param.query.object('where', getWhereSchemaFor(Complex)) where?: Where<Complex>,
+    @param.query.object('where', getWhereSchemaFor(Complex))
+    where?: Where<Complex>,
   ): Promise<Count> {
     return this.locationsRepository.complexes(id).patch(complex, where);
   }
@@ -103,7 +103,8 @@ export class LocationsComplexController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Complex)) where?: Where<Complex>,
+    @param.query.object('where', getWhereSchemaFor(Complex))
+    where?: Where<Complex>,
   ): Promise<Count> {
     return this.locationsRepository.complexes(id).delete(where);
   }

@@ -1,22 +1,13 @@
-import {
-  repository,
-} from '@loopback/repository';
-import {
-  param,
-  get,
-  getModelSchemaRef,
-} from '@loopback/rest';
-import {
-  Complex,
-  Locations,
-} from '../models';
+import {repository} from '@loopback/repository';
+import {param, get, getModelSchemaRef} from '@loopback/rest';
+import {Complex, Locations} from '../models';
 import {ComplexRepository} from '../repositories';
 
 export class ComplexLocationsController {
   constructor(
     @repository(ComplexRepository)
     public complexRepository: ComplexRepository,
-  ) { }
+  ) {}
 
   @get('/complexes/{id}/locations', {
     responses: {

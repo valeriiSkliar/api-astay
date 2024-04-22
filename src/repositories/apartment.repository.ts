@@ -5,7 +5,7 @@ import {
   BelongsToAccessor,
   HasManyRepositoryFactory,
   HasManyThroughRepositoryFactory,
-  ReferencesManyAccessor
+  ReferencesManyAccessor,
 } from '@loopback/repository';
 import {LocalMysqlDataSource, MongoDataSource} from '../datasources';
 import {
@@ -16,7 +16,9 @@ import {
   Photo,
   Amenity,
   RoomType,
-  Review, RoomCategory} from '../models';
+  Review,
+  RoomCategory,
+} from '../models';
 import {PhotoRepository} from './photo.repository';
 import {ComplexRepository} from './complex.repository';
 import {LocationsRepository} from './locations.repository';
@@ -56,9 +58,15 @@ export class ApartmentRepository extends DefaultCrudRepository<
     typeof Apartment.prototype.id
   >;
 
-  public readonly amenities: ReferencesManyAccessor<Amenity, typeof Apartment.prototype.id>;
+  public readonly amenities: ReferencesManyAccessor<
+    Amenity,
+    typeof Apartment.prototype.id
+  >;
 
-  public readonly roomCategory: BelongsToAccessor<RoomCategory, typeof Apartment.prototype.id>;
+  public readonly roomCategory: BelongsToAccessor<
+    RoomCategory,
+    typeof Apartment.prototype.id
+  >;
   // TODO: Configuring a referencesMany relation
   // TODO: Need format for sql query string
   // TODO: Add indexex to DB tables
@@ -76,14 +84,28 @@ export class ApartmentRepository extends DefaultCrudRepository<
     protected roomTypeRepositoryGetter: Getter<RoomTypeRepository>,
     @repository.getter('ReviewRepository')
     protected reviewRepositoryGetter: Getter<ReviewRepository>,
-    @repository.getter('AmenityRepository') protected amenityRepositoryGetter: Getter<AmenityRepository>,
-    @repository.getter('RoomCategoryRepository') protected roomCategoryRepositoryGetter: Getter<RoomCategoryRepository>,
+    @repository.getter('AmenityRepository')
+    protected amenityRepositoryGetter: Getter<AmenityRepository>,
+    @repository.getter('RoomCategoryRepository')
+    protected roomCategoryRepositoryGetter: Getter<RoomCategoryRepository>,
   ) {
     super(Apartment, dataSource);
-    this.roomCategory = this.createBelongsToAccessorFor('roomCategory', roomCategoryRepositoryGetter,);
-    this.registerInclusionResolver('roomCategory', this.roomCategory.inclusionResolver);
-    this.amenities = this.createReferencesManyAccessorFor('amenities', amenityRepositoryGetter,);
-    this.registerInclusionResolver('amenities', this.amenities.inclusionResolver);
+    this.roomCategory = this.createBelongsToAccessorFor(
+      'roomCategory',
+      roomCategoryRepositoryGetter,
+    );
+    this.registerInclusionResolver(
+      'roomCategory',
+      this.roomCategory.inclusionResolver,
+    );
+    this.amenities = this.createReferencesManyAccessorFor(
+      'amenities',
+      amenityRepositoryGetter,
+    );
+    this.registerInclusionResolver(
+      'amenities',
+      this.amenities.inclusionResolver,
+    );
 
     this.reviews = this.createHasManyRepositoryFactoryFor(
       'reviews',

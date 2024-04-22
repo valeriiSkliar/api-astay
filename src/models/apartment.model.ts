@@ -3,7 +3,9 @@ import {
   model,
   property,
   belongsTo,
-  hasMany, referencesMany} from '@loopback/repository';
+  hasMany,
+  referencesMany,
+} from '@loopback/repository';
 import {Complex} from './complex.model';
 import {Locations} from './locations.model';
 import {Photo} from './photo.model';
@@ -32,7 +34,7 @@ export class Apartment extends Entity {
     type: 'string',
     mysql: {
       dataType: 'text',
-    }
+    },
   })
   description?: string; //2
 
@@ -91,7 +93,7 @@ export class Apartment extends Entity {
   })
   discount?: number;
 
-@property({
+  @property({
     type: 'boolean',
   })
   isAvailable?: boolean;
@@ -153,8 +155,24 @@ export class Apartment extends Entity {
 
   @property({
     type: 'object',
-    default: {en: {name: 'Add new apartment name', description: 'Add short description'}, ru: {name: 'Добавьте название квартиры', description: 'Добавьте краткое описание',}},
-    mysql: { columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+    default: {
+      en: {
+        name: 'Add new apartment name',
+        description: 'Add short description',
+      },
+      ru: {
+        name: 'Добавьте название квартиры',
+        description: 'Добавьте краткое описание',
+      },
+    },
+    mysql: {
+      columnName: 'translations',
+      dataType: 'json',
+      dataLength: null,
+      dataPrecision: null,
+      dataScale: null,
+      nullable: 'Y',
+    },
   })
   translations?: object;
 

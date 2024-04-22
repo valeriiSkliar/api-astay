@@ -1,19 +1,25 @@
 var {faker} = require('@faker-js/faker');
-var { getConnection } = require('../functions/dataBaseConnection.js');
+var {getConnection} = require('../functions/dataBaseConnection.js');
 
 var generateApartmentData = async function () {
-  var allAmenities = await getConnection('SELECT * FROM Amenity;')
-  var allRoomTypes = await getConnection('SELECT * FROM RoomType;')
-  var allRoomCategories = await getConnection('SELECT * FROM RoomType;')
-  var allComplexes = await getConnection('SELECT * FROM Complex;')
-  var allRoomCategories = await getConnection('SELECT * FROM RoomCategory;')
+  var allAmenities = await getConnection('SELECT * FROM Amenity;');
+  var allRoomTypes = await getConnection('SELECT * FROM RoomType;');
+  var allRoomCategories = await getConnection('SELECT * FROM RoomType;');
+  var allComplexes = await getConnection('SELECT * FROM Complex;');
+  var allRoomCategories = await getConnection('SELECT * FROM RoomCategory;');
 
   var amenitiesIds = allAmenities.map(({id}) => id);
-  var complex = allComplexes[Math.floor(Math.random() * allComplexes.length)] || allComplexes[0]
-  console.log(complex)
+  var complex =
+    allComplexes[Math.floor(Math.random() * allComplexes.length)] ||
+    allComplexes[0];
+  console.log(complex);
   var count = Math.floor(Math.random() * (amenitiesIds.length - 10 + 1)) + 10;
-  var roomType = allRoomTypes[Math.floor(Math.random() * allRoomTypes.length)] || allRoomTypes[0]
-  var roomCategory = allRoomCategories[Math.floor(Math.random() * allRoomCategories.length)] || allRoomCategories[0]
+  var roomType =
+    allRoomTypes[Math.floor(Math.random() * allRoomTypes.length)] ||
+    allRoomTypes[0];
+  var roomCategory =
+    allRoomCategories[Math.floor(Math.random() * allRoomCategories.length)] ||
+    allRoomCategories[0];
   amenitiesIds = shuffleArray(amenitiesIds);
 
   var randomAmenityIds = amenitiesIds.slice(0, count);
@@ -42,10 +48,12 @@ var generateApartmentData = async function () {
     review_scores_rating: 6,
     location_id: complex.location_id,
     amenityIds: JSON.stringify(randomAmenityIds),
-    room_type_id : roomType.id,
+    room_type_id: roomType.id,
     roomCategoryId: roomCategory.id,
     hostDisabledDates: JSON.stringify([faker.date.future()]),
-    translations: JSON.stringify({en: {name: faker.lorem.words(10), description: faker.lorem.sentence(40)}}),
+    translations: JSON.stringify({
+      en: {name: faker.lorem.words(10), description: faker.lorem.sentence(40)},
+    }),
   };
 };
 

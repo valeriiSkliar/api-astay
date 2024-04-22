@@ -29,8 +29,15 @@ export class RoomType extends Entity {
 
   @property({
     type: 'object',
-    default: { en: { category: 'new Type'}, ru: { category: 'новый тип'}},
-    mysql: {columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+    default: {en: {category: 'new Type'}, ru: {category: 'новый тип'}},
+    mysql: {
+      columnName: 'translations',
+      dataType: 'json',
+      dataLength: null,
+      dataPrecision: null,
+      dataScale: null,
+      nullable: 'Y',
+    },
   })
   translations?: object;
 

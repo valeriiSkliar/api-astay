@@ -21,7 +21,7 @@ export class Applications extends Entity {
       // minLength: 5,
       maxLength: 50,
       // pattern: '/^[ёЁъЪа-яА-Я-\'"?!,:;@№#$%&*()=\\+\\.\\s\\w]+$/gi'
-    }
+    },
   })
   name: string;
 
@@ -31,7 +31,7 @@ export class Applications extends Entity {
     jsonSchema: {
       format: 'email',
       maxLength: 50,
-    }
+    },
   })
   // TODO: make not requeired
   email: string;
@@ -41,8 +41,8 @@ export class Applications extends Entity {
     jsonSchema: {
       minLength: 10,
       maxLength: 20,
-      pattern: '^[+]?[0-9]{6,20}$'
-    }
+      pattern: '^[+]?[0-9]{6,20}$',
+    },
   })
   phone?: string;
 
@@ -52,7 +52,7 @@ export class Applications extends Entity {
       // minLength: 10,
       maxLength: 2000,
       // pattern: '/^[ёЁъЪа-яА-Я-\'"?!,:;@№#$%&*()=\\+\\.\\s\\w]+$/gi'
-    }
+    },
   })
   message?: string;
 

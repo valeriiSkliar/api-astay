@@ -1,5 +1,5 @@
 var fs = require('fs');
-var { getConnection } = require('./functions/dataBaseConnection.js');
+var {getConnection} = require('./functions/dataBaseConnection.js');
 
 async function generateComplexesContent(tableName) {
   try {
@@ -21,7 +21,7 @@ async function generateComplexesContent(tableName) {
         let location_id = location.id;
 
         // Construct the SQL INSERT statement
-        sqlValue= `('${complexName}', '${description}', '${address}', '${geoData}', '${location_id}')`;
+        sqlValue = `('${complexName}', '${description}', '${address}', '${geoData}', '${location_id}')`;
 
         sqlStatements.push(sqlValue);
         // console.log(sqlStatements);

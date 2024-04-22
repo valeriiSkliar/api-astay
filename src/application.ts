@@ -1,7 +1,6 @@
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
 
-
 import {
   RestExplorerBindings,
   RestExplorerComponent,
@@ -12,7 +11,7 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import {MySequence} from './sequence';
 import multer from 'multer';
 import path from 'path';
-import{FILE_UPLOAD_SERVICE,STORAGE_DIRECTORY} from './keys';
+import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './keys';
 import {AuthenticationComponent} from '@loopback/authentication';
 import {
   JWTAuthenticationComponent,
@@ -37,12 +36,14 @@ export class ApiApplication extends BootMixin(
     this.dataSource(LocalMysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     // Set up the custom sequence
     this.sequence(MySequence);
-    this.bind('services.submit-tracking',)
-      .toClass(SubmitTrackingService)
+    this.bind('services.submit-tracking').toClass(SubmitTrackingService);
 
     // Set up default home page
     this.static('/api', path.join(__dirname, '../public'));
-    this.static('/api/public/uploads/', path.join(__dirname, '../public/uploads'));
+    this.static(
+      '/api/public/uploads/',
+      path.join(__dirname, '../public/uploads'),
+    );
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
@@ -50,7 +51,6 @@ export class ApiApplication extends BootMixin(
     });
     this.component(RestExplorerComponent);
     this.configureFileUpload(options.fileStorageDirectory);
-
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
@@ -65,19 +65,19 @@ export class ApiApplication extends BootMixin(
     this.component(CrudRestComponent);
   }
   protected configureFileUpload(destination?: string) {
-        // Upload files to `dist/.sandbox` by default
-        destination = destination ?? path.join(__dirname, '../public/uploads');
-        this.bind(STORAGE_DIRECTORY).to(destination);
-        const multerOptions: multer.Options = {
-          storage: multer.diskStorage({
-            destination,
-            // Use the original file name as is
-            filename: (req, file, cb) => {
-              cb(null, file.originalname);
-            },
-          }),
-        };
-        // Configure the file upload service with multer options
-        this.configure(FILE_UPLOAD_SERVICE).to(multerOptions);
+    // Upload files to `dist/.sandbox` by default
+    destination = destination ?? path.join(__dirname, '../public/uploads');
+    this.bind(STORAGE_DIRECTORY).to(destination);
+    const multerOptions: multer.Options = {
+      storage: multer.diskStorage({
+        destination,
+        // Use the original file name as is
+        filename: (req, file, cb) => {
+          cb(null, file.originalname);
+        },
+      }),
+    };
+    // Configure the file upload service with multer options
+    this.configure(FILE_UPLOAD_SERVICE).to(multerOptions);
   }
 }

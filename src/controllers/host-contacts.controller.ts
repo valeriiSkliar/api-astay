@@ -23,7 +23,7 @@ import {HostContactsRepository} from '../repositories';
 export class HostContactsController {
   constructor(
     @repository(HostContactsRepository)
-    public hostContactsRepository : HostContactsRepository,
+    public hostContactsRepository: HostContactsRepository,
   ) {}
 
   @post('/api/host-contacts')
@@ -106,7 +106,8 @@ export class HostContactsController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(HostContacts, {exclude: 'where'}) filter?: FilterExcludingWhere<HostContacts>
+    @param.filter(HostContacts, {exclude: 'where'})
+    filter?: FilterExcludingWhere<HostContacts>,
   ): Promise<HostContacts> {
     return this.hostContactsRepository.findById(id, filter);
   }

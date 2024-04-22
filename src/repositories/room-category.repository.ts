@@ -9,7 +9,7 @@ export class RoomCategoryRepository extends DefaultCrudRepository<
   RoomCategoryRelations
 > {
   constructor(
-    @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource
+    @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
   ) {
     super(RoomCategory, dataSource);
   }

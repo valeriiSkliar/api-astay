@@ -46,4 +46,5 @@ export interface ComplexServicesRelations {
   // describe navigational properties here
 }
 
-export type ComplexServicesWithRelations = ComplexServices & ComplexServicesRelations;
+export type ComplexServicesWithRelations = ComplexServices &
+  ComplexServicesRelations;

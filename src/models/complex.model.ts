@@ -2,7 +2,10 @@ import {
   Entity,
   hasMany,
   model,
-  property, referencesMany, belongsTo} from '@loopback/repository';
+  property,
+  referencesMany,
+  belongsTo,
+} from '@loopback/repository';
 import {Photo} from './photo.model';
 import {Apartment} from './apartment.model';
 import {Review} from './review.model';
@@ -48,7 +51,6 @@ export class Complex extends Entity {
   })
   geo_data?: Array<{lat: number; lng: number}>;
 
-
   @hasMany(() => Apartment, {keyTo: 'complex_id'})
   apartments: Apartment[];
 
@@ -72,11 +74,28 @@ export class Complex extends Entity {
 
   @property({
     type: 'object',
-    default: {en: {name: 'new complex', description: 'Add new complex description', address: 'Add address'}, ru: {name: 'новый комплекс', description: 'Добавьте описание комплекса', address: 'Добавьте адрес'}},
-    mysql: { columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+    default: {
+      en: {
+        name: 'new complex',
+        description: 'Add new complex description',
+        address: 'Add address',
+      },
+      ru: {
+        name: 'новый комплекс',
+        description: 'Добавьте описание комплекса',
+        address: 'Добавьте адрес',
+      },
+    },
+    mysql: {
+      columnName: 'translations',
+      dataType: 'json',
+      dataLength: null,
+      dataPrecision: null,
+      dataScale: null,
+      nullable: 'Y',
+    },
   })
   translations?: object;
-
 
   constructor(data?: Partial<Complex>) {
     super(data);

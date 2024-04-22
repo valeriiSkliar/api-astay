@@ -22,17 +22,20 @@ import {
 } from '@loopback/rest';
 import {Applications} from '../models';
 import {ApplicationsRepository} from '../repositories';
-import { SubmissionTrackingServiceService, SUBMIT_TRACKING_SERVICE } from '../services/index';
+import {
+  SubmissionTrackingServiceService,
+  SUBMIT_TRACKING_SERVICE,
+} from '../services/index';
 import {inject} from '@loopback/context';
 import {Request, request, Response} from 'express';
 import axios from 'axios';
 
-
 export class ApplicationController {
   constructor(
     @repository(ApplicationsRepository)
-    public applicationsRepository : ApplicationsRepository,
-    @inject(SUBMIT_TRACKING_SERVICE) private submissionTrackingService: SubmissionTrackingServiceService,
+    public applicationsRepository: ApplicationsRepository,
+    @inject(SUBMIT_TRACKING_SERVICE)
+    private submissionTrackingService: SubmissionTrackingServiceService,
     @inject(RestBindings.Http.REQUEST)
     private request: Request,
   ) {}
@@ -41,18 +44,25 @@ export class ApplicationController {
   // @response(200, {
   //   description: 'Applications model instance',
   //   content: {'application/json': {schema: getModelSchemaRef(Applications)}},
-// })
-
+  // })
   async submitContactForm(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Applications, {exclude: ['id', 'createdAt', 'isProcessed', 'isArchived', 'isOpened']}),
+          schema: getModelSchemaRef(Applications, {
+            exclude: [
+              'id',
+              'createdAt',
+              'isProcessed',
+              'isArchived',
+              'isOpened',
+            ],
+          }),
         },
-      }
-    }) contactData: Applications
-  ): Promise<{ message: string }> {
-
+      },
+    })
+    contactData: Applications,
+  ): Promise<{message: string}> {
     // TODO: turn on this code when ready
 
     // const clientIp = this.request.ip;
@@ -70,7 +80,7 @@ export class ApplicationController {
     // };
 
     try {
-      const { pageName, name, email, phone, message } = contactData;
+      const {pageName, name, email, phone, message} = contactData;
 
       if (!pageName || !email || !phone || !name) {
         throw new HttpErrors.BadRequest('Missing required fields');
@@ -92,17 +102,22 @@ export class ApplicationController {
       };
 
       try {
-        const response = await axios.put('http://localhost:3000/api/applications', notificationData);
+        const response = await axios.put(
+          'http://localhost:3000/api/applications',
+          notificationData,
+        );
       } catch (error) {
         console.error('Error making external request:', error);
         throw new Error('Failed to fetch data from external API');
       }
 
-      return { message: 'Form submitted successfully!' };
+      return {message: 'Form submitted successfully!'};
     } catch (err) {
       if (err.name === 'ValidationError') {
         const fields: string[] = Object.keys(err.details.constraints);
-        const errorMessages = fields.map((field) => err.details.constraints[field]);
+        const errorMessages = fields.map(
+          field => err.details.constraints[field],
+        );
         throw new HttpErrors.UnprocessableEntity(errorMessages.join(', '));
       }
       if (err.message) {
@@ -193,7 +208,8 @@ export class ApplicationController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Applications, {exclude: 'where'}) filter?: FilterExcludingWhere<Applications>
+    @param.filter(Applications, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Applications>,
   ): Promise<Applications> {
     return this.applicationsRepository.findById(id, filter);
   }

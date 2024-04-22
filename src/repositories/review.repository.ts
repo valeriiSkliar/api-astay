@@ -1,5 +1,9 @@
 import {inject, Getter} from '@loopback/core';
-import {DefaultCrudRepository, repository, BelongsToAccessor} from '@loopback/repository';
+import {
+  DefaultCrudRepository,
+  repository,
+  BelongsToAccessor,
+} from '@loopback/repository';
 import {LocalMysqlDataSource} from '../datasources';
 import {Review, ReviewRelations, Apartment, Complex} from '../models';
 import {ApartmentRepository} from './apartment.repository';
@@ -10,18 +14,36 @@ export class ReviewRepository extends DefaultCrudRepository<
   typeof Review.prototype.id,
   ReviewRelations
 > {
+  public readonly apartment: BelongsToAccessor<
+    Apartment,
+    typeof Review.prototype.id
+  >;
 
-  public readonly apartment: BelongsToAccessor<Apartment, typeof Review.prototype.id>;
-
-  public readonly complex: BelongsToAccessor<Complex, typeof Review.prototype.id>;
+  public readonly complex: BelongsToAccessor<
+    Complex,
+    typeof Review.prototype.id
+  >;
 
   constructor(
-    @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource, @repository.getter('ApartmentRepository') protected apartmentRepositoryGetter: Getter<ApartmentRepository>, @repository.getter('ComplexRepository') protected complexRepositoryGetter: Getter<ComplexRepository>,
+    @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
+    @repository.getter('ApartmentRepository')
+    protected apartmentRepositoryGetter: Getter<ApartmentRepository>,
+    @repository.getter('ComplexRepository')
+    protected complexRepositoryGetter: Getter<ComplexRepository>,
   ) {
     super(Review, dataSource);
-    this.complex = this.createBelongsToAccessorFor('complex', complexRepositoryGetter,);
+    this.complex = this.createBelongsToAccessorFor(
+      'complex',
+      complexRepositoryGetter,
+    );
     this.registerInclusionResolver('complex', this.complex.inclusionResolver);
-    this.apartment = this.createBelongsToAccessorFor('apartment', apartmentRepositoryGetter,);
-    this.registerInclusionResolver('apartment', this.apartment.inclusionResolver);
+    this.apartment = this.createBelongsToAccessorFor(
+      'apartment',
+      apartmentRepositoryGetter,
+    );
+    this.registerInclusionResolver(
+      'apartment',
+      this.apartment.inclusionResolver,
+    );
   }
 }

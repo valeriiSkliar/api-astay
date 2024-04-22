@@ -1,9 +1,10 @@
-import { Review, ReviewRelations } from '../../models/review.model';
+import {Review, ReviewRelations} from '../../models/review.model';
 
-export function calculateAverageRating(reviews: (Review & ReviewRelations)[]): number {
+export function calculateAverageRating(
+  reviews: (Review & ReviewRelations)[],
+): number {
   const totalRating = reviews.reduce((sum, review) => {
     return sum + review.reiting_score;
   }, 0);
-  return Math.round(totalRating / reviews.length * 100) / 100;
+  return Math.round((totalRating / reviews.length) * 100) / 100;
 }
-

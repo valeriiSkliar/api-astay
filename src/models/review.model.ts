@@ -11,7 +11,6 @@ export class Review extends Entity {
     id: true,
     generated: true,
   })
-  
   id?: number;
   @property({
     type: 'string',

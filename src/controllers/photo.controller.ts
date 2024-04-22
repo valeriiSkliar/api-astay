@@ -47,9 +47,6 @@ export class PhotoController {
     return this.photoRepository.create(photo);
   }
 
-
-
-
   @get('/api/photos/count')
   @response(200, {
     description: 'Photo model count',
@@ -95,7 +92,6 @@ export class PhotoController {
     photo: Photo,
     @param.where(Photo) where?: Where<Photo>,
   ): Promise<Count> {
-
     return this.photoRepository.updateAll(photo, where);
   }
 
@@ -166,8 +162,8 @@ export class PhotoController {
             items: {
               type: 'object',
               properties: {
-                id: { type: 'number' },
-                order_number: { type: 'number' },
+                id: {type: 'number'},
+                order_number: {type: 'number'},
               },
               required: ['id', 'order_number'],
             },
@@ -176,15 +172,23 @@ export class PhotoController {
       },
     })
     orderUpdates: Array<{id: number; order_number: number}>,
-  ):Promise<Photo[]> {
+  ): Promise<Photo[]> {
     console.log(orderUpdates);
     //  await Promise.all(orderUpdates.map(async (orderUpdate) => {
     //    this.photoRepository.updateById(orderUpdate.id, {
     //      order_number: orderUpdate.order_number,
     //  })}));
-    await Promise.all(orderUpdates.map(async (orderUpdate) => this.photoRepository.updateById(orderUpdate.id, {
-      order_number: orderUpdate.order_number,
-    })));
-    return await Promise.all(orderUpdates.map(async (orderUpdate) => this.photoRepository.findById(orderUpdate.id)));
+    await Promise.all(
+      orderUpdates.map(async orderUpdate =>
+        this.photoRepository.updateById(orderUpdate.id, {
+          order_number: orderUpdate.order_number,
+        }),
+      ),
+    );
+    return await Promise.all(
+      orderUpdates.map(async orderUpdate =>
+        this.photoRepository.findById(orderUpdate.id),
+      ),
+    );
   }
 }

@@ -6,7 +6,9 @@ var seed;
 var fs = require('fs');
 var path = require('path');
 var Promise;
-var {generateComplexesContent} = require('./utiles/generateComplexesContent.js');
+var {
+  generateComplexesContent,
+} = require('./utiles/generateComplexesContent.js');
 
 /**
  * We receive the dbmigrate dependency from dbmigrate initially.
@@ -23,7 +25,7 @@ exports.up = function (db) {
   var filePath = path.join(__dirname, 'sqls', '20240329165205-Complex-up.sql');
   return new Promise(async function (resolve, reject) {
     var tableName = 'Complex';
-    fs.writeFileSync(filePath,await generateComplexesContent(tableName));
+    fs.writeFileSync(filePath, await generateComplexesContent(tableName));
     fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
       if (err) return reject(err);
       console.log('received data: ' + data);

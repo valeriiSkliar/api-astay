@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Complex,
-  Photo,
-} from '../models';
+import {Complex, Photo} from '../models';
 import {ComplexRepository} from '../repositories';
 
 export class ComplexPhotoController {
   constructor(
-    @repository(ComplexRepository) protected complexRepository: ComplexRepository,
-  ) { }
+    @repository(ComplexRepository)
+    protected complexRepository: ComplexRepository,
+  ) {}
 
   @get('/complexes/{id}/photos', {
     responses: {
@@ -61,11 +59,12 @@ export class ComplexPhotoController {
           schema: getModelSchemaRef(Photo, {
             title: 'NewPhotoInComplex',
             exclude: ['id'],
-            optional: ['complex_id']
+            optional: ['complex_id'],
           }),
         },
       },
-    }) photo: Omit<Photo, 'id'>,
+    })
+    photo: Omit<Photo, 'id'>,
   ): Promise<Photo> {
     return this.complexRepository.images(id).create(photo);
   }

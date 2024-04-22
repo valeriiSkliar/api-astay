@@ -23,7 +23,7 @@ import {TransferRepository} from '../repositories';
 export class TransferController {
   constructor(
     @repository(TransferRepository)
-    public transferRepository : TransferRepository,
+    public transferRepository: TransferRepository,
   ) {}
 
   @post('/api/transfers')
@@ -52,9 +52,7 @@ export class TransferController {
     description: 'Transfer model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Transfer) where?: Where<Transfer>,
-  ): Promise<Count> {
+  async count(@param.where(Transfer) where?: Where<Transfer>): Promise<Count> {
     return this.transferRepository.count(where);
   }
 
@@ -106,7 +104,8 @@ export class TransferController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Transfer, {exclude: 'where'}) filter?: FilterExcludingWhere<Transfer>
+    @param.filter(Transfer, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Transfer>,
   ): Promise<Transfer> {
     return this.transferRepository.findById(id, filter);
   }
@@ -127,7 +126,7 @@ export class TransferController {
     transfer: Transfer,
   ): Promise<void> {
     console.log('transfer', transfer);
-    
+
     await this.transferRepository.updateById(id, transfer);
   }
 

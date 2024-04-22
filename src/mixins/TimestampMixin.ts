@@ -1,5 +1,5 @@
 import {Constructor} from '@loopback/core';
-import { DefaultCrudRepository, Entity } from '@loopback/repository';
+import {DefaultCrudRepository, Entity} from '@loopback/repository';
 
 export function TimestampMixin<T extends Entity, ID, Relations extends object>(
   BaseRepositoryClass: Constructor<DefaultCrudRepository<T, ID, Relations>>,

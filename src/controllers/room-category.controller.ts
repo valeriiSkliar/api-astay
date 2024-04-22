@@ -23,7 +23,7 @@ import {RoomCategoryRepository} from '../repositories';
 export class RoomCategoryController {
   constructor(
     @repository(RoomCategoryRepository)
-    public roomCategoryRepository : RoomCategoryRepository,
+    public roomCategoryRepository: RoomCategoryRepository,
   ) {}
 
   @post('/api/room-categories')
@@ -106,7 +106,8 @@ export class RoomCategoryController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(RoomCategory, {exclude: 'where'}) filter?: FilterExcludingWhere<RoomCategory>
+    @param.filter(RoomCategory, {exclude: 'where'})
+    filter?: FilterExcludingWhere<RoomCategory>,
   ): Promise<RoomCategory> {
     return this.roomCategoryRepository.findById(id, filter);
   }

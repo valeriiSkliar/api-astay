@@ -30,7 +30,6 @@ export class Photo extends Entity {
   })
   url: string;
 
-
   @property({
     type: 'object',
     required: false,
@@ -41,7 +40,6 @@ export class Photo extends Entity {
     s1920: string;
     s1366: string;
   };
-
 
   // @property({
   //   type: 'string',
@@ -75,11 +73,9 @@ export class Photo extends Entity {
 
   [prop: string]: any;
 
-  constructor(
-    data?: Partial<Photo>) {
-        super(data);
+  constructor(data?: Partial<Photo>) {
+    super(data);
   }
-
 }
 
 export interface PhotoRelations {}

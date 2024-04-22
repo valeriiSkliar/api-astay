@@ -72,10 +72,9 @@ export class FileUploadController {
               },
             },
           },
-        }
-      }
+        },
+      },
     },
-
   })
   async fileUpload(
     @requestBody.file()
@@ -86,10 +85,9 @@ export class FileUploadController {
       this.handler(request, response, (err: unknown) => {
         if (err) reject(err);
         else {
-          const {files, fields} = FileUploadController.getFilesAndFields(request);
-          this.createPhotosEnteties(files, fields)
-            .then(resolve)
-            .catch(reject);
+          const {files, fields} =
+            FileUploadController.getFilesAndFields(request);
+          this.createPhotosEnteties(files, fields).then(resolve).catch(reject);
         }
       });
     });
@@ -97,40 +95,54 @@ export class FileUploadController {
 
   private async createPhotosEnteties(
     files: Array<any>,
-    fields: object
+    fields: object,
   ): Promise<object> {
     const photos = files.map(async (f: any, i: number) => {
       const sizes = [
-        {name:'s650', scales: {width: 650, height: 650}},
-        {name:'s720', scales: {width: 720, height: 480}},
-        {name:'s1920', scales: {width: 1920, height: 1080}},
-        {name:'s1366', scales: {width: 1366, height: 768}}
+        {name: 's650', scales: {width: 650, height: 650}},
+        {name: 's720', scales: {width: 720, height: 480}},
+        {name: 's1920', scales: {width: 1920, height: 1080}},
+        {name: 's1366', scales: {width: 1366, height: 768}},
       ];
       // const {apartment_id, complex_id} = fields;
       const uploadFolderPath = f.path.split('/').slice(0, -1).join('/');
-      const originalPath = path.join(uploadFolderPath, 'original', `${f.filename}_${'original'}.webp`);
+      const originalPath = path.join(
+        uploadFolderPath,
+        'original',
+        `${f.filename}_${'original'}.webp`,
+      );
       const uploadFolder = path.dirname(originalPath);
       if (!fs.existsSync(path.join(uploadFolderPath, 'original'))) {
-        fs.mkdirSync(path.join(uploadFolderPath, 'original'), {recursive: true});
+        fs.mkdirSync(path.join(uploadFolderPath, 'original'), {
+          recursive: true,
+        });
       }
-      await sharp(f.path)
-      .webp({quality: 50})
-      .toFile(originalPath);
+      await sharp(f.path).webp({quality: 50}).toFile(originalPath);
 
       const photoSizes: Record<string, string | null> = {};
       const createSizes = async () => {
-        await Promise.all(sizes.map(async ({name, scales}) => {
-          const targetPath =  path.join(uploadFolderPath, name, `${f.filename}_${name}.webp`);
-          if (!fs.existsSync(path.join(uploadFolderPath, name))) {
-            fs.mkdirSync(path.join(uploadFolderPath, name), {recursive: true});
-          }
-          const result = await sharp(originalPath)
-            .resize(scales.width, scales.height)
-            .webp({quality: 70})
-            .toFile(targetPath);
-            photoSizes[name] = result ? `${BASE_URL}${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, "/").slice(2)}` : null;
-        }))
-      }
+        await Promise.all(
+          sizes.map(async ({name, scales}) => {
+            const targetPath = path.join(
+              uploadFolderPath,
+              name,
+              `${f.filename}_${name}.webp`,
+            );
+            if (!fs.existsSync(path.join(uploadFolderPath, name))) {
+              fs.mkdirSync(path.join(uploadFolderPath, name), {
+                recursive: true,
+              });
+            }
+            const result = await sharp(originalPath)
+              .resize(scales.width, scales.height)
+              .webp({quality: 70})
+              .toFile(targetPath);
+            photoSizes[name] = result
+              ? `${BASE_URL}${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, '/').slice(2)}`
+              : null;
+          }),
+        );
+      };
       await createSizes();
       // sizes.forEach(async ({name, scales}) => {
       //   const targetPath =  path.join(uploadFolderPath, name, `${f.filename}_${name}.webp`);
@@ -146,7 +158,6 @@ export class FileUploadController {
 
       // })
 
-
       //   fs.unlink(f.path, (err) => {
       //     if (err) {
       //       console.error(`Failed to delete the original image: ${f.path}`, err);
@@ -160,13 +171,12 @@ export class FileUploadController {
         fileName: f.filename,
         order_number: i,
         sizes: photoSizes,
-        url: `${BASE_URL}${path.relative(path.dirname(__dirname), originalPath).replace(/\\/g, "/").slice(2)}`,
+        url: `${BASE_URL}${path.relative(path.dirname(__dirname), originalPath).replace(/\\/g, '/').slice(2)}`,
         ...fields,
       } as DataObject<Photo>);
     });
-    return Promise.all(photos).then((photos) => photos as object);
+    return Promise.all(photos).then(photos => photos as object);
   }
-
 
   /**
    * Get files and fields for the request
@@ -195,6 +205,3 @@ export class FileUploadController {
     return {files, fields: JSON.parse(request.body.body)};
   }
 }
-
-
-

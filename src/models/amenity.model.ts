@@ -30,8 +30,15 @@ export class Amenity extends Entity {
 
   @property({
     type: 'object',
-    default: { en: { title: 'new Amenity'}, ru: { title: 'новое удобство'}},
-    mysql: { columnName: 'translations', dataType: 'json', dataLength: null, dataPrecision: null, dataScale: null, nullable: 'Y'},
+    default: {en: {title: 'new Amenity'}, ru: {title: 'новое удобство'}},
+    mysql: {
+      columnName: 'translations',
+      dataType: 'json',
+      dataLength: null,
+      dataPrecision: null,
+      dataScale: null,
+      nullable: 'Y',
+    },
   })
   translations?: object;
 
