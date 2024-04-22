@@ -1,6 +1,7 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
 import {Booking} from './booking.model';
 import {Review} from './review.model';
+import {Transfer} from './transfer.model';
 
 @model({settings: {strict: false}})
 export class Customer extends Entity {
@@ -15,13 +16,7 @@ export class Customer extends Entity {
     type: 'string',
     required: true,
   })
-  firstName: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  lastName: string;
+  name: string;
 
   @property({
     type: 'string',
@@ -31,64 +26,80 @@ export class Customer extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
   phone?: string;
 
   @property({
     type: 'date',
-    default: '',
+    required: false,
   })
-  birthDate?: string;
+  birthDate?: Date;
 
   @property({
     type: 'string',
     default: '',
+    required: false,
   })
   address?: string;
 
   @property({
     type: 'string',
     default: '',
+    required: false,
   })
   country?: string;
 
   @property({
     type: 'string',
     enum: ['Male', 'Female', 'Other'],
+    required: false,
   })
   gender?: string;
 
   @property({
     type: 'string',
     default: '',
+    required: false,
   })
   additionalContactInfo?: string;
 
   @property({
     type: 'string',
     default: '',
+    required: false,
   })
   additionalNotes?: string;
 
   @property({
     type: 'date',
     default: () => new Date(),
+    required: false,
   })
-  firstRequest: string;
+  firstRequest?: string;
 
   @property({
     type: 'string',
     enum: ['Active', 'Blocked', 'Pending'],
     default: 'Pending',
+    required: false,
   })
-  accountStatus: string;
+  accountStatus?: string;
+
+  @property({
+    type: 'date',
+    default: () => new Date(),
+  })
+  createdAt?: Date;
 
   @hasMany(() => Booking)
   bookings: Booking[];
 
   @hasMany(() => Review)
   reviews: Review[];
+
+  @hasMany(() => Transfer)
+  transfers: Transfer[];
   [prop: string]: any;
 
   constructor(data?: Partial<Customer>) {

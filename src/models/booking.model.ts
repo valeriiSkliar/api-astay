@@ -1,4 +1,10 @@
-import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
+import {
+  Entity,
+  model,
+  property,
+  belongsTo,
+  hasMany,
+} from '@loopback/repository';
 import {Apartment} from './apartment.model';
 import {Transfer} from './transfer.model';
 
@@ -31,9 +37,9 @@ export class Booking extends Entity {
   @property({
     type: 'string',
     required: true,
+    mysql: {dataType: 'text', nullable: 'Y'},
   })
   phoneNumber?: string;
-
 
   @property({
     type: 'date',
@@ -51,13 +57,13 @@ export class Booking extends Entity {
     type: 'boolean',
     default: false,
   })
-  paymmentStatus?: boolean;
+  paymentStatus?: boolean;
 
   @property({
     type: 'boolean',
     required: false,
   })
-  isAvailableApart?: boolean
+  isAvailableApart?: boolean;
 
   @property({
     type: 'string',
@@ -107,6 +113,12 @@ export class Booking extends Entity {
 
   @belongsTo(() => Apartment)
   apartmentId: number;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  token?: string;
 
   @property({
     type: 'date',

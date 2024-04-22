@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Customer} from './customer.model';
 
 @model({settings: {strict: false}})
 export class Transfer extends Entity {
@@ -53,11 +54,6 @@ export class Transfer extends Entity {
   @property({
     type: 'string',
   })
-  departure?: string;
-
-  @property({
-    type: 'string',
-  })
   time?: string;
 
   @property({
@@ -102,6 +98,9 @@ export class Transfer extends Entity {
     type: 'number',
   })
   bookingId?: number;
+
+  @belongsTo(() => Customer)
+  customerId: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

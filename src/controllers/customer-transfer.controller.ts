@@ -15,19 +15,21 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {Booking, Transfer} from '../models';
-import {BookingRepository} from '../repositories';
+import {
+  Customer,
+  Transfer,
+} from '../models';
+import {CustomerRepository} from '../repositories';
 
-export class BookingTransferController {
+export class CustomerTransferController {
   constructor(
-    @repository(BookingRepository)
-    protected bookingRepository: BookingRepository,
-  ) {}
+    @repository(CustomerRepository) protected customerRepository: CustomerRepository,
+  ) { }
 
-  @get('/bookings/{id}/transfers', {
+  @get('/customers/{id}/transfers', {
     responses: {
       '200': {
-        description: 'Array of Booking has many Transfer',
+        description: 'Array of Customer has many Transfer',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Transfer)},
@@ -40,39 +42,38 @@ export class BookingTransferController {
     @param.path.number('id') id: number,
     @param.query.object('filter') filter?: Filter<Transfer>,
   ): Promise<Transfer[]> {
-    return this.bookingRepository.transfers(id).find(filter);
+    return this.customerRepository.transfers(id).find(filter);
   }
 
-  @post('/bookings/{id}/transfers', {
+  @post('/customers/{id}/transfers', {
     responses: {
       '200': {
-        description: 'Booking model instance',
+        description: 'Customer model instance',
         content: {'application/json': {schema: getModelSchemaRef(Transfer)}},
       },
     },
   })
   async create(
-    @param.path.number('id') id: typeof Booking.prototype.id,
+    @param.path.number('id') id: typeof Customer.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(Transfer, {
-            title: 'NewTransferInBooking',
+            title: 'NewTransferInCustomer',
             exclude: ['id'],
-            optional: ['bookingId'],
+            optional: ['customerId']
           }),
         },
       },
-    })
-    transfer: Omit<Transfer, 'id'>,
+    }) transfer: Omit<Transfer, 'id'>,
   ): Promise<Transfer> {
-    return this.bookingRepository.transfers(id).create(transfer);
+    return this.customerRepository.transfers(id).create(transfer);
   }
 
-  @patch('/bookings/{id}/transfers', {
+  @patch('/customers/{id}/transfers', {
     responses: {
       '200': {
-        description: 'Booking.Transfer PATCH success count',
+        description: 'Customer.Transfer PATCH success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
@@ -87,25 +88,23 @@ export class BookingTransferController {
       },
     })
     transfer: Partial<Transfer>,
-    @param.query.object('where', getWhereSchemaFor(Transfer))
-    where?: Where<Transfer>,
+    @param.query.object('where', getWhereSchemaFor(Transfer)) where?: Where<Transfer>,
   ): Promise<Count> {
-    return this.bookingRepository.transfers(id).patch(transfer, where);
+    return this.customerRepository.transfers(id).patch(transfer, where);
   }
 
-  @del('/bookings/{id}/transfers', {
+  @del('/customers/{id}/transfers', {
     responses: {
       '200': {
-        description: 'Booking.Transfer DELETE success count',
+        description: 'Customer.Transfer DELETE success count',
         content: {'application/json': {schema: CountSchema}},
       },
     },
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Transfer))
-    where?: Where<Transfer>,
+    @param.query.object('where', getWhereSchemaFor(Transfer)) where?: Where<Transfer>,
   ): Promise<Count> {
-    return this.bookingRepository.transfers(id).delete(where);
+    return this.customerRepository.transfers(id).delete(where);
   }
 }

@@ -1,6 +1,7 @@
 import {
   Count,
   CountSchema,
+  EntityNotFoundError,
   Filter,
   FilterExcludingWhere,
   repository,
@@ -16,20 +17,36 @@ import {
   del,
   requestBody,
   response,
+  Request,
+  RestBindings,
+  HttpErrors,
 } from '@loopback/rest';
-import {Booking} from '../models';
-import {BookingRepository} from '../repositories';
+import {Booking, Transfer} from '../models';
+import {BookingRepository, CustomerRepository, TransferRepository} from '../repositories';
+import {inject} from '@loopback/core';
+import bcrypt from "bcrypt";
 
 export class BookingController {
   constructor(
     @repository(BookingRepository)
-    public bookingRepository : BookingRepository,
+    public bookingRepository: BookingRepository,
+    @repository(CustomerRepository)
+    public customerRepository: CustomerRepository,
+    @repository(TransferRepository)
+    public transferRepository: TransferRepository,
+    @inject(RestBindings.Http.REQUEST)
+    private req: Request & { locale: string }
+
   ) {}
 
   @post('/api/bookings')
   @response(200, {
     description: 'Booking model instance',
     content: {'application/json': {schema: getModelSchemaRef(Booking)}},
+  })
+  @response(400, {
+    description: 'Could not create booking',
+    content: {'application/json': {schema: {message: 'string', code: 'number'}}},
   })
   async create(
     @requestBody({
@@ -44,7 +61,80 @@ export class BookingController {
     })
     booking: Omit<Booking, 'id'>,
   ): Promise<Booking> {
-    return this.bookingRepository.create(booking);
+    if (!booking.name || !booking.email) {
+      throw new Error('Name and email are required');
+    }
+    const existingCustomer = await this.customerRepository.findOne({
+      where: {
+        email: booking.email,
+      },
+    });
+    const customer = existingCustomer
+      ? existingCustomer
+      : await this.customerRepository.create(
+          {
+            name: booking.name,
+            email: booking.email,
+            phone: booking.phoneNumber ? booking.phoneNumber : null,
+          }
+        );
+
+        const saltRounds = 10; // TODO: make this configurable
+        const token = await bcrypt.hash(`${booking.apartmentId}-${Date.now()}`, saltRounds);
+        booking.token = token;
+        const locale = this.req?.locale;
+        const paymentUrl = `${process.env.FRONTEND_URL}/${locale || 'en'}/apartment/payment/${booking.apartmentId}`;
+        booking.paymentUrl = paymentUrl;
+
+        booking.customerId = customer.id;
+
+
+    if (booking?.transfer) {
+      const transferData = Object.assign({}, booking.transfer);
+      // delete booking.transfer;
+      const [from, to] = await Promise.all(
+        ['from', 'to'].map(async field => {
+          if (transferData[field]) {
+            const transfer = Object.assign(
+              {
+                type: field === 'from' ? 'arrival' : 'departure',
+                customerId: customer.id,
+              },
+              transferData[field],
+            );
+            const newTransfer = await this.transferRepository.create(transfer);
+            booking.transfer[field] = newTransfer;
+          }
+        }),
+      );
+    }
+
+    try {
+      const {transfer, ...bookingValues} = booking;
+    const newBooking = await this.bookingRepository.create(bookingValues);
+    if (transfer?.from || transfer?.to ) {
+      const transfers = Object.values(transfer) as Transfer[];
+      await Promise.all(
+        transfers.map(async (transfer: Transfer) => {
+          if (transfer) {
+            await this.transferRepository.updateById(transfer.id, {bookingId: newBooking.id});
+          }
+        })
+      )
+
+    }
+    return newBooking;
+
+
+  } catch (error) {
+    if (error instanceof EntityNotFoundError) {
+      throw new HttpErrors.NotFound(error.message);
+    } else if (error.name === 'ValidationError') {
+      throw new HttpErrors.BadRequest(error.message);
+    } else {
+      throw error;
+    }
+  }
   }
 
   @get('/api/bookings/count')
@@ -52,9 +142,7 @@ export class BookingController {
     description: 'Booking model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Booking) where?: Where<Booking>,
-  ): Promise<Count> {
+  async count(@param.where(Booking) where?: Where<Booking>): Promise<Count> {
     return this.bookingRepository.count(where);
   }
 
@@ -106,7 +194,8 @@ export class BookingController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Booking, {exclude: 'where'}) filter?: FilterExcludingWhere<Booking>
+    @param.filter(Booking, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Booking>,
   ): Promise<Booking> {
     return this.bookingRepository.findById(id, filter);
   }

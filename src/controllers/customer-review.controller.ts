@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Customer,
-  Review,
-} from '../models';
+import {Customer, Review} from '../models';
 import {CustomerRepository} from '../repositories';
 
 export class CustomerReviewController {
   constructor(
-    @repository(CustomerRepository) protected customerRepository: CustomerRepository,
-  ) { }
+    @repository(CustomerRepository)
+    protected customerRepository: CustomerRepository,
+  ) {}
 
   @get('/customers/{id}/reviews', {
     responses: {
@@ -61,11 +59,12 @@ export class CustomerReviewController {
           schema: getModelSchemaRef(Review, {
             title: 'NewReviewInCustomer',
             exclude: ['id'],
-            optional: ['customerId']
+            optional: ['customerId'],
           }),
         },
       },
-    }) review: Omit<Review, 'id'>,
+    })
+    review: Omit<Review, 'id'>,
   ): Promise<Review> {
     return this.customerRepository.reviews(id).create(review);
   }
@@ -88,7 +87,8 @@ export class CustomerReviewController {
       },
     })
     review: Partial<Review>,
-    @param.query.object('where', getWhereSchemaFor(Review)) where?: Where<Review>,
+    @param.query.object('where', getWhereSchemaFor(Review))
+    where?: Where<Review>,
   ): Promise<Count> {
     return this.customerRepository.reviews(id).patch(review, where);
   }
@@ -103,7 +103,8 @@ export class CustomerReviewController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Review)) where?: Where<Review>,
+    @param.query.object('where', getWhereSchemaFor(Review))
+    where?: Where<Review>,
   ): Promise<Count> {
     return this.customerRepository.reviews(id).delete(where);
   }

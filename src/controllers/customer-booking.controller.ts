@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Customer,
-  Booking,
-} from '../models';
+import {Customer, Booking} from '../models';
 import {CustomerRepository} from '../repositories';
 
 export class CustomerBookingController {
   constructor(
-    @repository(CustomerRepository) protected customerRepository: CustomerRepository,
-  ) { }
+    @repository(CustomerRepository)
+    protected customerRepository: CustomerRepository,
+  ) {}
 
   @get('/customers/{id}/bookings', {
     responses: {
@@ -61,11 +59,12 @@ export class CustomerBookingController {
           schema: getModelSchemaRef(Booking, {
             title: 'NewBookingInCustomer',
             exclude: ['id'],
-            optional: ['customerId']
+            optional: ['customerId'],
           }),
         },
       },
-    }) booking: Omit<Booking, 'id'>,
+    })
+    booking: Omit<Booking, 'id'>,
   ): Promise<Booking> {
     return this.customerRepository.bookings(id).create(booking);
   }
@@ -88,7 +87,8 @@ export class CustomerBookingController {
       },
     })
     booking: Partial<Booking>,
-    @param.query.object('where', getWhereSchemaFor(Booking)) where?: Where<Booking>,
+    @param.query.object('where', getWhereSchemaFor(Booking))
+    where?: Where<Booking>,
   ): Promise<Count> {
     return this.customerRepository.bookings(id).patch(booking, where);
   }
@@ -103,7 +103,8 @@ export class CustomerBookingController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Booking)) where?: Where<Booking>,
+    @param.query.object('where', getWhereSchemaFor(Booking))
+    where?: Where<Booking>,
   ): Promise<Count> {
     return this.customerRepository.bookings(id).delete(where);
   }
