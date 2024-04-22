@@ -12,3 +12,4 @@ export * from './room-category.repository';
 export * from './applications.repository';
 export * from './host-contacts.repository';
 export * from './transfer.repository';
+export * from './booking.repository';

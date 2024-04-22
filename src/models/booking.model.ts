@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, belongsTo} from '@loopback/repository';
+import {Apartment} from './apartment.model';
 
 @model({settings: {strict: false}})
 export class Booking extends Entity {
@@ -10,52 +11,80 @@ export class Booking extends Entity {
   id?: number;
 
   @property({
-    type: 'date',
+    type: 'string',
     required: true,
   })
-  checkInDate: string;
+  name: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  email: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  phone?: string;
+
 
   @property({
     type: 'date',
-    required: true,
+    required: false,
   })
-  checkOutDate: string;
+  checkIn?: string;
+
+  @property({
+    type: 'date',
+    required: false,
+  })
+  checkOut?: string;
 
   @property({
     type: 'boolean',
     default: false,
   })
-  paymmentStatus: boolean;
+  paymmentStatus?: boolean;
 
   @property({
     type: 'string',
   })
   paymentUrl?: string;
 
+
+
   @property({
     type: 'number',
+    required: false,
   })
   bookingAmount?: number;
 
   @property({
     type: 'number',
+    required: false,
   })
   price?: number;
 
   @property({
     type: 'number',
+    required: false,
   })
   oldPrice?: number;
 
   @property({
-    type: 'date',
+    type: 'number',
   })
-  startDate?: string;
+  customerId?: number;
+
+  @belongsTo(() => Apartment)
+  apartmentId: number;
 
   @property({
     type: 'date',
+    default: () => new Date(),
   })
-  endDate?: string;
+  createdAt?: Date;
   // Define well-known properties here
 
   // Indexer property to allow additional data

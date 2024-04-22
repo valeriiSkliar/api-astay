@@ -1,13 +1,15 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Booking} from './booking.model';
+import {Review} from './review.model';
 
 @model({settings: {strict: false}})
 export class Customer extends Entity {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -82,6 +84,11 @@ export class Customer extends Entity {
   })
   accountStatus: string;
 
+  @hasMany(() => Booking)
+  bookings: Booking[];
+
+  @hasMany(() => Review)
+  reviews: Review[];
   [prop: string]: any;
 
   constructor(data?: Partial<Customer>) {

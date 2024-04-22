@@ -60,8 +60,10 @@ export class ReviewController {
       throw new Error('Reviews for listing are null or undefined');
     }
 
+    // TODO: if apartment does not exist, throw an error and delete review
+
     const averageRating = calculateAverageRating(reviewsForListing);
-    
+
     await this.apartmentRepository
       .updateById(listingId, {
         review_scores_rating: averageRating,

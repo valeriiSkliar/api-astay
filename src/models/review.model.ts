@@ -100,6 +100,11 @@ export class Review extends Entity {
 
   @belongsTo(() => Complex, {name: 'complex'})
   complex_id: number;
+
+  @property({
+    type: 'number',
+  })
+  customerId?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data

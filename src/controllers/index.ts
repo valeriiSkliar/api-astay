@@ -27,3 +27,7 @@ export * from './host-contacts.controller';
 export * from './transfer.controller';
 export * from './review-apartment.controller';
 export * from './review-complex.controller';
+export * from './booking.controller';
+export * from './customer-booking.controller';
+export * from './booking-apartment.controller';
+export * from './customer-review.controller';
