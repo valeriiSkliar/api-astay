@@ -5,7 +5,13 @@ import {
   HasManyRepositoryFactory,
 } from '@loopback/repository';
 import {LocalMysqlDataSource} from '../datasources';
-import {Customer, CustomerRelations, Booking, Review, Transfer} from '../models';
+import {
+  Customer,
+  CustomerRelations,
+  Booking,
+  Review,
+  Transfer,
+} from '../models';
 import {BookingRepository} from './booking.repository';
 import {ReviewRepository} from './review.repository';
 import {TransferRepository} from './transfer.repository';
@@ -25,18 +31,29 @@ export class CustomerRepository extends DefaultCrudRepository<
     typeof Customer.prototype.id
   >;
 
-  public readonly transfers: HasManyRepositoryFactory<Transfer, typeof Customer.prototype.id>;
+  public readonly transfers: HasManyRepositoryFactory<
+    Transfer,
+    typeof Customer.prototype.id
+  >;
 
   constructor(
     @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
     @repository.getter('BookingRepository')
     protected bookingRepositoryGetter: Getter<BookingRepository>,
     @repository.getter('ReviewRepository')
-    protected reviewRepositoryGetter: Getter<ReviewRepository>, @repository.getter('TransferRepository') protected transferRepositoryGetter: Getter<TransferRepository>,
+    protected reviewRepositoryGetter: Getter<ReviewRepository>,
+    @repository.getter('TransferRepository')
+    protected transferRepositoryGetter: Getter<TransferRepository>,
   ) {
     super(Customer, dataSource);
-    this.transfers = this.createHasManyRepositoryFactoryFor('transfers', transferRepositoryGetter,);
-    this.registerInclusionResolver('transfers', this.transfers.inclusionResolver);
+    this.transfers = this.createHasManyRepositoryFactoryFor(
+      'transfers',
+      transferRepositoryGetter,
+    );
+    this.registerInclusionResolver(
+      'transfers',
+      this.transfers.inclusionResolver,
+    );
     this.reviews = this.createHasManyRepositoryFactoryFor(
       'reviews',
       reviewRepositoryGetter,

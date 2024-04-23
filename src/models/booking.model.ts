@@ -121,6 +121,12 @@ export class Booking extends Entity {
   token?: string;
 
   @property({
+    type: 'boolean',
+    default: false,
+  })
+  isArchived?: boolean;
+
+  @property({
     type: 'date',
     default: () => new Date(),
   })

@@ -1,22 +1,13 @@
-import {
-  repository,
-} from '@loopback/repository';
-import {
-  param,
-  get,
-  getModelSchemaRef,
-} from '@loopback/rest';
-import {
-  Transfer,
-  Customer,
-} from '../models';
+import {repository} from '@loopback/repository';
+import {param, get, getModelSchemaRef} from '@loopback/rest';
+import {Transfer, Customer} from '../models';
 import {TransferRepository} from '../repositories';
 
 export class TransferCustomerController {
   constructor(
     @repository(TransferRepository)
     public transferRepository: TransferRepository,
-  ) { }
+  ) {}
 
   @get('/transfers/{id}/customer', {
     responses: {

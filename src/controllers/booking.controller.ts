@@ -6,6 +6,9 @@ import {
   FilterExcludingWhere,
   repository,
   Where,
+  Transaction,
+  DefaultTransactionalRepository,
+  IsolationLevel,
 } from '@loopback/repository';
 import {
   post,
@@ -22,9 +25,13 @@ import {
   HttpErrors,
 } from '@loopback/rest';
 import {Booking, Customer, Transfer} from '../models';
-import {BookingRepository, CustomerRepository, TransferRepository} from '../repositories';
+import {
+  BookingRepository,
+  CustomerRepository,
+  TransferRepository,
+} from '../repositories';
 import {inject} from '@loopback/core';
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
 export class BookingController {
   constructor(
@@ -35,18 +42,21 @@ export class BookingController {
     @repository(TransferRepository)
     public transferRepository: TransferRepository,
     @inject(RestBindings.Http.REQUEST)
-    private req: Request & { locale: string }
-
+    private req: Request & {locale: string},
   ) {}
 
   @post('/api/bookings')
   @response(200, {
     description: 'Booking model instance',
-    content: {'application/json': {schema: {message: 'string', code: 'number'}}},
+    content: {
+      'application/json': {schema: {message: 'string', code: 'number'}},
+    },
   })
   @response(400, {
     description: 'Could not create booking',
-    content: {'application/json': {schema: {message: 'string', code: 'number'}}},
+    content: {
+      'application/json': {schema: {message: 'string', code: 'number'}},
+    },
   })
   async create(
     @requestBody({
@@ -60,100 +70,28 @@ export class BookingController {
       },
     })
     booking: Omit<Booking, 'id'>,
-  ): Promise<{message: string, code: number}> {
-    if (!booking.name || !booking.email) {
-      throw new Error('Name and email are required');
-    }
-    let customer: Customer | null = null;
-    try {
-      customer = await this.customerRepository.findOne({
-        where: {
-          email: booking.email,
-        },
+  ): Promise<{message: string; code: number}> {
+      const transaction =
+      await this.bookingRepository.dataSource.beginTransaction({
+        isolationLevel:IsolationLevel.READ_COMMITTED,
+        timeout: 30000,
       });
-    } catch (error) {
-      throw new Error('Error finding customer: ' + error.message);
-    }
-    if (!customer) {
-      try {
-        customer = await this.customerRepository.create(
-          {
-            name: booking.name,
-            email: booking.email,
-            phone: booking.phoneNumber ? booking.phoneNumber : null,
-          }
-        );
-      } catch (error) {
-        throw new Error('Error creating customer: ' + error.message);
-      }
-    }
 
     try {
-      const saltRounds = 10; // TODO: make this configurable
-      const token = await bcrypt.hash(`${booking.apartmentId}-${Date.now()}`, saltRounds);
-      booking.token = token;
-      const locale = this.req?.locale;
-      const paymentUrl = `${process.env.FRONTEND_URL}/${locale || 'en'}/apartment/payment/${booking.apartmentId}/${token}`;
-      booking.paymentUrl = paymentUrl;
-
+      this.validateBookingData(booking);
+      const customer = await this.ensureCustomer(booking);
+      const transfers = await this.createTransfers(booking.transfer, customer, transaction as Transaction);
+      await this.handleTokenAndPaymentUrl(booking);
       booking.customerId = customer.id;
-
-
-      if (booking?.transfer) {
-        const transferData = Object.assign({}, booking.transfer);
-        // delete booking.transfer;
-        const [from, to] = await Promise.all(
-          ['from', 'to'].map(async field => {
-            if (transferData[field]) {
-              const transfer = Object.assign(
-                {
-                  type: field === 'from' ? 'arrival' : 'departure',
-                  customerId: customer?.id,
-                },
-                transferData[field],
-              );
-              const newTransfer = await this.transferRepository.create(transfer);
-              booking.transfer[field] = newTransfer;
-            }
-          }),
-        );
-      }
-
-      const {transfer, ...bookingValues} = booking;
-      let newBooking: Booking;
-      try {
-        newBooking = await this.bookingRepository.create(bookingValues);
-      } catch (error) {
-        throw new Error('Error creating booking: ' + error.message);
-      }
-      if (transfer?.from || transfer?.to ) {
-        const transfers = Object.values(transfer) as Transfer[];
-        await Promise.all(
-          transfers.map(async (transfer: Transfer) => {
-            if (transfer) {
-              try {
-                await this.transferRepository.updateById(transfer.id, {bookingId: newBooking.id});
-              } catch (error) {
-                throw new Error('Error updating transfer: ' + error.message);
-              }
-            }
-          })
-        )
-
-      }
+      const newBooking = await this.createBooking(booking, transaction as Transaction);
+      await this.linkTransfersWithBooking(transfers, newBooking, transaction as Transaction);
+      await transaction.commit();
       return {message: 'Booking created', code: 200};
     } catch (error) {
-      if (error instanceof EntityNotFoundError) {
-        throw new HttpErrors.NotFound(error.message);
-      } else if (error.name === 'ValidationError') {
-        throw new HttpErrors.BadRequest(error.message);
-      } else {
-        throw error;
-      }
+      await transaction.rollback();
+      return {message: error.message, code: error.code};
     }
   }
-
-
 
   @get('/api/bookings/count')
   @response(200, {
@@ -253,5 +191,140 @@ export class BookingController {
   })
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.bookingRepository.deleteById(id);
+  }
+
+  private async validateBookingData(booking: Omit<Booking, 'id'>) {
+    if (!booking.name || !booking.email) {
+      throw new Error('Name and email are required');
+    }
+  }
+
+  private async ensureCustomer(
+    booking: Omit<Booking, 'id'>,
+  ): Promise<Customer> {
+    let customer = await this.findCustomerByEmail(booking.email);
+    if (!customer) {
+      customer = await this.createCustomer(booking);
+    }
+    return customer;
+  }
+
+  private async findCustomerByEmail(email: string): Promise<Customer | null> {
+    try {
+      return await this.customerRepository.findOne({where: {email}});
+    } catch (error) {
+      throw new Error('Error finding customer: ' + error.message);
+    }
+  }
+
+  private async createCustomer(
+    booking: Omit<Booking, 'id'>,
+  ): Promise<Customer> {
+    try {
+      return await this.customerRepository.create({
+        name: booking.name,
+        email: booking.email,
+        phone: booking.phoneNumber || null,
+      });
+    } catch (error) {
+      throw new Error('Error creating customer: ' + error.message);
+    }
+  }
+
+  private async handleTokenAndPaymentUrl(booking: Omit<Booking, 'id'>) {
+    const saltRounds = 10; // TODO: make this configurable
+    const token = await bcrypt.hash(
+      `${booking.apartmentId}-${Date.now()}`,
+      saltRounds,
+    );
+    booking.token = token;
+    const locale = this.req?.locale;
+    const paymentUrl = `${process.env.FRONTEND_URL}/${locale || 'en'}/apartment/payment/${booking.apartmentId}/${token}`;
+    booking.paymentUrl = paymentUrl;
+  }
+
+  private async handleBookingAndTransfers(
+    booking: Omit<Booking, 'id'>,
+  ): Promise<{message: string; code: number}> {
+    const {transfer, ...bookingValues} = booking;
+    console.log('booking', booking);
+    let newBooking = await this.createBooking(bookingValues);
+    await this.updateTransfers(transfer, newBooking);
+    return {message: 'Booking created', code: 200};
+  }
+
+  private async createBooking(booking: any, transaction?: Transaction): Promise<Booking> {
+    const {transfer, ...bookingValues} = booking;
+    try {
+      return await this.bookingRepository.create(bookingValues, {
+        transaction
+      });
+    } catch (error) {
+      throw new Error('Error creating booking: ' + error.message);
+    }
+  }
+
+  private async updateTransfers(transfer: any, newBooking: Booking) {
+    console.log('transfer', transfer);
+    if (transfer?.from || transfer?.to) {
+      const transfers = Object.values(transfer) as Transfer[];
+      await Promise.all(
+        transfers.map(async (transfer: Transfer) => {
+          if (transfer) {
+            try {
+              await this.transferRepository.updateById(transfer.id, {
+                bookingId: newBooking.id,
+              });
+            } catch (error) {
+              throw new Error('Error updating transfer: ' + error.message);
+            }
+          }
+        }),
+      );
+    }
+  }
+  private async createTransfers(
+    transferData: any,
+    customer: Customer,
+    transaction: Transaction,
+  ): Promise<Transfer[]> {
+    if (!transferData) {
+      return [];
+    }
+
+    const transferPromises = ['from', 'to'].map(async field => {
+      if (transferData[field]) {
+        const transferDetails = {
+          type: field === 'from' ? 'arrival' : 'departure',
+          customerId: customer.id,
+          ...transferData[field],
+        };
+        return await this.transferRepository.create(transferDetails, {
+          transaction
+        });
+      }
+      return null;
+    });
+
+    const transfers = await Promise.all(transferPromises);
+    return transfers.filter(t => t !== null) as Transfer[];
+  }
+
+  private async linkTransfersWithBooking(
+    transfers: Transfer[],
+    booking: Booking,
+    transaction: Transaction,
+  ) {
+    const updatePromises = transfers.map(transfer => {
+      if (transfer) {
+        return this.transferRepository.updateById(transfer.id, {
+          bookingId: booking.id,
+        },
+          {
+            transaction
+          });
+      }
+    });
+    await Promise.all(updatePromises);
   }
 }

@@ -15,16 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Customer,
-  Transfer,
-} from '../models';
+import {Customer, Transfer} from '../models';
 import {CustomerRepository} from '../repositories';
 
 export class CustomerTransferController {
   constructor(
-    @repository(CustomerRepository) protected customerRepository: CustomerRepository,
-  ) { }
+    @repository(CustomerRepository)
+    protected customerRepository: CustomerRepository,
+  ) {}
 
   @get('/customers/{id}/transfers', {
     responses: {
@@ -61,11 +59,12 @@ export class CustomerTransferController {
           schema: getModelSchemaRef(Transfer, {
             title: 'NewTransferInCustomer',
             exclude: ['id'],
-            optional: ['customerId']
+            optional: ['customerId'],
           }),
         },
       },
-    }) transfer: Omit<Transfer, 'id'>,
+    })
+    transfer: Omit<Transfer, 'id'>,
   ): Promise<Transfer> {
     return this.customerRepository.transfers(id).create(transfer);
   }
@@ -88,7 +87,8 @@ export class CustomerTransferController {
       },
     })
     transfer: Partial<Transfer>,
-    @param.query.object('where', getWhereSchemaFor(Transfer)) where?: Where<Transfer>,
+    @param.query.object('where', getWhereSchemaFor(Transfer))
+    where?: Where<Transfer>,
   ): Promise<Count> {
     return this.customerRepository.transfers(id).patch(transfer, where);
   }
@@ -103,7 +103,8 @@ export class CustomerTransferController {
   })
   async delete(
     @param.path.number('id') id: number,
-    @param.query.object('where', getWhereSchemaFor(Transfer)) where?: Where<Transfer>,
+    @param.query.object('where', getWhereSchemaFor(Transfer))
+    where?: Where<Transfer>,
   ): Promise<Count> {
     return this.customerRepository.transfers(id).delete(where);
   }
