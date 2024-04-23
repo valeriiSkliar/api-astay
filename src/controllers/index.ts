@@ -34,3 +34,4 @@ export * from './customer-review.controller';
 export * from './booking-transfer.controller';
 export * from './transfer-customer.controller';
 export * from './customer-transfer.controller';
+export * from './booking-customer.controller';

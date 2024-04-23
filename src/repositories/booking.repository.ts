@@ -6,9 +6,10 @@ import {
   HasManyRepositoryFactory,
 } from '@loopback/repository';
 import {LocalMysqlDataSource} from '../datasources';
-import {Booking, BookingRelations, Apartment, Transfer} from '../models';
+import {Booking, BookingRelations, Apartment, Transfer, Customer} from '../models';
 import {ApartmentRepository} from './apartment.repository';
 import {TransferRepository} from './transfer.repository';
+import {CustomerRepository} from './customer.repository';
 
 export class BookingRepository extends DefaultCrudRepository<
   Booking,
@@ -25,6 +26,8 @@ export class BookingRepository extends DefaultCrudRepository<
     typeof Booking.prototype.id
   >;
 
+  public readonly customer: BelongsToAccessor<Customer, typeof Booking.prototype.id>;
+
   constructor(
     @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
     @repository.getter('BookingRepository')
@@ -32,9 +35,11 @@ export class BookingRepository extends DefaultCrudRepository<
     @repository.getter('ApartmentRepository')
     protected apartmentRepositoryGetter: Getter<ApartmentRepository>,
     @repository.getter('TransferRepository')
-    protected transferRepositoryGetter: Getter<TransferRepository>,
+    protected transferRepositoryGetter: Getter<TransferRepository>, @repository.getter('CustomerRepository') protected customerRepositoryGetter: Getter<CustomerRepository>,
   ) {
     super(Booking, dataSource);
+    this.customer = this.createBelongsToAccessorFor('customer', customerRepositoryGetter,);
+    this.registerInclusionResolver('customer', this.customer.inclusionResolver);
     this.transfers = this.createHasManyRepositoryFactoryFor(
       'transfers',
       transferRepositoryGetter,

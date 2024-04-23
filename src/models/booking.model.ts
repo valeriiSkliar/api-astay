@@ -7,6 +7,7 @@ import {
 } from '@loopback/repository';
 import {Apartment} from './apartment.model';
 import {Transfer} from './transfer.model';
+import {Customer} from './customer.model';
 
 @model({settings: {strict: false}})
 export class Booking extends Entity {
@@ -106,13 +107,11 @@ export class Booking extends Entity {
   })
   oldPrice?: number;
 
-  @property({
-    type: 'number',
-  })
-  customerId?: number;
-
   @belongsTo(() => Apartment)
   apartmentId: number;
+
+  @belongsTo(() => Customer)
+  customerId?: number;
 
   @property({
     type: 'string',
