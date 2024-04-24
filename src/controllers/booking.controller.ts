@@ -198,6 +198,8 @@ export class BookingController {
     if (!booking.status) {
       return {status: 'error', data: []};
     }
+    try {
+
     const updatedBooking = await this.bookingService.handleBookingStatus(booking);
 
     const updatedBookingData: DataObject<Booking> = {
@@ -222,6 +224,10 @@ export class BookingController {
       throw new HttpErrors.NotFound('Booking not found');
     }
     return {status: 'success', data: updatedBookings};
+
+  } catch (error) {
+    return {status: 'error', data: []};
+  }
   }
 
   @put('/api/bookings/{id}')

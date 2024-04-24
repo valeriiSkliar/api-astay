@@ -42,8 +42,10 @@ export class BookingService {
     booking: Partial<Booking>,
   ) {
     const {checkIn, checkOut} = booking;
-    const bookingDates: Date[] = [];
-    
+    if (!checkIn || !checkOut) {
+      throw new Error('CheckIn and CheckOut dates are required');
+    }
+    const bookingDates = this.getPeriod(new Date(checkIn), new Date(checkOut));
 
     return {
       ...booking,
@@ -58,5 +60,15 @@ export class BookingService {
       ...booking,
       bookingDates:[],
     }
+  }
+  private getPeriod(start: Date, end: Date) {
+    const dates: Date[] = [];
+    let currentDate = dayjs(start);
+    const endDate = dayjs(end);
+    while (currentDate.isBefore(endDate) || currentDate.isSame(endDate)) {
+      dates.push(currentDate.toDate());
+      currentDate = currentDate.add(1, 'day');
+    }
+    return dates;
   }
 }
