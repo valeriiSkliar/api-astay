@@ -39,11 +39,9 @@ export class BookingService {
     return {
       ...booking,
       isArchived: true,
-    }
+    };
   }
-  private async confirmBookingDates(
-    booking: Partial<Booking>,
-  ) {
+  private async confirmBookingDates(booking: Partial<Booking>) {
     const {checkIn, checkOut} = booking;
     if (!checkIn || !checkOut) {
       throw new Error('CheckIn and CheckOut dates are required');
@@ -53,16 +51,14 @@ export class BookingService {
     return {
       ...booking,
       bookingDates: bookingDates,
-    }
+    };
   }
 
-  private async cancelBookingDates(
-    booking: Partial<Booking>,
-  ) {
+  private async cancelBookingDates(booking: Partial<Booking>) {
     return {
       ...booking,
-      bookingDates:[],
-    }
+      bookingDates: [],
+    };
   }
   private getPeriod(start: Date, end: Date) {
     const dates: Date[] = [];

@@ -20,11 +20,14 @@ import {
 } from '@loopback/rest';
 import {Apartment} from '../models';
 import {ApartmentRepository} from '../repositories';
+import {service} from '@loopback/core';
+import {ApartmentService} from '../services';
 
 export class ApartmentController {
   constructor(
     @repository(ApartmentRepository)
     public apartmentRepository: ApartmentRepository,
+    @service(ApartmentService) private apartmentService: ApartmentService,
   ) {}
 
   @post('/api/apartments')
@@ -115,7 +118,7 @@ export class ApartmentController {
       relation: 'reviews',
       scope: reviewsScope,
     });
-    const apartments = await this.apartmentRepository.find(filter);
+    const apartments = await this.apartmentService.find(filter);
     if (!apartments) {
       throw new Error('apartments is null');
     }

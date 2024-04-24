@@ -193,41 +193,38 @@ export class BookingController {
     })
     booking: Booking,
   ): Promise<{status: string; data: Booking[]}> {
-    console.log('booking', booking);
-    console.log('id', id);
     if (!booking.status) {
       return {status: 'error', data: []};
     }
     try {
+      const updatedBooking =
+        await this.bookingService.handleBookingStatus(booking);
 
-    const updatedBooking = await this.bookingService.handleBookingStatus(booking);
+      const updatedBookingData: DataObject<Booking> = {
+        ...updatedBooking,
+      };
 
-    const updatedBookingData: DataObject<Booking> = {
-      ...updatedBooking,
-    };
+      await this.bookingRepository.updateById(id, updatedBookingData);
 
-    await this.bookingRepository.updateById(id, updatedBookingData);
-
-    const updatedBookings = await this.bookingRepository.find({
-      include: [
-        {relation: 'customer'},
-        {
-          relation: 'transfers',
-          scope: {
-            where: {isArchived: false},
+      const updatedBookings = await this.bookingRepository.find({
+        include: [
+          {relation: 'customer'},
+          {
+            relation: 'transfers',
+            scope: {
+              where: {isArchived: false},
+            },
           },
-        },
-        {relation: 'apartment'},
-      ],
-    });
-    if (!updatedBookings) {
-      throw new HttpErrors.NotFound('Booking not found');
+          {relation: 'apartment'},
+        ],
+      });
+      if (!updatedBookings) {
+        throw new HttpErrors.NotFound('Booking not found');
+      }
+      return {status: 'success', data: updatedBookings};
+    } catch (error) {
+      return {status: 'error', data: []};
     }
-    return {status: 'success', data: updatedBookings};
-
-  } catch (error) {
-    return {status: 'error', data: []};
-  }
   }
 
   @put('/api/bookings/{id}')
