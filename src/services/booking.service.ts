@@ -30,7 +30,10 @@ export class BookingService {
     return booking;
   }
   async pendingBooking(booking: Partial<Booking>) {
-    throw booking;
+    return {
+      ...booking,
+      bookingDates: [],
+    };
   }
   async archiveBooking(booking: Partial<Booking>) {
     return {

@@ -121,6 +121,9 @@ export class Apartment extends Entity {
   })
   number_of_reviews?: number;
 
+  @property.array(Date)
+  disabledDates?: Date[] = [];
+
   @property({
     type: 'number',
     default: 365,
