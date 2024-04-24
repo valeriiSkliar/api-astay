@@ -157,8 +157,16 @@ export class BookingController {
   }
 
   @patch('/api/bookings/{id}')
-  @response(204, {
+  @response(200, {
     description: 'Booking PATCH success',
+    content: {
+      'application/json': {
+        schema: {
+          status: 'string',
+          data: getModelSchemaRef(Booking, {partial: true}),
+        },
+      },
+    }
   })
   async updateById(
     @param.path.number('id') id: number,
@@ -170,8 +178,27 @@ export class BookingController {
       },
     })
     booking: Booking,
-  ): Promise<void> {
+  ): Promise<{status: string; data: Booking[]}> {
+    console.log('booking', booking);
+    console.log('id', id);
+
     await this.bookingRepository.updateById(id, booking);
+    const updatedBooking = await this.bookingRepository.find({
+      include: [
+        {relation: 'customer'},
+        {
+          relation: 'transfers',
+          scope: {
+            where: { isArchived: false },
+          }
+        },
+        {relation: 'apartment'},
+      ],
+    });
+    if (!updatedBooking) {
+      throw new HttpErrors.NotFound('Booking not found');
+    }
+    return {status: 'success', data: updatedBooking};
   }
 
   @put('/api/bookings/{id}')
