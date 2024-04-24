@@ -13,6 +13,7 @@ import {Amenity} from './amenity.model';
 import {RoomType} from './room-type.model';
 import {Review} from './review.model';
 import {RoomCategory} from './room-category.model';
+import {Booking} from './booking.model';
 
 @model()
 export class Apartment extends Entity {
@@ -67,8 +68,8 @@ export class Apartment extends Entity {
   @property.array(String)
   neighborhood?: string[] = [];
 
-  @property.array(Date)
-  disabledDates?: Date[];
+  // @property.array(Date)
+  // disabledDates?: Date[];
 
   @property.array(Date)
   hostDisabledDates?: Date[];
@@ -146,6 +147,9 @@ export class Apartment extends Entity {
 
   @belongsTo(() => RoomCategory, {name: 'roomCategory'})
   roomCategoryId: number;
+
+  @hasMany(() => Booking)
+  bookings: Booking[];
 
   @property({
     type: 'date',

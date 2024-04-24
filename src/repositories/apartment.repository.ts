@@ -18,6 +18,7 @@ import {
   RoomType,
   Review,
   RoomCategory,
+  Booking,
 } from '../models';
 import {PhotoRepository} from './photo.repository';
 import {ComplexRepository} from './complex.repository';
@@ -27,6 +28,7 @@ import {AmenityRepository} from './amenity.repository';
 import {RoomTypeRepository} from './room-type.repository';
 import {ReviewRepository} from './review.repository';
 import {RoomCategoryRepository} from './room-category.repository';
+import {BookingRepository} from './booking.repository';
 
 export class ApartmentRepository extends DefaultCrudRepository<
   Apartment,
@@ -67,6 +69,11 @@ export class ApartmentRepository extends DefaultCrudRepository<
     RoomCategory,
     typeof Apartment.prototype.id
   >;
+
+  public readonly bookings: HasManyRepositoryFactory<
+    Booking,
+    typeof Apartment.prototype.id
+  >;
   // TODO: Configuring a referencesMany relation
   // TODO: Need format for sql query string
   // TODO: Add indexex to DB tables
@@ -88,8 +95,15 @@ export class ApartmentRepository extends DefaultCrudRepository<
     protected amenityRepositoryGetter: Getter<AmenityRepository>,
     @repository.getter('RoomCategoryRepository')
     protected roomCategoryRepositoryGetter: Getter<RoomCategoryRepository>,
+    @repository.getter('BookingRepository')
+    protected bookingRepositoryGetter: Getter<BookingRepository>,
   ) {
     super(Apartment, dataSource);
+    this.bookings = this.createHasManyRepositoryFactoryFor(
+      'bookings',
+      bookingRepositoryGetter,
+    );
+    this.registerInclusionResolver('bookings', this.bookings.inclusionResolver);
     this.roomCategory = this.createBelongsToAccessorFor(
       'roomCategory',
       roomCategoryRepositoryGetter,

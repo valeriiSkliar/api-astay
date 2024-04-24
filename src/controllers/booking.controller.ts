@@ -9,6 +9,7 @@ import {
   Transaction,
   DefaultTransactionalRepository,
   IsolationLevel,
+  DataObject,
 } from '@loopback/repository';
 import {
   post,
@@ -30,8 +31,9 @@ import {
   CustomerRepository,
   TransferRepository,
 } from '../repositories';
-import {inject} from '@loopback/core';
+import {inject, service} from '@loopback/core';
 import bcrypt from 'bcrypt';
+import {BookingService} from '../services';
 
 export class BookingController {
   constructor(
@@ -43,6 +45,7 @@ export class BookingController {
     public transferRepository: TransferRepository,
     @inject(RestBindings.Http.REQUEST)
     private req: Request & {locale: string},
+    @service(BookingService) private bookingService: BookingService,
   ) {}
 
   @post('/api/bookings')
@@ -71,20 +74,31 @@ export class BookingController {
     })
     booking: Omit<Booking, 'id'>,
   ): Promise<{message: string; code: number}> {
-      const transaction =
+    const transaction =
       await this.bookingRepository.dataSource.beginTransaction({
-        isolationLevel:IsolationLevel.READ_COMMITTED,
+        isolationLevel: IsolationLevel.READ_COMMITTED,
         timeout: 30000,
       });
 
     try {
       this.validateBookingData(booking);
       const customer = await this.ensureCustomer(booking);
-      const transfers = await this.createTransfers(booking.transfer, customer, transaction as Transaction);
+      const transfers = await this.createTransfers(
+        booking.transfer,
+        customer,
+        transaction as Transaction,
+      );
       await this.handleTokenAndPaymentUrl(booking);
       booking.customerId = customer.id;
-      const newBooking = await this.createBooking(booking, transaction as Transaction);
-      await this.linkTransfersWithBooking(transfers, newBooking, transaction as Transaction);
+      const newBooking = await this.createBooking(
+        booking,
+        transaction as Transaction,
+      );
+      await this.linkTransfersWithBooking(
+        transfers,
+        newBooking,
+        transaction as Transaction,
+      );
       await transaction.commit();
       return {message: 'Booking created', code: 200};
     } catch (error) {
@@ -166,7 +180,7 @@ export class BookingController {
           data: getModelSchemaRef(Booking, {partial: true}),
         },
       },
-    }
+    },
   })
   async updateById(
     @param.path.number('id') id: number,
@@ -181,24 +195,33 @@ export class BookingController {
   ): Promise<{status: string; data: Booking[]}> {
     console.log('booking', booking);
     console.log('id', id);
+    if (!booking.status) {
+      return {status: 'error', data: []};
+    }
+    const updatedBooking = await this.bookingService.handleBookingStatus(booking);
 
-    await this.bookingRepository.updateById(id, booking);
-    const updatedBooking = await this.bookingRepository.find({
+    const updatedBookingData: DataObject<Booking> = {
+      ...updatedBooking,
+    };
+
+    await this.bookingRepository.updateById(id, updatedBookingData);
+
+    const updatedBookings = await this.bookingRepository.find({
       include: [
         {relation: 'customer'},
         {
           relation: 'transfers',
           scope: {
-            where: { isArchived: false },
-          }
+            where: {isArchived: false},
+          },
         },
         {relation: 'apartment'},
       ],
     });
-    if (!updatedBooking) {
+    if (!updatedBookings) {
       throw new HttpErrors.NotFound('Booking not found');
     }
-    return {status: 'success', data: updatedBooking};
+    return {status: 'success', data: updatedBookings};
   }
 
   @put('/api/bookings/{id}')
@@ -280,11 +303,14 @@ export class BookingController {
     return {message: 'Booking created', code: 200};
   }
 
-  private async createBooking(booking: any, transaction?: Transaction): Promise<Booking> {
+  private async createBooking(
+    booking: any,
+    transaction?: Transaction,
+  ): Promise<Booking> {
     const {transfer, ...bookingValues} = booking;
     try {
       return await this.bookingRepository.create(bookingValues, {
-        transaction
+        transaction,
       });
     } catch (error) {
       throw new Error('Error creating booking: ' + error.message);
@@ -327,7 +353,7 @@ export class BookingController {
           ...transferData[field],
         };
         return await this.transferRepository.create(transferDetails, {
-          transaction
+          transaction,
         });
       }
       return null;
@@ -344,12 +370,15 @@ export class BookingController {
   ) {
     const updatePromises = transfers.map(transfer => {
       if (transfer) {
-        return this.transferRepository.updateById(transfer.id, {
-          bookingId: booking.id,
-        },
+        return this.transferRepository.updateById(
+          transfer.id,
           {
-            transaction
-          });
+            bookingId: booking.id,
+          },
+          {
+            transaction,
+          },
+        );
       }
     });
     await Promise.all(updatePromises);

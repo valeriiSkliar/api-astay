@@ -128,7 +128,7 @@ export class Booking extends Entity {
 
   @property({
     type: 'string',
-    enum: ["pending" , "completed" , "cancelled" , "archived" , "paid" , "confirmed"],
+    enum: ['pending', 'cancelled', 'archived', 'confirmed'],
     default: 'pending',
     required: false,
   })
@@ -156,10 +156,12 @@ export class Booking extends Entity {
   @property({
     type: 'number',
     required: false,
-    default: 0
+    default: 0,
   })
   actuallyPaid: number;
 
+  @property.array(Date)
+  bookingDates?: Date[];
 
   @property({
     type: 'date',
