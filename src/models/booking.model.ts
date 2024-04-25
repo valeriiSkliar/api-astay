@@ -38,7 +38,7 @@ export class Booking extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
     mysql: {dataType: 'text', nullable: 'Y'},
   })
   phoneNumber?: string;
