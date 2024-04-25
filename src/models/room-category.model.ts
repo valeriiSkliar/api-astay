@@ -9,16 +9,16 @@ export class RoomCategory extends Entity {
   })
   id?: number;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  category: string;
+  // @property({
+  //   type: 'string',
+  //   required: true,
+  // })
+  // category: string;
 
-  @property({
-    type: 'string',
-  })
-  description?: string;
+  // @property({
+  //   type: 'string',
+  // })
+  // description?: string;
 
   @property({
     type: 'string',
@@ -28,8 +28,8 @@ export class RoomCategory extends Entity {
   @property({
     type: 'object',
     default: {
-      en: {category: 'new Category'},
-      ru: {category: 'новая категория'},
+      en: {category: 'new Category', description: 'new Category'},
+      ru: {category: 'новая категория', description: 'новая категория'},
     },
     mysql: {
       columnName: 'translations',
