@@ -291,7 +291,7 @@ export class BookingController {
       saltRounds,
     );
     booking.token = token;
-    const locale = this.req.get('locale') || 'en';
+    const locale = this.req.get('locale') || booking.locale || 'en';
     const paymentUrl = `${process.env.FRONTEND_URL}/${locale}/apartment/payment/${booking.apartmentId}/${token}`;
     booking.paymentUrl = paymentUrl;
   }
