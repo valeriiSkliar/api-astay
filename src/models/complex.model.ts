@@ -12,8 +12,7 @@ import {Review} from './review.model';
 import {ComplexServices} from './complex-services.model';
 import {Locations} from './locations.model';
 
-// TODO : rebuild relation with Photo model
-// TODO : add relation key "images" with Photo model
+// TODO : add isVisible property
 
 @model()
 export class Complex extends Entity {

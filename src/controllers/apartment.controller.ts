@@ -186,7 +186,7 @@ export class ApartmentController {
     filter = {...filter, include};
 
     try {
-      return await this.apartmentRepository.findById(id, filter);
+      return await this.apartmentService.findById(id, filter);
     } catch (err) {
       if (err instanceof EntityNotFoundError) {
         throw err;
