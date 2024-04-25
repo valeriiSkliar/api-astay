@@ -9,17 +9,31 @@ export class ApartmentService extends Entity {
   })
   id?: string;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  name: string;
+  // @property({
+  //   type: 'string',
+  //   required: true,
+  // })
+  // name: string;
+
+  // @property({
+  //   type: 'string',
+  //   required: true,
+  // })
+  // descroption: string;
 
   @property({
-    type: 'string',
-    required: true,
+    type: 'object',
+    default: {en: {name: 'new Service', description: 'new Service'}, ru : {name: 'новое удобство', description: 'новое удобство'}},
+    mysql: {
+      columnName: 'translations',
+      dataType: 'json',
+      dataLength: null,
+      dataPrecision: null,
+      dataScale: null,
+      nullable: 'Y',
+    },
   })
-  descroption: string;
+  translations?: object;
 
   @property({
     type: 'number',
