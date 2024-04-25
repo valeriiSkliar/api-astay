@@ -37,11 +37,11 @@ export class Complex extends Entity {
   // })
   // description?: string;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  address: string;
+  // @property({
+  //   type: 'string',
+  //   required: true,
+  // })
+  // address: string;
 
   @property({
     type: 'array',
