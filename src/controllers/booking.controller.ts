@@ -79,7 +79,7 @@ export class BookingController {
         isolationLevel: IsolationLevel.READ_COMMITTED,
         timeout: 30000,
       });
-
+      // TODO: add rafactor error handling
     try {
       this.validateBookingData(booking);
       const customer = await this.ensureCustomer(booking);
@@ -196,7 +196,14 @@ export class BookingController {
     if (!booking.status) {
       return {status: 'error', data: []};
     }
+
     try {
+      const isApartmentExist = await this.bookingService.isApartmentExist(
+        booking.apartmentId,
+      );
+      if (!isApartmentExist) {
+        throw new HttpErrors.NotFound('Apartment not exist');
+      }
       const updatedBooking =
         await this.bookingService.handleBookingStatus(booking);
 
@@ -247,6 +254,12 @@ export class BookingController {
   }
 
   private async validateBookingData(booking: Omit<Booking, 'id'>) {
+      const isApartmentExist = await this.bookingService.isApartmentExist(
+        booking.apartmentId,
+      );
+      if (!isApartmentExist) {
+        return false;
+      }
     if (!booking.name || !booking.email) {
       throw new Error('Name and email are required');
     }

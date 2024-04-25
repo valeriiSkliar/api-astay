@@ -1,7 +1,7 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {BookingRepository} from '../repositories';
-import {Booking} from '../models';
+import {Apartment, Booking} from '../models';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
@@ -12,6 +12,8 @@ export class BookingService {
   constructor(
     @repository('BookingRepository')
     public bookingRepository: BookingRepository,
+    @repository('ApartmentRepository')
+    public apartmentRepository: BookingRepository,
   ) {}
 
   async handleBookingStatus(booking: Partial<Booking>) {
@@ -69,5 +71,17 @@ export class BookingService {
       currentDate = currentDate.add(1, 'day');
     }
     return dates;
+  }
+
+  public async isApartmentExist(apartmentId: number) {
+    console.log('apartmentId', apartmentId);
+    if (!apartmentId) {
+      throw new Error('Apartment ID is required');
+    }
+    const isApartmentExist = await this.apartmentRepository.exists(apartmentId, {
+      where: {isArchived: false},
+    })
+    console.log('isApartmentExist', isApartmentExist);
+    return isApartmentExist;
   }
 }

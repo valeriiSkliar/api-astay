@@ -47,7 +47,12 @@ export class HostContacts extends Entity {
   @property({
     type: 'string',
   })
-  cardOwnerName?: string;
+  firstCardOwnerName?: string;
+
+  @property({
+    type: 'string',
+  })
+  secondCardOwnerName?: string;
 
   @property({
     type: 'string',

@@ -62,7 +62,7 @@ export class ApplicationController {
       },
     })
     contactData: Applications,
-  ): Promise<{message: string}> {
+  ): Promise<{status: string; message: string}> {
     // TODO: turn on this code when ready
 
     // const clientIp = this.request.ip;
@@ -113,19 +113,19 @@ export class ApplicationController {
       //   throw new Error('Failed to fetch data from external API');
       // }
 
-      return {message: 'Form submitted successfully!'};
+      return {status: 'success', message: 'Form submitted successfully!'};
     } catch (err) {
       if (err.name === 'ValidationError') {
         const fields: string[] = Object.keys(err.details.constraints);
         const errorMessages = fields.map(
           field => err.details.constraints[field],
         );
-        throw new HttpErrors.UnprocessableEntity(errorMessages.join(', '));
+        return {status: 'error', message: errorMessages.join(', ')};
       }
       if (err.message) {
-        throw new HttpErrors.BadRequest(err.message);
+        return {status: 'error', message: err.message};
       } else {
-        throw new HttpErrors.InternalServerError('Error processing form data');
+        return {status: 'error', message: 'Error processing form data'};
       }
     }
   }

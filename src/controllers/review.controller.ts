@@ -45,9 +45,9 @@ export class ReviewController {
       },
     })
     review: Omit<Review, 'id'>,
-  ): Promise<Review> {
+  ): Promise<{status: string; message: string}> {
     const listingId = review.listing_id;
-
+    try {
     const newReview = await this.reviewRepository.create(review);
     if (!newReview) {
       throw new Error('New review is null or undefined');
@@ -75,7 +75,10 @@ export class ReviewController {
         );
       });
 
-    return newReview;
+    return {status: 'success', message: 'Review created successfully'};
+    } catch (error) {
+      return {status: 'error', message: error.message};
+    }
   }
 
   @get('/api/reviews/count')
