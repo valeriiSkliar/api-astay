@@ -291,8 +291,8 @@ export class BookingController {
       saltRounds,
     );
     booking.token = token;
-    const locale = this.req?.locale;
-    const paymentUrl = `${process.env.FRONTEND_URL}/${locale || 'en'}/apartment/payment/${booking.apartmentId}/${token}`;
+    const locale = this.req.get('locale') || 'en';
+    const paymentUrl = `${process.env.FRONTEND_URL}/${locale}/apartment/payment/${booking.apartmentId}/${token}`;
     booking.paymentUrl = paymentUrl;
   }
 
@@ -300,7 +300,6 @@ export class BookingController {
     booking: Omit<Booking, 'id'>,
   ): Promise<{message: string; code: number}> {
     const {transfer, ...bookingValues} = booking;
-    console.log('booking', booking);
     let newBooking = await this.createBooking(bookingValues);
     await this.updateTransfers(transfer, newBooking);
     return {message: 'Booking created', code: 200};
@@ -310,8 +309,9 @@ export class BookingController {
     booking: any,
     transaction?: Transaction,
   ): Promise<Booking> {
-    const {transfer, ...bookingValues} = booking;
+    const {transfer, locale, ...bookingValues} = booking;
     try {
+      console.log('bookingValues', bookingValues);
       return await this.bookingRepository.create(bookingValues, {
         transaction,
       });
