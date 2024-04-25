@@ -277,7 +277,7 @@ export class BookingController {
       return await this.customerRepository.create({
         name: booking.name,
         email: booking.email,
-        phone: booking.phoneNumber || null,
+        phone: booking?.phoneNumber || '',
       });
     } catch (error) {
       throw new Error('Error creating customer: ' + error.message);

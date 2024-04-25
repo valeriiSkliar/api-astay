@@ -27,6 +27,7 @@ export class Customer extends Entity {
   @property({
     type: 'string',
     required: false,
+    default: '',
   })
   phone?: string;
 
