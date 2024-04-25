@@ -24,20 +24,20 @@ export class Apartment extends Entity {
   })
   id?: number;
 
-  @property({
-    type: 'string',
-    required: false,
-    default: 'AstayHome',
-  })
-  name?: string; //1
+  // @property({
+  //   type: 'string',
+  //   required: false,
+  //   default: 'AstayHome',
+  // })
+  // name?: string; //1
 
-  @property({
-    type: 'string',
-    mysql: {
-      dataType: 'text',
-    },
-  })
-  description?: string; //2
+  // @property({
+  //   type: 'string',
+  //   mysql: {
+  //     dataType: 'text',
+  //   },
+  // })
+  // description?: string; //2
 
   @property({
     type: 'string',

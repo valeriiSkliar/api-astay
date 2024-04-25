@@ -23,25 +23,25 @@ export class Complex extends Entity {
   })
   id?: number;
 
-  @property({
-    type: 'string',
-    required: false,
-    default: 'Add complex name',
-  })
-  name?: string;
+  // @property({
+  //   type: 'string',
+  //   required: false,
+  //   default: 'Add complex name',
+  // })
+  // name?: string;
 
-  @property({
-    type: 'string',
-    required: false,
-    default: 'Add complex description',
-  })
-  description?: string;
+  // @property({
+  //   type: 'string',
+  //   required: false,
+  //   default: 'Add complex description',
+  // })
+  // description?: string;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  address: string;
+  // @property({
+  //   type: 'string',
+  //   required: true,
+  // })
+  // address: string;
 
   @property({
     type: 'array',

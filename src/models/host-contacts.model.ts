@@ -67,6 +67,16 @@ export class HostContacts extends Entity {
   @property({
     type: 'string',
   })
+  firstCardProvider?: string;
+
+  @property({
+    type: 'string',
+  })
+  secondCardProvider?: string;
+
+  @property({
+    type: 'string',
+  })
   secondCardDescription?: string;
 
   constructor(data?: Partial<HostContacts>) {

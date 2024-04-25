@@ -9,17 +9,17 @@ export class RoomType extends Entity {
   })
   id?: number;
 
-  @property({
-    type: 'string',
-    required: true,
-  })
-  type: string;
+  // @property({
+  //   type: 'string',
+  //   required: true,
+  // })
+  // type: string;
 
-  @property({
-    type: 'string',
-    default: null,
-  })
-  description?: string;
+  // @property({
+  //   type: 'string',
+  //   default: null,
+  // })
+  // description?: string;
 
   @property({
     type: 'string',
@@ -29,7 +29,7 @@ export class RoomType extends Entity {
 
   @property({
     type: 'object',
-    default: {en: {category: 'new Type'}, ru: {category: 'новый тип'}},
+    default: {en: {category: 'new Type', description: 'new Type'}, ru: {category: 'новый тип', description: 'новый тип'}},
     mysql: {
       columnName: 'translations',
       dataType: 'json',

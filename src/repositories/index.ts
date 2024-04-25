@@ -3,7 +3,6 @@ export * from './complex.repository';
 export * from './apartment.repository';
 export * from './amenity.repository';
 export * from './customer.repository';
-export * from './test.repository';
 export * from './photo.repository';
 export * from './room-type.repository';
 export * from './review.repository';
