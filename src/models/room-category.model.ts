@@ -22,6 +22,7 @@ export class RoomCategory extends Entity {
 
   @property({
     type: 'string',
+    default: 'red',
   })
   color?: string;
 
