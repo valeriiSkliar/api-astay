@@ -268,7 +268,7 @@ export class BookingController {
     const token = body.token;
 
     if (!token) {
-      return { status: 'No any token in request. Token is required to proceed.', data: [] as Booking[] };
+      return { status: 'No any token in request. Token is required to proceed.', data: null };
     }
     try {
       const booking = await this.bookingService.validateBookingToken(token);
