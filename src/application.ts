@@ -18,7 +18,6 @@ import {
   SECURITY_SCHEME_SPEC,
   UserServiceBindings,
 } from '@loopback/authentication-jwt';
-import {MongoDataSource} from './datasources';
 import {LocalMysqlDataSource} from './datasources/local-mysql.datasource';
 import {CrudRestComponent} from '@loopback/rest-crud';
 import {SubmitTrackingService} from './services';
@@ -31,9 +30,9 @@ export class ApiApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
+    this.dataSource(LocalMysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     this.component(AuthenticationComponent);
     this.component(JWTAuthenticationComponent);
-    this.dataSource(LocalMysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     // Set up the custom sequence
     this.sequence(MySequence);
     this.bind('services.submit-tracking').toClass(SubmitTrackingService);

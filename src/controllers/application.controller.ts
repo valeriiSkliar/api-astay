@@ -230,8 +230,9 @@ export class ApplicationController {
       },
     })
     applications: Applications,
-  ): Promise<void> {
+  ): Promise<Applications[]> {
     await this.applicationsRepository.updateById(id, applications);
+    return this.applicationsRepository.find({where: {isArchived: false}});
   }
 
   @put('/api/applications/{id}')

@@ -78,10 +78,31 @@ export class BookingService {
     if (!apartmentId) {
       throw new Error('Apartment ID is required');
     }
-    const isApartmentExist = await this.apartmentRepository.exists(apartmentId, {
-      where: {isArchived: false},
-    })
+    const isApartmentExist = await this.apartmentRepository.exists(
+      apartmentId,
+      {
+        where: {isArchived: false},
+      },
+    );
     console.log('isApartmentExist', isApartmentExist);
     return isApartmentExist;
+  }
+
+  public async validateBookingToken(token: string) {
+    const booking = await this.bookingRepository.find({
+      where: {
+        token:token,
+        // isArchived: false
+      },
+      include: [
+        {relation: 'apartment'},
+        {relation: 'customer'},
+        {relation: 'transfers'},
+      ],
+    });
+    if (!booking) {
+      throw new Error('Invalid booking token');
+    }
+    return booking;
   }
 }

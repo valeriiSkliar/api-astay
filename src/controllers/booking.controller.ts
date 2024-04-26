@@ -79,7 +79,7 @@ export class BookingController {
         isolationLevel: IsolationLevel.READ_COMMITTED,
         timeout: 30000,
       });
-      // TODO: add rafactor error handling
+    // TODO: add rafactor error handling
     try {
       this.validateBookingData(booking);
       const customer = await this.ensureCustomer(booking);
@@ -253,13 +253,34 @@ export class BookingController {
     await this.bookingRepository.deleteById(id);
   }
 
+  @post('/api/bookings/validate-token')
+  @response(200, {
+    description: 'Validate booking token',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Booking, {includeRelations: true}),
+      },
+    },
+  })
+  async validateBookingToken(
+    @requestBody() body: Partial<Booking>,
+  ): Promise<{status: string; data: Booking[]}> {
+    const token = body.token;
+
+    if (!token) {
+      return { status: 'No any token in request. Token is required to proceed.', data: [] as Booking[] };
+    }
+    const booking = await this.bookingService.validateBookingToken(token);
+    return { status: 'success', data: booking };
+  }
+
   private async validateBookingData(booking: Omit<Booking, 'id'>) {
-      const isApartmentExist = await this.bookingService.isApartmentExist(
-        booking.apartmentId,
-      );
-      if (!isApartmentExist) {
-        return false;
-      }
+    const isApartmentExist = await this.bookingService.isApartmentExist(
+      booking.apartmentId,
+    );
+    if (!isApartmentExist) {
+      return false;
+    }
     if (!booking.name || !booking.email) {
       throw new Error('Name and email are required');
     }

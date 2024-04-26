@@ -7,7 +7,7 @@ import {
   HasManyThroughRepositoryFactory,
   ReferencesManyAccessor,
 } from '@loopback/repository';
-import {LocalMysqlDataSource, MongoDataSource} from '../datasources';
+import {LocalMysqlDataSource} from '../datasources';
 import {
   Apartment,
   ApartmentRelations,
@@ -79,7 +79,6 @@ export class ApartmentRepository extends DefaultCrudRepository<
   // TODO: Add indexex to DB tables
 
   constructor(
-    // @inject('datasources.mongo') dataSource: MongoDataSource,
     @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
     @repository.getter('ComplexRepository')
     protected complexRepositoryGetter: Getter<ComplexRepository>,

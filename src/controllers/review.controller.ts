@@ -48,34 +48,34 @@ export class ReviewController {
   ): Promise<{status: string; message: string}> {
     const listingId = review.listing_id;
     try {
-    const newReview = await this.reviewRepository.create(review);
-    if (!newReview) {
-      throw new Error('New review is null or undefined');
-    }
+      const newReview = await this.reviewRepository.create(review);
+      if (!newReview) {
+        throw new Error('New review is null or undefined');
+      }
 
-    const reviewsForListing = await this.reviewRepository.find({
-      where: {listing_id: listingId},
-    });
-    if (!reviewsForListing) {
-      throw new Error('Reviews for listing are null or undefined');
-    }
-
-    // TODO: if apartment does not exist, throw an error and delete review
-
-    const averageRating = calculateAverageRating(reviewsForListing);
-
-    await this.apartmentRepository
-      .updateById(listingId, {
-        review_scores_rating: averageRating,
-        number_of_reviews: reviewsForListing.length,
-      })
-      .catch(error => {
-        throw new Error(
-          `Failed to update apartment with ID ${listingId}: ${error}`,
-        );
+      const reviewsForListing = await this.reviewRepository.find({
+        where: {listing_id: listingId},
       });
+      if (!reviewsForListing) {
+        throw new Error('Reviews for listing are null or undefined');
+      }
 
-    return {status: 'success', message: 'Review created successfully'};
+      // TODO: if apartment does not exist, throw an error and delete review
+
+      const averageRating = calculateAverageRating(reviewsForListing);
+
+      await this.apartmentRepository
+        .updateById(listingId, {
+          review_scores_rating: averageRating,
+          number_of_reviews: reviewsForListing.length,
+        })
+        .catch(error => {
+          throw new Error(
+            `Failed to update apartment with ID ${listingId}: ${error}`,
+          );
+        });
+
+      return {status: 'success', message: 'Review created successfully'};
     } catch (error) {
       return {status: 'error', message: error.message};
     }

@@ -39,7 +39,7 @@ const CredentialsSchema: SchemaObject = {
     },
     password: {
       type: 'string',
-      minLength: 8,
+      minLength: 5,
     },
   },
 };
@@ -143,6 +143,7 @@ export class AuthController {
     })
     newUserRequest: NewUserRequest,
   ): Promise<User> {
+    console.log(newUserRequest);
     const password = await hash(newUserRequest.password, await genSalt());
     const savedUser = await this.userRepository.create(
       _.omit(newUserRequest, 'password'),

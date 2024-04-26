@@ -23,7 +23,10 @@ export class ApartmentService extends Entity {
 
   @property({
     type: 'object',
-    default: {en: {name: 'new Service', description: 'new Service'}, ru : {name: 'новое удобство', description: 'новое удобство'}},
+    default: {
+      en: {name: 'new Service', description: 'new Service'},
+      ru: {name: 'новое удобство', description: 'новое удобство'},
+    },
     mysql: {
       columnName: 'translations',
       dataType: 'json',

@@ -4,7 +4,7 @@ import {
   repository,
   HasManyRepositoryFactory,
 } from '@loopback/repository';
-import {LocalMysqlDataSource, MongoDataSource} from '../datasources';
+import {LocalMysqlDataSource} from '../datasources';
 import {Locations, LocationsRelations, Complex} from '../models';
 import {ComplexRepository} from './complex.repository';
 
