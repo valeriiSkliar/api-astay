@@ -264,14 +264,21 @@ export class BookingController {
   })
   async validateBookingToken(
     @requestBody() body: Partial<Booking>,
-  ): Promise<{status: string; data: Booking[]}> {
+  ): Promise<{status: string; data: Booking | null}> {
     const token = body.token;
 
     if (!token) {
       return { status: 'No any token in request. Token is required to proceed.', data: [] as Booking[] };
     }
-    const booking = await this.bookingService.validateBookingToken(token);
-    return { status: 'success', data: booking };
+    try {
+      const booking = await this.bookingService.validateBookingToken(token);
+      return { status: 'success', data: booking };
+    } catch (error) {
+      return { status: 'error', data: null };
+    }
+    // const booking = await this.bookingService.validateBookingToken(token);
+
+    // return { status: 'success', data: booking };
   }
 
   private async validateBookingData(booking: Omit<Booking, 'id'>) {

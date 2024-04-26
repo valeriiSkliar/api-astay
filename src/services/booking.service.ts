@@ -89,7 +89,7 @@ export class BookingService {
   }
 
   public async validateBookingToken(token: string) {
-    const booking = await this.bookingRepository.find({
+    const booking = await this.bookingRepository.findOne({
       where: {
         token:token,
         // isArchived: false
