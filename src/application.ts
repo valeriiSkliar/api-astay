@@ -22,7 +22,7 @@ import {
 import {LocalMysqlDataSource} from './datasources/local-mysql.datasource';
 import {CrudRestComponent} from '@loopback/rest-crud';
 import {SubmitTrackingService} from './services';
-import {CronComponent} from '@loopback/cron';
+// import {CronComponent} from '@loopback/cron';
 
 export {ApplicationConfig};
 
@@ -42,7 +42,7 @@ export class ApiApplication extends BootMixin(
     this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to('2592000');
 
     // for cron jobs
-    this.component(CronComponent);
+    // this.component(CronComponent);
     // Set up default home page
     this.static('/api', path.join(__dirname, '../public'));
     this.static(

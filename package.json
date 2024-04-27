@@ -65,6 +65,7 @@
     "@types/validator": "^13.11.9",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "dayjs": "^1.11.10",
     "db-migrate-mysql": "^2.1.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
