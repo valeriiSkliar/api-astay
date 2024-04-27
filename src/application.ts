@@ -16,11 +16,13 @@ import {AuthenticationComponent} from '@loopback/authentication';
 import {
   JWTAuthenticationComponent,
   SECURITY_SCHEME_SPEC,
+  TokenServiceBindings,
   UserServiceBindings,
 } from '@loopback/authentication-jwt';
 import {LocalMysqlDataSource} from './datasources/local-mysql.datasource';
 import {CrudRestComponent} from '@loopback/rest-crud';
 import {SubmitTrackingService} from './services';
+import {CronComponent} from '@loopback/cron';
 
 export {ApplicationConfig};
 
@@ -36,7 +38,11 @@ export class ApiApplication extends BootMixin(
     // Set up the custom sequence
     this.sequence(MySequence);
     this.bind('services.submit-tracking').toClass(SubmitTrackingService);
+      // for jwt access token
+    this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to('2592000');
 
+    // for cron jobs
+    this.component(CronComponent);
     // Set up default home page
     this.static('/api', path.join(__dirname, '../public'));
     this.static(

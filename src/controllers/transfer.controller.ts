@@ -44,6 +44,9 @@ export class TransferController {
     })
     transfer: Omit<Transfer, 'id'>,
   ): Promise<Transfer> {
+    // TODO: Check if customer email exists connected to this transfer to it
+    // if customer is new create customer and connect to transfer
+
     return this.transferRepository.create(transfer);
   }
 
@@ -123,7 +126,7 @@ export class TransferController {
         },
       },
     })
-    transfer: Transfer,
+    transfer: Partial<Transfer>,
   ): Promise<void> {
     console.log('transfer', transfer);
 

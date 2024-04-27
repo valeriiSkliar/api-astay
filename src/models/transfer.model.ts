@@ -1,7 +1,6 @@
 import {Entity, model, property, belongsTo} from '@loopback/repository';
 import {Customer} from './customer.model';
 
-// TODO: create relation with Customer model
 
 @model({settings: {strict: false}})
 export class Transfer extends Entity {
@@ -15,11 +14,18 @@ export class Transfer extends Entity {
   @property({
     type: 'string',
     required: true,
+    enum: ['arrival', 'departure'],
   })
   type: string;
 
   @property({
     type: 'date',
+    required: false,
+    mysql: {
+      columnName: 'date',
+      dataType: 'date',
+      nullable: 'Y',
+    },
   })
   date?: string;
 
@@ -36,12 +42,12 @@ export class Transfer extends Entity {
   @property({
     type: 'string',
   })
-  guests?: string;
+  guests?: number;
 
   @property({
     type: 'string',
   })
-  amountBags?: string;
+  amountBags?: number;
 
   @property({
     type: 'string',

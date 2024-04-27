@@ -22,6 +22,7 @@ import {Apartment} from '../models';
 import {ApartmentRepository} from '../repositories';
 import {service} from '@loopback/core';
 import {ApartmentService} from '../services';
+import {authenticate} from '@loopback/authentication';
 
 export class ApartmentController {
   constructor(
