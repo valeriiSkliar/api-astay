@@ -43,11 +43,22 @@ export class TransferController {
       },
     })
     transfer: Omit<Transfer, 'id'>,
-  ): Promise<Transfer> {
+  ): Promise<{message: string, status: number}> {
     // TODO: Check if customer email exists connected to this transfer to it
     // if customer is new create customer and connect to transfer
-
-    return this.transferRepository.create(transfer);
+    const {contactInfo, ...transferData} = transfer;
+    const newTransfer = await  this.transferRepository.create(transferData);
+    if (newTransfer) {
+      return {
+        message: 'Transfer created successfully',
+        status: 200
+      }
+    } else {
+      return {
+        message: 'Transfer could not be created',
+        status: 400
+      }
+    }
   }
 
   @get('/api/transfers/count')

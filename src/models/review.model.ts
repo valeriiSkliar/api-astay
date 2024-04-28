@@ -1,6 +1,7 @@
 import {Entity, model, property, belongsTo} from '@loopback/repository';
 import {Apartment} from './apartment.model';
 import {Complex} from './complex.model';
+import {Customer} from './customer.model';
 
 // TODO: SCORE - property
 
@@ -101,10 +102,8 @@ export class Review extends Entity {
   @belongsTo(() => Complex, {name: 'complex'})
   complex_id: number;
 
-  @property({
-    type: 'number',
-  })
-  customerId?: number;
+  @belongsTo(() => Customer)
+  customerId: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data
