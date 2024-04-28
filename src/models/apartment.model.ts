@@ -24,21 +24,6 @@ export class Apartment extends Entity {
   })
   id?: number;
 
-  // @property({
-  //   type: 'string',
-  //   required: false,
-  //   default: 'AstayHome',
-  // })
-  // name?: string; //1
-
-  // @property({
-  //   type: 'string',
-  //   mysql: {
-  //     dataType: 'text',
-  //   },
-  // })
-  // description?: string; //2
-
   @property({
     type: 'string',
     default: 'AstayHome',
@@ -74,10 +59,14 @@ export class Apartment extends Entity {
   @property.array(Date)
   hostDisabledDates?: Date[];
 
+// TODO: rename to apartmentPrice -константа. вказуєтьься при створені або редагуванні
+
   @property({
     type: 'number',
   })
   price?: number;
+
+
 
   @property({
     type: 'number',
@@ -96,8 +85,15 @@ export class Apartment extends Entity {
 
   @property({
     type: 'boolean',
+    default: true,
   })
   isAvailable?: boolean;
+
+  @property({
+    type: 'boolean',
+    default: false,
+  })
+  isPromotion?: boolean;
 
   @belongsTo(() => Complex, {name: 'in_complex'})
   complex_id: number;
@@ -107,13 +103,14 @@ export class Apartment extends Entity {
 
   @property({
     type: 'boolean',
+    default: false,
   })
   isVisible?: boolean;
 
-  @property({
-    type: 'string',
-  })
-  oldPrice?: string;
+  // @property({
+  //   type: 'string',
+  // })
+  // oldPrice?: string;
 
   @property({
     type: 'number',
