@@ -87,6 +87,7 @@ export class ApartmentController {
       },
     },
   })
+  // @authenticate('jwt')
   async find(
     @param.filter(Apartment) filter?: Filter<Apartment>,
   ): Promise<{count: number; apartments: Apartment[]}> {
