@@ -253,7 +253,7 @@ export class BookingController {
     await this.bookingRepository.deleteById(id);
   }
 
-  @post('/api/bookings/validate-token')
+  @get('/api/apartment/payment')
   @response(200, {
     description: 'Validate booking token',
     content: {
@@ -263,10 +263,10 @@ export class BookingController {
     },
   })
   async validateBookingToken(
-    @requestBody() body: Partial<Booking>,
+    @param.query.string('token') paymentToken: string,
   ): Promise<{status: string; data: Booking | null, message: string}> {
-    const token = body.token;
-
+    const token = paymentToken;
+    
     if (!token) {
       return {status: 'error', message: 'No any token in request. Token is required to proceed.', data: null };
     }

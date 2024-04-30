@@ -2,12 +2,12 @@ const {roomCategories} = require('../mock/roomCategories.js');
 
 const generateContent = tableName => {
   const roomCategoriesDataInstansesArray = roomCategories
-    .map(({category, description, color}) => {
-      return `('${category}', '${description}', '${color}')`;
+    .map(({translations, color}) => {
+      return `('${JSON.stringify(translations)}', '${color}')`;
     })
     .join(',\n');
 
-  const sqlContent = `INSERT INTO ${tableName} (category, description, color) VALUES\n${roomCategoriesDataInstansesArray}`;
+  const sqlContent = `INSERT INTO ${tableName} (translations, color) VALUES\n${roomCategoriesDataInstansesArray}`;
   return sqlContent;
 };
 

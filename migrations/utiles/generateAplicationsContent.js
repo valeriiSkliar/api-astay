@@ -8,18 +8,23 @@ async function generateAplicationsContent(
   const pages = ['main', 'abousUs', 'complexes', 'transfers', 'forOwners'];
   try {
     const sqlStatements = [];
-    let sqlStatement = `INSERT INTO ${tableName} (email, phone, name, message, isProcessed, isOpened, pageName) VALUES `;
+    let sqlStatement = `INSERT INTO ${tableName} (email, phone, name, message, isProcessed, isOpened, isArchived, pageLink, type) VALUES `;
 
     for (let i = 1; i <= numberOfApplications; i++) {
       const email = faker.internet.email();
-      const phone = faker.phone.number('38095-###-###');
-      const name = faker.person.firstName() + ' ' + faker.person.lastName();
-      const message = faker.lorem.sentence(2);
+      const phone = faker.string.numeric();
+      const message = faker.lorem.sentence(9);
       const isProcessed = faker.datatype.boolean();
       const isOpened = faker.datatype.boolean();
+      const isArchived = faker.datatype.boolean();
+      const pageLink = faker.internet.url();
+      const type = faker.lorem.word();
+
+
+      const name = faker.person.firstName() + ' ' + faker.person.lastName();
       const pageName = pages[Math.floor(Math.random() * pages.length)];
 
-      sqlValue = `('${email}', '${phone}', '${name}', '${message}', '${Number(isProcessed)}', '${Number(isOpened)}', '${pageName}')`;
+      sqlValue = `('${email}', '${phone}', '${name}', '${message}', '${Number(isProcessed)}', '${Number(isOpened)}', '${Number(isArchived)}', '${pageLink}', '${type}')`;
 
       sqlStatements.push(sqlValue);
     }

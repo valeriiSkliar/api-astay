@@ -10,23 +10,6 @@ export class Locations extends Entity {
   })
   id?: number;
 
-  // @property({
-  //   type: 'string',
-  //   required: true,
-  // })
-  // name: string;
-
-  // @property({
-  //   type: 'string',
-  //   required: true,
-  // })
-  // city: string;
-
-  // @property({
-  //   type: 'string',
-  //   default: 'Thailand',
-  // })
-  // country?: string;
 
   @property({
     type: 'object',

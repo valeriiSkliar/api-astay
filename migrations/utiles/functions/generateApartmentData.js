@@ -26,23 +26,20 @@ var generateApartmentData = async function () {
 
   return {
     id: Math.floor(Math.random() * (40 - 10 + 1)) + 10,
-    name: faker.lorem.words(10),
-    description: faker.lorem.sentence(40),
-    host_name: `${faker.person.firstName()}`,
+    host_name: `Astay-Home`,
     guests: Math.floor(Math.random() * (10 - 1 + 1)) + 1,
     bathrooms: Math.floor(Math.random() * (2 - 1 + 1)) + 1,
     bedrooms: Math.floor(Math.random() * (5 - 1 + 1)) + 1,
     beds: Math.floor(Math.random() * (4 - 1 + 1)) + 1,
     neighborhood: JSON.stringify([faker.location.direction()]),
-    disabledDates: JSON.stringify([faker.date.future()]),
     price: faker.finance.amount(),
     price_low_season: faker.finance.amount(),
     price_high_season: faker.finance.amount(),
     discount: faker.number.int(0, 20),
     isAvailable: true,
-    complex_id: complex.id,
     isVisible: true,
-    oldPrice: faker.finance.amount(),
+    isPromotion: faker.datatype.boolean(),
+    complex_id: complex.id,
     number_of_reviews: 20,
     availability_365: 365,
     review_scores_rating: 6,
@@ -52,7 +49,14 @@ var generateApartmentData = async function () {
     roomCategoryId: roomCategory.id,
     hostDisabledDates: JSON.stringify([faker.date.future()]),
     translations: JSON.stringify({
-      en: {name: faker.lorem.words(10), description: faker.lorem.sentence(40)},
+      en: {
+        name: faker.lorem.words(10),
+        description: faker.lorem.sentence(40),
+      },
+      ru: {
+        name: faker.lorem.words(10),
+        description: faker.lorem.sentence(40),
+      },
     }),
   };
 };

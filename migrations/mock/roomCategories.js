@@ -1,28 +1,24 @@
 const roomCategories = [
   {
-    category: 'apartment',
-    description: 'Basic apartment',
     color: '#0066ff',
+    translations: {
+      "en": {"category": "Apartment", "description": "Basic apartment"},
+      "ru": {"category": "Апартамент", "description": "Базовый апартамент"}
+    }
   },
   {
-    category: 'suite',
-    description: 'Luxury suite',
-    color: '#00ff00',
-  },
-  {
-    category: 'bungalow',
-    description: 'Cozy bungalow',
-    color: '#ff9900',
-  },
-  {
-    category: 'penthouse',
-    description: 'Exclusive penthouse',
     color: '#ff00ff',
+    translations: {
+      "en": {"category": "Penthouse", "description": "Exclusive penthouse"},
+      "ru": {"category": "Пентхаус", "description": "Эксклюзивный пентхаус"}
+    }
   },
   {
-    category: 'studio',
-    description: 'Small studio',
     color: '#0000ff',
+    translations: {
+      "en": {"category": "Studio", "description": "Small studio"},
+      "ru": {"category": "Студия", "description": "Маленькая студия"}
+    }
   },
 ];
 

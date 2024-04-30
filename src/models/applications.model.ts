@@ -44,10 +44,11 @@ export class Applications extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
     jsonSchema: {
       format: 'email',
       maxLength: 50,
+      nullable: true,
     },
   })
   email?: string;

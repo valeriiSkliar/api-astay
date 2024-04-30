@@ -27,8 +27,7 @@ async function generateApartmentsContent(tableName) {
     })
     .join(',\n');
 
-  const sqlContent = `INSERT INTO ${tableName} (name, description, host_name, guests, bathrooms, bedrooms, beds, neighborhood, disabledDates, price, price_low_season, price_high_season, discount, isAvailable, complex_id, isVisible, oldPrice, number_of_reviews, availability_365, review_scores_rating, location_id, amenityIds, room_type_id, roomCategoryId,
-    hostDisabledDates, translations	) VALUES\n${values};`;
+  const sqlContent = `INSERT INTO ${tableName} ( host_name, guests, bathrooms, bedrooms, beds, neighborhood, price, price_low_season, price_high_season, discount, isAvailable,  isVisible, isPromotion,  complex_id,number_of_reviews, availability_365, review_scores_rating, location_id, amenityIds, room_type_id, roomCategoryId, hostDisabledDates, translations	) VALUES\n${values};`;
 
   console.log('SQL file generated successfully!');
 

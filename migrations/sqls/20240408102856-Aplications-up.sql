@@ -1,11 +1,11 @@
-INSERT INTO Applications (email, phone, name, message, isProcessed, isOpened, pageName) VALUES 
-    ('Vivien_Bode@yahoo.com', '38095-907-734', 'Emerald Towne', 'Adsuesco damnatio.', '1', '0', 'main'),
-('Casimer79@yahoo.com', '38095-815-372', 'Maybelle Bayer', 'Crebro molestiae.', '0', '0', 'main'),
-('Anya71@hotmail.com', '38095-797-277', 'Cassie Howe', 'Texo rem.', '1', '0', 'forOwners'),
-('Cleo_Treutel25@yahoo.com', '38095-613-253', 'Maxine Mohr', 'Comis demo.', '1', '0', 'abousUs'),
-('Cassandre_Strosin-Moore@hotmail.com', '38095-731-334', 'Daniela Okuneva', 'Atque totidem.', '0', '0', 'abousUs'),
-('Maybelle88@hotmail.com', '38095-990-443', 'August Hoppe', 'Celebrer animi.', '0', '0', 'abousUs'),
-('Garfield.Turner@yahoo.com', '38095-647-711', 'Adella Graham', 'Speciosus tui.', '1', '1', 'transfers'),
-('Mafalda.OHara62@yahoo.com', '38095-249-210', 'Aubree D'Amore', 'Aegrus capitulus.', '0', '0', 'complexes'),
-('Pete88@yahoo.com', '38095-033-179', 'Bartholome Stamm', 'Thorax subiungo.', '0', '0', 'complexes'),
-('Syble_Franey@yahoo.com', '38095-575-977', 'Cassandra Champlin', 'Demonstro velit.', '1', '0', 'transfers');
+INSERT INTO Applications (email, phone, name, message, isProcessed, isOpened, isArchived, pageLink, type) VALUES 
+    ('Beatrice35@yahoo.com', '8', 'Kolby Donnelly', 'Umerus tredecim asperiores coaegresco aeneus cariosus acidus tabgo aspicio.', '0', '0', '0', 'https://harsh-vase.net', 'vito'),
+('Taylor_Reichel58@yahoo.com', '9', 'Asa Gusikowski', 'Tribuo caterva vomica depromo maiores creator voluptatem dignissimos tempus.', '1', '0', '1', 'https://direct-preserves.info/', 'adnuo'),
+('Alysa.Wiza@gmail.com', '1', 'Weston Legros-Thompson', 'Atavus arcus cupiditate animus crepusculum cumque depono antiquus dolores.', '0', '0', '0', 'https://zesty-crude.net', 'tollo'),
+('Adrien_Johnson@gmail.com', '1', 'Tia Jacobi', 'Odio laudantium aequitas blanditiis charisma thermae demum volva decumbo.', '1', '0', '0', 'https://guilty-socialism.biz/', 'terra'),
+('Wyman.Turcotte19@gmail.com', '5', 'Marco Koepp', 'Aegre clementia aedificium tepidus viriliter absens cogo certe turbo.', '1', '0', '1', 'https://noted-jellybeans.name', 'coniuratio'),
+('Lindsey.Schoen66@gmail.com', '5', 'Rosalia Turner', 'Cenaculum commodi catena tremo sufficio corona demoror confero corporis.', '1', '0', '1', 'https://simplistic-alpaca.info', 'peccatus'),
+('Kailee57@yahoo.com', '5', 'Minnie Hahn', 'Averto thymbra termes voco ambulo eligendi acidus truculenter tamquam.', '0', '0', '0', 'https://nippy-cashew.com', 'vulpes'),
+('Lyric_Stehr@hotmail.com', '1', 'Louisa Boehm', 'Tabgo concido subiungo subseco ustulo provident viriliter earum provident.', '0', '1', '1', 'https://sore-creation.info', 'umerus'),
+('Reed_Schaefer@yahoo.com', '8', 'Meda Jacobson', 'Arcesso confero theatrum similique adimpleo defungo arx contego verus.', '1', '0', '0', 'https://proper-barrel.net/', 'abscido'),
+('Macie44@yahoo.com', '8', 'Shyanne Hoppe', 'Bardus adicio versus articulus at minima solus acquiro solvo.', '1', '0', '1', 'https://ample-cowbell.info/', 'temptatio');

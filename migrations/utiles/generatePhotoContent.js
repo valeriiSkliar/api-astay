@@ -13,13 +13,14 @@ async function generateContent(tableName) {
         apartment_id: apartment.id,
         complex_id: null,
         service_id: null,
+        fileName: `apartment_${apartment.id}photo${i + 1}`,
         order: i + 1,
       });
       imageCounter += 1;
     }
     return photosData
       .map(photo => {
-        return `('${photo.url}', ${photo?.apartment_id}, ${photo?.complex_id ? `'${photo.complex_id}'` : 'NULL'}, ${photo?.service_id ? `'${photo.service_id}'` : 'NULL'}, ${photo.order})`;
+        return `('${photo.url}', ${photo?.apartment_id}, ${photo?.complex_id ? `'${photo.complex_id}'` : 'NULL'}, ${photo?.service_id ? `'${photo.service_id}'` : 'NULL'}, '${photo.fileName}', ${photo.order})`;
       })
       .join(',\n');
   });
@@ -32,13 +33,14 @@ async function generateContent(tableName) {
         apartment_id: null,
         complex_id: complex.id,
         service_id: null,
+        fileName: `complex_${complex.id}photo${i + 1}`,
         order: i + 1,
       });
       imageCounter += 1;
     }
     return photosData
       .map(photo => {
-        return `('${photo.url}', ${photo?.apartment_id ? `'${photo.apartment_id}'` : 'NULL'}, ${photo?.complex_id ? `'${photo.complex_id}'` : 'NULL'}, ${photo?.service_id ? `'${photo.service_id}'` : 'NULL'}, ${photo.order})`;
+        return `('${photo.url}', ${photo?.apartment_id ? `'${photo.apartment_id}'` : 'NULL'}, ${photo?.complex_id ? `'${photo.complex_id}'` : 'NULL'}, ${photo?.service_id ? `'${photo.service_id}'` : 'NULL'}, '${photo.fileName}', ${photo.order})`;
       })
       .join(',\n');
   });
@@ -47,7 +49,7 @@ async function generateContent(tableName) {
     .concat(complexPhotoDataArray)
     .join(',\n');
   console.log(photoDataInstansesArray);
-  const sqlContent = `INSERT INTO ${tableName} (url, apartment_id, complex_id, service_id, order_number) VALUES\n${photoDataInstansesArray};`;
+  const sqlContent = `INSERT INTO ${tableName} (url, apartment_id, complex_id, service_id, fileName, order_number) VALUES\n${photoDataInstansesArray};`;
   return sqlContent;
 }
 
