@@ -40,12 +40,12 @@ export class Transfer extends Entity {
   nameOfSignage?: string;
 
   @property({
-    type: 'string',
+    type: 'number',
   })
   guests?: number;
 
   @property({
-    type: 'string',
+    type: 'number',
   })
   amountBags?: number;
 
