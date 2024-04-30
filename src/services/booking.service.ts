@@ -100,6 +100,7 @@ export class BookingService {
         {relation: 'transfers'},
       ],
     });
+    console.log('booking', booking);  
     if (!booking) {
       throw new Error('Invalid booking token');
     }
