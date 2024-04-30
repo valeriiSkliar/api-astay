@@ -253,7 +253,7 @@ export class BookingController {
     await this.bookingRepository.deleteById(id);
   }
 
-  @get('/api/apartment/payment')
+  @post('/api/bookings/validate-token')
   @response(200, {
     description: 'Validate booking token',
     content: {
@@ -263,15 +263,22 @@ export class BookingController {
     },
   })
   async validateBookingToken(
-    @param.query.string('token') paymentToken: string,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Booking, {partial: true}),
+        },
+      },
+    }) body: Partial<Booking>,
   ): Promise<{status: string; data: Booking | null, message: string}> {
-    const token = paymentToken;
-    
+
+    const token = body.token;
+
     if (!token) {
       return {status: 'error', message: 'No any token in request. Token is required to proceed.', data: null };
     }
     try {
-      const booking = await this.bookingService.validateBookingToken(token);
+      const booking = await this.bookingService.validateBookingToken('token');
       return {message: 'Booking token is valid', status: 'success', data: booking };
     } catch (error) {
       return { message: error.message, status: 'error', data: null };
