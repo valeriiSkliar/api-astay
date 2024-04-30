@@ -8,7 +8,7 @@ async function generateComplexesContent(tableName) {
       return data.map(location => {
         return {
           ...location,
-          translations: JSON.parse(location.translations),
+          translations:location.translations,
         };
     });
   });
