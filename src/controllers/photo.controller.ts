@@ -173,11 +173,7 @@ export class PhotoController {
     })
     orderUpdates: Array<{id: number; order_number: number}>,
   ): Promise<Photo[]> {
-    console.log(orderUpdates);
-    //  await Promise.all(orderUpdates.map(async (orderUpdate) => {
-    //    this.photoRepository.updateById(orderUpdate.id, {
-    //      order_number: orderUpdate.order_number,
-    //  })}));
+
     await Promise.all(
       orderUpdates.map(async orderUpdate =>
         this.photoRepository.updateById(orderUpdate.id, {

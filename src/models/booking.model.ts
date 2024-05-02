@@ -70,8 +70,15 @@ export class Booking extends Entity {
 
   @property({
     type: 'string',
+    required: false,
   })
   paymentUrl?: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  reviewUrl?: string;
 
   @property({
     type: 'object',
@@ -120,6 +127,24 @@ export class Booking extends Entity {
     required: false,
   })
   token?: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  tokenReview?: string;
+
+  @property({
+    type: 'date',
+    required: false,
+  })
+  reviewTokenExpiry?: Date;
+
+  @property({
+    type: 'date',
+    required: false,
+  })
+  tokenReviewGenerated?: Date;
 
   @property({
     type: 'boolean',

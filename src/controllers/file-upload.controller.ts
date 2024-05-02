@@ -104,7 +104,6 @@ export class FileUploadController {
         {name: 's1920', scales: {width: 1920, height: 1080}},
         {name: 's1366', scales: {width: 1366, height: 768}},
       ];
-      // const {apartment_id, complex_id} = fields;
       const uploadFolderPath = f.path.split('/').slice(0, -1).join('/');
       const originalPath = path.join(
         uploadFolderPath,
@@ -144,28 +143,6 @@ export class FileUploadController {
         );
       };
       await createSizes();
-      // sizes.forEach(async ({name, scales}) => {
-      //   const targetPath =  path.join(uploadFolderPath, name, `${f.filename}_${name}.webp`);
-      //   if (!fs.existsSync(path.join(uploadFolderPath, name))) {
-      //     fs.mkdirSync(path.join(uploadFolderPath, name), {recursive: true});
-      //   }
-      //   const result = await sharp(f.path)
-      //     .resize(scales.width, scales.height)
-      //     .webp({quality: 70})
-      //     .toFile(targetPath);
-      //     photoSizes[name] = result ? `${BASE_URL}${path.relative(path.dirname(__dirname), targetPath).replace(/\\/g, "/").slice(2)}` : null;
-      // console.log('photoSizes', photoSizes);
-
-      // })
-
-      //   fs.unlink(f.path, (err) => {
-      //     if (err) {
-      //       console.error(`Failed to delete the original image: ${f.path}`, err);
-      //     } else {
-      //       console.log(`Successfully deleted the original image: ${f.path}`);
-      //     }
-      //   });
-      console.log('photoSizes', photoSizes);
 
       return await this.photoRepository.create({
         fileName: f.filename,

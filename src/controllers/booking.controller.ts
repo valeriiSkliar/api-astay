@@ -29,11 +29,16 @@ import {Booking, Customer, Transfer} from '../models';
 import {
   BookingRepository,
   CustomerRepository,
+  HostContactsRepository,
   TransferRepository,
 } from '../repositories';
 import {inject, service} from '@loopback/core';
 import bcrypt from 'bcrypt';
-import {BookingService} from '../services';
+import {BookingService, TransferService} from '../services';
+import {BookingResponse} from '../types';
+
+
+
 
 export class BookingController {
   constructor(
@@ -46,6 +51,9 @@ export class BookingController {
     @inject(RestBindings.Http.REQUEST)
     private req: Request & {locale: string},
     @service(BookingService) private bookingService: BookingService,
+    @service(TransferService) private transferService: TransferService,
+    @repository(HostContactsRepository)
+    public hostContactsRepository: HostContactsRepository,
   ) {}
 
   @post('/api/bookings')
@@ -271,9 +279,8 @@ export class BookingController {
       },
     })
     body: Partial<Booking>,
-  ): Promise<{status: string; data: Booking | null; message: string}> {
+  ): Promise<{status: string; data: Booking | null | BookingResponse; message: string}> {
     const token = body.token;
-    console.log('token', token);
     if (!token) {
       return {
         status: 'error',
@@ -283,17 +290,23 @@ export class BookingController {
     }
     try {
       const booking = await this.bookingService.validateBookingToken(token);
+      const hostContactData = await this.hostContactsRepository.find()
+      const convertedTransferObject = this.transferService.convertTransferArrayToObject(booking.transfers);
+      const bookingsWithTransformedTransfers = {
+        ...booking,
+        transfers: convertedTransferObject,
+        hostContacts: hostContactData[0]
+      }
+
       return {
         message: 'Booking token is valid',
         status: 'success',
-        data: booking,
+        data: bookingsWithTransformedTransfers,
       };
     } catch (error) {
       return {message: error.message, status: 'error', data: null};
     }
-    // const booking = await this.bookingService.validateBookingToken(token);
 
-    // return { status: 'success', data: booking };
   }
 
   private async validateBookingData(booking: Omit<Booking, 'id'>) {
@@ -341,14 +354,17 @@ export class BookingController {
   }
 
   private async handleTokenAndPaymentUrl(booking: Omit<Booking, 'id'>) {
-    const saltRounds = 10; // TODO: make this configurable
-    const token = await bcrypt.hash(
+    const saltRounds = 10;
+    const tokenPayment = await bcrypt.hash(
       `${booking.apartmentId}-${Date.now()}`,
       saltRounds,
     );
-    booking.token = token;
-    const locale = this.req.get('locale') || booking.locale || 'en';
-    const paymentUrl = `${process.env.FRONTEND_URL}/${locale}/apartment/payment/${booking.apartmentId}/${token}`;
+
+    booking.token = tokenPayment;
+    // apartment/leave-review?token=abbatoken
+    const paymentUrl = `${process.env.FRONTEND_URL}/apartment/payment?token=${tokenPayment}`;
+    // const reviewUrl = `${process.env.FRONTEND_URL}/apartment/leave-review?token=${tokenReview}`;
+
     booking.paymentUrl = paymentUrl;
   }
 
@@ -441,5 +457,110 @@ export class BookingController {
       }
     });
     await Promise.all(updatePromises);
+  }
+
+  @post('/api/generate-review-token', {
+    responses: {
+      '200': {
+        description: 'Booking model instance',
+        content: {'application/json': {schema: getModelSchemaRef(Booking)}},
+      },
+    },
+  })
+  public async generateReviewToken(
+    // @inject(SecurityBindings.USER) currentUser: UserProfile,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Booking, {
+            title: 'NewBooking',
+            exclude: ['id', 'token', 'isArchived'],
+          }),
+        },
+      },
+    })
+    booking: Omit<Booking, 'id' | 'token' | 'isArchived'>,
+  ): Promise<{message: string; code: number, data: Partial<Booking> | null}> {
+    try {
+      const currentBooking = await this.bookingRepository.findOne({
+        where: {
+          id: booking.id,
+          token: booking.token,
+          isArchived: false,
+        },
+        include: [
+          {relation: 'apartment'},
+          {relation: 'customer'},
+          {relation: 'transfers'},
+        ],
+      });
+
+      if (!currentBooking) {
+        throw new Error('Invalid booking id or token');
+      } else {
+        const bookingWithReviewToken = await this.bookingService.generateReviewToken({
+          ...currentBooking,
+          ...booking,
+        });
+        return {message: 'Review token generated', code: 200, data: bookingWithReviewToken};
+      }
+    } catch (error) {
+      return { message: error.message, code: 400, data: null };
+    }
+  }
+
+  @post('/api/generate-review-url', {
+    responses: {
+      '200': {
+        description: 'Booking model instance',
+        content: {'application/json': {schema: getModelSchemaRef(Booking)}},
+      },
+    },
+  })
+  public async generateReviewUrl(
+    // @inject(SecurityBindings.USER) currentUser: UserProfile,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Booking, {
+            title: 'NewBooking',
+            exclude: ['id', 'token', 'isArchived'],
+          }),
+        },
+      },
+    })
+    booking: Omit<Booking, 'id' | 'token' | 'isArchived'>,
+  ): Promise<{message: string; code: number, data: Partial<Booking> | null}> {
+    try {
+      const currentBooking = await this.bookingRepository.findOne({
+        where: {
+          id: booking.id,
+          token: booking.token,
+          isArchived: false,
+        },
+        // include: [
+        //   {relation: 'apartment'},
+        //   {relation: 'customer'},
+        //   {relation: 'transfers'},
+        // ],
+      });
+
+      if (!currentBooking) {
+        throw new Error('Invalid booking id or token');
+      } else {
+        const reviewURL = await this.bookingService.generateReviewUrl(booking);
+        if (!reviewURL) {
+          throw new Error('Error generating review URL');
+        }
+        const bookingWithReviewURL = {
+          ...currentBooking,
+          reviewUrl: reviewURL,
+        };
+
+        return {message: 'Review URL generated', code: 200, data: bookingWithReviewURL};
+      }
+    } catch (error) {
+      return { message: error.message, code: 400, data: null };
+    }
   }
 }

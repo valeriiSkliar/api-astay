@@ -5,3 +5,5 @@ export * from './submit-tracking.service';
 export * from './booking.service';
 export * from './apartment.service';
 export * from './mail.service';
+export * from './transfer.service';
+export * from './review.service';

@@ -9,18 +9,6 @@ export class RoomType extends Entity {
   })
   id?: number;
 
-  // @property({
-  //   type: 'string',
-  //   required: true,
-  // })
-  // type: string;
-
-  // @property({
-  //   type: 'string',
-  //   default: null,
-  // })
-  // description?: string;
-
   @property({
     type: 'string',
     default: null,

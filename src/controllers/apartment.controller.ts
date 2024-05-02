@@ -20,15 +20,18 @@ import {
 } from '@loopback/rest';
 import {Apartment} from '../models';
 import {ApartmentRepository} from '../repositories';
-import {service} from '@loopback/core';
+import {inject, service} from '@loopback/core';
 import {ApartmentService} from '../services';
 import {authenticate} from '@loopback/authentication';
+import {Request, RestBindings} from '@loopback/rest';
 
 export class ApartmentController {
   constructor(
     @repository(ApartmentRepository)
     public apartmentRepository: ApartmentRepository,
     @service(ApartmentService) private apartmentService: ApartmentService,
+    @inject(RestBindings.Http.REQUEST)
+    private req: Request,
   ) {}
 
   @post('/api/apartments')
@@ -51,7 +54,7 @@ export class ApartmentController {
     })
     {data}: Omit<Apartment, 'id'>,
   ): Promise<Apartment> {
-    console.log(data);
+    // console.log(data);
     return this.apartmentRepository.create(data);
   }
 
@@ -63,6 +66,17 @@ export class ApartmentController {
   async count(
     @param.where(Apartment) where?: Where<Apartment>,
   ): Promise<Count> {
+    const url = this.req.url;
+    const headers = {...this.req.headers};
+    console.log('headers', headers, 'url' , url)
+    console.log('req', this.req);
+    console.log('req', this.req.ip);
+    // 'x-forwarded-for'
+    console.log('req', this.req.headers['x-forwarded-for']);
+
+
+
+
     return this.apartmentRepository.count(where);
   }
 

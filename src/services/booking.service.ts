@@ -4,6 +4,7 @@ import {BookingRepository} from '../repositories';
 import {Apartment, Booking} from '../models';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import bcrypt from 'bcrypt';
 
 dayjs.extend(utc);
 
@@ -15,6 +16,17 @@ export class BookingService {
     @repository('ApartmentRepository')
     public apartmentRepository: BookingRepository,
   ) {}
+
+  public async handleTokenAndPaymentUrl(booking: Omit<Booking, 'id'>) {
+    const saltRounds = 10;
+    const token = await bcrypt.hash(
+      `${booking.apartmentId}-${Date.now()}`,
+      saltRounds,
+    );
+    booking.token = token;
+    const paymentUrl = `${process.env.FRONTEND_URL}/apartment/payment/${booking.apartmentId}/${token}`;
+    booking.paymentUrl = paymentUrl;
+  }
 
   async handleBookingStatus(booking: Partial<Booking>) {
     if (booking.status === 'confirmed') {
@@ -92,10 +104,10 @@ export class BookingService {
     const booking = await this.bookingRepository.findOne({
       where: {
         token: token,
-        // isArchived: false
+        isArchived: false
       },
       include: [
-        {relation: 'apartment'},
+        // {relation: 'apartment'},
         {relation: 'customer'},
         {relation: 'transfers'},
       ],
@@ -105,5 +117,64 @@ export class BookingService {
       throw new Error('Invalid booking token');
     }
     return booking;
+  }
+
+  public async generateReviewToken(booking: Partial<Booking>) {
+    const reviewToken = await bcrypt.hash(
+      `${booking.customerId}-${Date.now()}`,
+      10,
+    );
+    booking.tokenReview = reviewToken;
+    booking.reviewTokenExpiry = dayjs().add(1, 'hour').toDate();
+    booking.tokenReviewGenerated = new Date();
+    const {apartment, transfers, customer, ...rest} = booking;
+
+    console.log('rest', rest);
+    try {
+      await this.bookingRepository.updateById(booking.id, rest);
+    } catch (error) {
+      throw new Error('Error generating review token: ' + error.message);
+      }
+    return booking;
+  }
+
+  public async generateReviewUrl(booking: Partial<Booking>) {
+    if (!booking.tokenReview) {
+      throw new Error('Review token is required');
+    }
+    const bookingExist = await this.bookingRepository.exists(
+      booking.id,
+    )
+    if (!bookingExist) {
+      throw new Error('Invalid review token');
+    }
+    if(!booking.reviewUrl) {
+      throw new Error('Review url is generated already');
+    }
+    const bookingUrl = `${process.env.FRONTEND_URL}/apartment/leave-review?token=${booking.tokenReview}`
+    try {
+      await this.bookingRepository.updateById(booking.id, booking);
+    } catch (error) {
+      throw new Error('Error generating review url: ' + error.message);
+    }
+    return bookingUrl;
+  }
+
+  public async validateReviewToken(token: string) {
+    const booking = await this.bookingRepository.findOne({
+      where: {
+        token: token,
+        isArchived: false
+        // reviewTokenExpiry: {
+        //   gte: dayjs().toDate()
+        // }
+      },
+      include: [
+        // {relation: 'apartment'},
+        {relation: 'customer'},
+
+      ],
+    });
+
   }
 }
