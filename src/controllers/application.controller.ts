@@ -83,22 +83,26 @@ export class ApplicationController {
     try {
       const {type, pageLink, name, email, phone} = contactData;
 
-           // Validation logic based on form type
-           if (type !== 'forOwners-short' && (!type || !pageLink || !email || !phone || !name)) {
-            console.log('type !== `forOwners-short`','Missing required fields');
-            throw new HttpErrors.BadRequest('Missing required fields');
-          } else if (type === 'forOwners-short' && (!type || !pageLink || !phone || !name)) {
-            console.log('type === `forOwners-short`', 'Missing required fields');
-            // Only email is optional for 'forOwners-short'
-            throw new HttpErrors.BadRequest('Missing required fields');
-          }
+      // Validation logic based on form type
+      if (
+        type !== 'forOwners-short' &&
+        (!type || !pageLink || !email || !phone || !name)
+      ) {
+        console.log('type !== `forOwners-short`', 'Missing required fields');
+        throw new HttpErrors.BadRequest('Missing required fields');
+      } else if (
+        type === 'forOwners-short' &&
+        (!type || !pageLink || !phone || !name)
+      ) {
+        console.log('type === `forOwners-short`', 'Missing required fields');
+        // Only email is optional for 'forOwners-short'
+        throw new HttpErrors.BadRequest('Missing required fields');
+      }
 
-          const newApplication = new Applications({
-            ...contactData,
-            email: type === 'forOwners-short' ? email || '' : email,
-          });
-
-
+      const newApplication = new Applications({
+        ...contactData,
+        email: type === 'forOwners-short' ? email || '' : email,
+      });
 
       await this.applicationsRepository.create(newApplication);
       // Send request to admin panel app

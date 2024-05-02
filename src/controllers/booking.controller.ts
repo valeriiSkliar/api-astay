@@ -269,19 +269,27 @@ export class BookingController {
           schema: getModelSchemaRef(Booking, {partial: true}),
         },
       },
-    }) body: Partial<Booking>,
-  ): Promise<{status: string; data: Booking | null, message: string}> {
-
+    })
+    body: Partial<Booking>,
+  ): Promise<{status: string; data: Booking | null; message: string}> {
     const token = body.token;
     console.log('token', token);
     if (!token) {
-      return {status: 'error', message: 'No any token in request. Token is required to proceed.', data: null };
+      return {
+        status: 'error',
+        message: 'No any token in request. Token is required to proceed.',
+        data: null,
+      };
     }
     try {
       const booking = await this.bookingService.validateBookingToken(token);
-      return {message: 'Booking token is valid', status: 'success', data: booking };
+      return {
+        message: 'Booking token is valid',
+        status: 'success',
+        data: booking,
+      };
     } catch (error) {
-      return { message: error.message, status: 'error', data: null };
+      return {message: error.message, status: 'error', data: null};
     }
     // const booking = await this.bookingService.validateBookingToken(token);
 

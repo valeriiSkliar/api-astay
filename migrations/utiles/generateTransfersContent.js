@@ -58,4 +58,3 @@ async function generateTransfersContent(tableName, count) {
 }
 
 exports.generateTransfersContent = generateTransfersContent;
-

@@ -38,7 +38,7 @@ export class ApiApplication extends BootMixin(
     // Set up the custom sequence
     this.sequence(MySequence);
     this.bind('services.submit-tracking').toClass(SubmitTrackingService);
-      // for jwt access token
+    // for jwt access token
     this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to('2592000');
 
     // for cron jobs

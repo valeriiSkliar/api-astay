@@ -10,7 +10,6 @@ export class Locations extends Entity {
   })
   id?: number;
 
-
   @property({
     type: 'object',
     default: {

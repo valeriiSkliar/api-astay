@@ -1,5 +1,5 @@
 var {faker} = require('@faker-js/faker');
-var { getConnection } = require('../utiles/functions/dataBaseConnection.js');
+var {getConnection} = require('../utiles/functions/dataBaseConnection.js');
 
 async function generateBookings(tableName, count) {
   try {
@@ -16,8 +16,8 @@ async function generateBookings(tableName, count) {
         checkOut: new Date(faker.date.future()).toISOString().split('.')[0],
         paymentUrl: faker.internet.url(),
         bookingAmount: faker.number.int(0, 20),
-        price:  faker.number.int(0, 20),
-        oldPrice:  faker.number.int(0, 20),
+        price: faker.number.int(0, 20),
+        oldPrice: faker.number.int(0, 20),
         customerId: faker.number.int(0, 20),
         apartmentId: apartment[Math.floor(Math.random() * apartment.length)].id,
         createdAt: new Date(faker.date.past()).toISOString().split('.')[0],
@@ -30,16 +30,20 @@ async function generateBookings(tableName, count) {
         paymentStatus: faker.datatype.boolean(),
         token: faker.lorem.words(10),
         isArchived: faker.datatype.boolean(),
-        status: "confirmed",
-        paymentMethod: "credit card",
-        actuallyPaid: faker.number.int({ min: 100, max: 1000 }),
+        status: 'confirmed',
+        paymentMethod: 'credit card',
+        actuallyPaid: faker.number.int({min: 100, max: 1000}),
         discount: faker.number.int(0, 20),
         notes: faker.lorem.sentence(2),
-        bookingDates: JSON.stringify([new Date(faker.date.future()).toISOString().split('.')[0]]),
+        bookingDates: JSON.stringify([
+          new Date(faker.date.future()).toISOString().split('.')[0],
+        ]),
       };
 
       const values = Object.values(booking)
-        .map(value => (typeof value === 'string' ? `'${value.replace(/'/g, "''")}'` : value))
+        .map(value =>
+          typeof value === 'string' ? `'${value.replace(/'/g, "''")}'` : value,
+        )
         .join(', ');
 
       const sqlValue = `(${values})`;
@@ -57,5 +61,3 @@ async function generateBookings(tableName, count) {
 }
 
 exports.generateBookings = generateBookings;
-
-

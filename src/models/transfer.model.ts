@@ -1,7 +1,6 @@
 import {Entity, model, property, belongsTo} from '@loopback/repository';
 import {Customer} from './customer.model';
 
-
 @model({settings: {strict: false}})
 export class Transfer extends Entity {
   @property({

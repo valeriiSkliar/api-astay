@@ -91,7 +91,7 @@ export class BookingService {
   public async validateBookingToken(token: string) {
     const booking = await this.bookingRepository.findOne({
       where: {
-        token:token,
+        token: token,
         // isArchived: false
       },
       include: [
@@ -100,7 +100,7 @@ export class BookingService {
         {relation: 'transfers'},
       ],
     });
-    console.log('booking', booking);  
+    console.log('booking', booking);
     if (!booking) {
       throw new Error('Invalid booking token');
     }

@@ -1,36 +1,147 @@
 const translations = [
-  {"en": {"title": "Air conditioning", "description": "Air conditioning"}, "ru": {"title": "кондиционер", "description": "кондиционер"}},
-  {"en": {"title": "Bed linen", "description": "Bed linen"}, "ru": {"title": "постельное белье", "description": "постельное белье"}},
-  {"en": {"title": "Black-out blinds", "description": "Black-out blinds"}, "ru": {"title": "затемняющие шторы", "description": "затемняющие шторы"}},
-  {"en": {"title": "Body soap", "description": "Body soap"}, "ru": {"title": "жидкое мыло", "description": "жидкое мыло"}},
-  {"en": {"title": "Cooking basics", "description": "Cooking basics"}, "ru": {"title": "основы приготовления пищи", "description": "основы приготовления пищи"}},
-  {"en": {"title": "Pots and pans, oil, salt and pepper", "description": "Pots and pans, oil, salt and pepper"}, "ru": {"title": "кастрюли и сковороды, масло, соль и перец", "description": "кастрюли и сковороды, масло, соль и перец"}},
-  {"en": {"title": "Dining table", "description": "Dining table"}, "ru": {"title": "обеденный стол", "description": "обеденный стол"}},
-  {"en": {"title": "Dishes and cutlery", "description": "Dishes and cutlery"}, "ru": {"title": "посуда и столовые приборы", "description": "посуда и столовые приборы"}},
-  {"en": {"title": "Bowls, chopsticks, plates, cups, etc.", "description": "Bowls, chopsticks, plates, cups, etc."}, "ru": {"title": "миски, палочки для еды, тарелки, чашки и т.д.", "description": "миски, палочки для еды, тарелки, чашки и т.д."}},
-  {"en": {"title": "Fire extinguisher", "description": "Fire extinguisher"}, "ru": {"title": "огнетушитель", "description": "огнетушитель"}},
-  {"en": {"title": "Free parking", "description": "Free parking"}, "ru": {"title": "бесплатная парковка", "description": "бесплатная парковка"}},
-  {"en": {"title": "Hair dryer", "description": "Hair dryer"}, "ru": {"title": "фен", "description": "фен"}},
-  {"en": {"title": "Heating", "description": "Heating"}, "ru": {"title": "отопление", "description": "отопление"}},
-  {"en": {"title": "Hot water", "description": "Hot water"}, "ru": {"title": "горячая вода", "description": "горячая вода"}},
-  {"en": {"title": "Hot water kettle", "description": "Hot water kettle"}, "ru": {"title": "чайник", "description": "чайник"}},
-  {"en": {"title": "Iron", "description": "Iron"}, "ru": {"title": "утюг", "description": "утюг"}},
-  {"en": {"title": "Kitchen", "description": "Kitchen"}, "ru": {"title": "кухня", "description": "кухня"}},
-  {"en": {"title": "Kitchenette", "description": "Kitchenette"}, "ru": {"title": "мини-кухня", "description": "мини-кухня"}},
-  {"en": {"title": "Microwave", "description": "Microwave"}, "ru": {"title": "микроволновая печь", "description": "микроволновая печь"}},
-  {"en": {"title": "Outdoor dining area", "description": "Outdoor dining area"}, "ru": {"title": "зона для пикника", "description": "зона для пикника"}},
-  {"en": {"title": "Outdoor shower", "description": "Outdoor shower"}, "ru": {"title": "уличный душ", "description": "уличный душ"}},
-  {"en": {"title": "Patio or balcony", "description": "Patio or balcony"}, "ru": {"title": "патио или балкон", "description": "патио или балкон"}},
-  {"en": {"title": "Pool", "description": "Pool"}, "ru": {"title": "бассейн", "description": "бассейн"}},
-  {"en": {"title": "Refrigerator", "description": "Refrigerator"}, "ru": {"title": "холодильник", "description": "холодильник"}},
-  {"en": {"title": "Shampoo", "description": "Shampoo"}, "ru": {"title": "шампунь", "description": "шампунь"}},
-  {"en": {"title": "Smoke alarm", "description": "Smoke alarm"}, "ru": {"title": "дымовой датчик", "description": "дымовой датчик"}},
-  {"en": {"title": "Stove", "description": "Stove"}, "ru": {"title": "плита", "description": "плита"}},
-  {"en": {"title": "Toaster", "description": "Toaster"}, "ru": {"title": "тостер", "description": "тостер"}},
-  {"en": {"title": "TV", "description": "TV"}, "ru": {"title": "телевизор", "description": "телевизор"}},
-  {"en": {"title": "Washing machine", "description": "Washing machine"}, "ru": {"title": "стиральная машина", "description": "стиральная машина"}},
-  {"en": {"title": "Wi-Fi", "description": "Wi-Fi"}, "ru": {"title": "Wi-Fi", "description": "Wi-Fi"}}
-]
+  {
+    en: {title: 'Air conditioning', description: 'Air conditioning'},
+    ru: {title: 'кондиционер', description: 'кондиционер'},
+  },
+  {
+    en: {title: 'Bed linen', description: 'Bed linen'},
+    ru: {title: 'постельное белье', description: 'постельное белье'},
+  },
+  {
+    en: {title: 'Black-out blinds', description: 'Black-out blinds'},
+    ru: {title: 'затемняющие шторы', description: 'затемняющие шторы'},
+  },
+  {
+    en: {title: 'Body soap', description: 'Body soap'},
+    ru: {title: 'жидкое мыло', description: 'жидкое мыло'},
+  },
+  {
+    en: {title: 'Cooking basics', description: 'Cooking basics'},
+    ru: {
+      title: 'основы приготовления пищи',
+      description: 'основы приготовления пищи',
+    },
+  },
+  {
+    en: {
+      title: 'Pots and pans, oil, salt and pepper',
+      description: 'Pots and pans, oil, salt and pepper',
+    },
+    ru: {
+      title: 'кастрюли и сковороды, масло, соль и перец',
+      description: 'кастрюли и сковороды, масло, соль и перец',
+    },
+  },
+  {
+    en: {title: 'Dining table', description: 'Dining table'},
+    ru: {title: 'обеденный стол', description: 'обеденный стол'},
+  },
+  {
+    en: {title: 'Dishes and cutlery', description: 'Dishes and cutlery'},
+    ru: {
+      title: 'посуда и столовые приборы',
+      description: 'посуда и столовые приборы',
+    },
+  },
+  {
+    en: {
+      title: 'Bowls, chopsticks, plates, cups, etc.',
+      description: 'Bowls, chopsticks, plates, cups, etc.',
+    },
+    ru: {
+      title: 'миски, палочки для еды, тарелки, чашки и т.д.',
+      description: 'миски, палочки для еды, тарелки, чашки и т.д.',
+    },
+  },
+  {
+    en: {title: 'Fire extinguisher', description: 'Fire extinguisher'},
+    ru: {title: 'огнетушитель', description: 'огнетушитель'},
+  },
+  {
+    en: {title: 'Free parking', description: 'Free parking'},
+    ru: {title: 'бесплатная парковка', description: 'бесплатная парковка'},
+  },
+  {
+    en: {title: 'Hair dryer', description: 'Hair dryer'},
+    ru: {title: 'фен', description: 'фен'},
+  },
+  {
+    en: {title: 'Heating', description: 'Heating'},
+    ru: {title: 'отопление', description: 'отопление'},
+  },
+  {
+    en: {title: 'Hot water', description: 'Hot water'},
+    ru: {title: 'горячая вода', description: 'горячая вода'},
+  },
+  {
+    en: {title: 'Hot water kettle', description: 'Hot water kettle'},
+    ru: {title: 'чайник', description: 'чайник'},
+  },
+  {
+    en: {title: 'Iron', description: 'Iron'},
+    ru: {title: 'утюг', description: 'утюг'},
+  },
+  {
+    en: {title: 'Kitchen', description: 'Kitchen'},
+    ru: {title: 'кухня', description: 'кухня'},
+  },
+  {
+    en: {title: 'Kitchenette', description: 'Kitchenette'},
+    ru: {title: 'мини-кухня', description: 'мини-кухня'},
+  },
+  {
+    en: {title: 'Microwave', description: 'Microwave'},
+    ru: {title: 'микроволновая печь', description: 'микроволновая печь'},
+  },
+  {
+    en: {title: 'Outdoor dining area', description: 'Outdoor dining area'},
+    ru: {title: 'зона для пикника', description: 'зона для пикника'},
+  },
+  {
+    en: {title: 'Outdoor shower', description: 'Outdoor shower'},
+    ru: {title: 'уличный душ', description: 'уличный душ'},
+  },
+  {
+    en: {title: 'Patio or balcony', description: 'Patio or balcony'},
+    ru: {title: 'патио или балкон', description: 'патио или балкон'},
+  },
+  {
+    en: {title: 'Pool', description: 'Pool'},
+    ru: {title: 'бассейн', description: 'бассейн'},
+  },
+  {
+    en: {title: 'Refrigerator', description: 'Refrigerator'},
+    ru: {title: 'холодильник', description: 'холодильник'},
+  },
+  {
+    en: {title: 'Shampoo', description: 'Shampoo'},
+    ru: {title: 'шампунь', description: 'шампунь'},
+  },
+  {
+    en: {title: 'Smoke alarm', description: 'Smoke alarm'},
+    ru: {title: 'дымовой датчик', description: 'дымовой датчик'},
+  },
+  {
+    en: {title: 'Stove', description: 'Stove'},
+    ru: {title: 'плита', description: 'плита'},
+  },
+  {
+    en: {title: 'Toaster', description: 'Toaster'},
+    ru: {title: 'тостер', description: 'тостер'},
+  },
+  {
+    en: {title: 'TV', description: 'TV'},
+    ru: {title: 'телевизор', description: 'телевизор'},
+  },
+  {
+    en: {title: 'Washing machine', description: 'Washing machine'},
+    ru: {title: 'стиральная машина', description: 'стиральная машина'},
+  },
+  {
+    en: {title: 'Wi-Fi', description: 'Wi-Fi'},
+    ru: {title: 'Wi-Fi', description: 'Wi-Fi'},
+  },
+];
 
 const amenities = () => {
   return translations.map(({en, ru}) => {
@@ -39,9 +150,7 @@ const amenities = () => {
       translations: {en, ru},
     };
   });
-}
-
-
+};
 
 exports.amenities = amenities();
 // const amenities = [

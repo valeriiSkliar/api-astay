@@ -25,17 +25,25 @@ export class ReviewRepository extends DefaultCrudRepository<
     typeof Review.prototype.id
   >;
 
-  public readonly customer: BelongsToAccessor<Customer, typeof Review.prototype.id>;
+  public readonly customer: BelongsToAccessor<
+    Customer,
+    typeof Review.prototype.id
+  >;
 
   constructor(
     @inject('datasources.local_mysql') dataSource: LocalMysqlDataSource,
     @repository.getter('ApartmentRepository')
     protected apartmentRepositoryGetter: Getter<ApartmentRepository>,
     @repository.getter('ComplexRepository')
-    protected complexRepositoryGetter: Getter<ComplexRepository>, @repository.getter('CustomerRepository') protected customerRepositoryGetter: Getter<CustomerRepository>,
+    protected complexRepositoryGetter: Getter<ComplexRepository>,
+    @repository.getter('CustomerRepository')
+    protected customerRepositoryGetter: Getter<CustomerRepository>,
   ) {
     super(Review, dataSource);
-    this.customer = this.createBelongsToAccessorFor('customer', customerRepositoryGetter,);
+    this.customer = this.createBelongsToAccessorFor(
+      'customer',
+      customerRepositoryGetter,
+    );
     this.registerInclusionResolver('customer', this.customer.inclusionResolver);
     this.complex = this.createBelongsToAccessorFor(
       'complex',

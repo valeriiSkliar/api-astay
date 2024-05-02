@@ -5,26 +5,32 @@ function generateCustomerContent(tableName, count) {
   const sqlStatement = `INSERT INTO ${tableName} ( email, phone, birthDate, address, country, gender, additionalContactInfo, additionalNotes, firstRequest, accountStatus, name, createdAt) VALUES `;
 
   for (let i = 0; i < count; i++) {
-      const customer = {
-          email: faker.internet.email(),
-          phone: faker.phone.number(),
-          birthDate: new Date(faker.date.past()).toISOString().split('.')[0],
-          address: faker.location.streetAddress(),
-          country: faker.location.country(),
-          gender: faker.helpers.arrayElement(['Male', 'Female', 'Other']),
-          additionalContactInfo: faker.internet.email(),
-          additionalNotes: faker.lorem.sentence(),
-          firstRequest: faker.date.past(10).toISOString().slice(0, 10),
-          accountStatus: faker.helpers.arrayElement(['active', 'inactive', 'suspended']),
-          name: faker.lorem.word(),
-          createdAt: new Date(faker.date.past()).toISOString().split('.')[0]
-      };
+    const customer = {
+      email: faker.internet.email(),
+      phone: faker.phone.number(),
+      birthDate: new Date(faker.date.past()).toISOString().split('.')[0],
+      address: faker.location.streetAddress(),
+      country: faker.location.country(),
+      gender: faker.helpers.arrayElement(['Male', 'Female', 'Other']),
+      additionalContactInfo: faker.internet.email(),
+      additionalNotes: faker.lorem.sentence(),
+      firstRequest: faker.date.past(10).toISOString().slice(0, 10),
+      accountStatus: faker.helpers.arrayElement([
+        'active',
+        'inactive',
+        'suspended',
+      ]),
+      name: faker.lorem.word(),
+      createdAt: new Date(faker.date.past()).toISOString().split('.')[0],
+    };
 
-      const values = Object.values(customer).map(value =>
-          typeof value === 'string' ? `'${value.replace(/'/g, "''")}'` : value
-      ).join(', ');
+    const values = Object.values(customer)
+      .map(value =>
+        typeof value === 'string' ? `'${value.replace(/'/g, "''")}'` : value,
+      )
+      .join(', ');
 
-      customers.push(`(${values})`);
+    customers.push(`(${values})`);
   }
 
   return `${sqlStatement}\n${customers.join(',\n')};`;
@@ -86,4 +92,3 @@ function generateCustomerContent(tableName, count) {
 // }
 
 exports.generateCustomerContent = generateCustomerContent;
-

@@ -20,7 +20,6 @@ async function generateAplicationsContent(
       const pageLink = faker.internet.url();
       const type = faker.lorem.word();
 
-
       const name = faker.person.firstName() + ' ' + faker.person.lastName();
       const pageName = pages[Math.floor(Math.random() * pages.length)];
 

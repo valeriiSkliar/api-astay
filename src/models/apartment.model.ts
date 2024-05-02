@@ -59,14 +59,12 @@ export class Apartment extends Entity {
   @property.array(Date)
   hostDisabledDates?: Date[];
 
-// TODO: rename to apartmentPrice -константа. вказуєтьься при створені або редагуванні
+  // TODO: rename to apartmentPrice -константа. вказуєтьься при створені або редагуванні
 
   @property({
     type: 'number',
   })
   price?: number;
-
-
 
   @property({
     type: 'number',
