@@ -129,6 +129,13 @@ export class Booking extends Entity {
   token?: string;
 
   @property({
+    type: 'date',
+    required: false,
+    mysql: {dataType: 'date', nullable: 'Y'},
+  })
+  extactedAt?: Date | null;
+
+  @property({
     type: 'string',
     required: false,
     mysql: {dataType: 'text', nullable: 'Y'},
@@ -140,14 +147,14 @@ export class Booking extends Entity {
     required: false,
     mysql: {dataType: 'date', nullable: 'Y'},
   })
-  reviewTokenExpiry?: Date | null;
+  reviewToken_expiredAt?: Date | null;
 
   @property({
     type: 'date',
     required: false,
     mysql: {dataType: 'date', nullable: 'Y'},
   })
-  tokenReviewGenerated?: Date | null;
+  tokenReview_createdAt?: Date | null;
 
   @property({
     type: 'boolean',

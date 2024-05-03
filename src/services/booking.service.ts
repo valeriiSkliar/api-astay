@@ -119,23 +119,14 @@ export class BookingService {
     return booking;
   }
 
+
+
   public async generateReviewToken(booking: Partial<Booking>) {
     const reviewToken = await bcrypt.hash(
       `${booking.customerId}-${Date.now()}`,
       10,
     );
-    // console.log('reviewToken', reviewToken);
     booking.tokenReview = reviewToken;
-    // booking.reviewTokenExpiry = dayjs().add(1, 'hour').toDate();
-    // booking.tokenReviewGenerated = new Date();
-    // const {id, apartment, transfers, customer, ...rest} = booking;
-
-    // console.log('rest', rest);
-    // try {
-    //   await this.bookingRepository.updateById(booking.id, rest);
-    // } catch (error) {
-    //   throw new Error('Error generating review token: ' + error.message);
-    //   }
     return reviewToken;
   }
 
@@ -173,21 +164,22 @@ export class BookingService {
   }
 
   public async validateReviewToken(token: string) {
+
     const booking = await this.bookingRepository.findOne({
       where: {
-        token: token,
+        reviewToken: token,
         isArchived: false
-        // reviewTokenExpiry: {
-        //   gte: dayjs().toDate()
-        // }
       },
       include: [
-        // {relation: 'apartment'},
+        {relation: 'apartment'},
         {relation: 'customer'},
-
       ],
     });
 
+    if (!booking) {
+      throw new Error('No any related booking found');
+    }
+    return booking;
   }
   public excludeUnnecessaryFields(booking: Partial<Booking>) {
     const {reviewUrl,reviewTokenExpiry, tokenReviewGenerated, ...bookingFromFrontend} = booking;

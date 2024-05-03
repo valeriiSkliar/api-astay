@@ -309,6 +309,54 @@ export class BookingController {
 
   }
 
+  @post('/api/reviews/validate-token')
+  @response(200, {
+    description: 'Validate booking token',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Booking, {includeRelations: true}),
+      },
+    },
+  })
+  async validateReviewToken(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Booking, {partial: true}),
+        },
+      },
+    })
+    body: Partial<Booking>,
+  ): Promise<{status: string; data: Partial<Booking> | null | BookingResponse; message: string}> {
+    const token = body.tokenReview;
+    if (!token) {
+      return {
+        status: 'error',
+        message: 'No any review token in request. Token is required to proceed.',
+        data: null,
+      };
+    }
+    try {
+      const booking = await this.bookingService.validateBookingToken(token);
+      // const hostContactData = await this.hostContactsRepository.find()
+      // const convertedTransferObject = this.transferService.convertTransferArrayToObject(booking.transfers);
+      // const bookingsWithTransformedTransfers = {
+      //   ...booking,
+      //   transfers: convertedTransferObject,
+      //   hostContacts: hostContactData[0]
+      // }
+      const {apartment, customer, id, name, email, ...rest} = booking
+      return {
+        message: 'Booking token is valid',
+        status: 'success',
+        data: {apartment, customer}
+      };
+    } catch (error) {
+      return {message: error.message, status: 'error', data: null};
+    }
+
+  }
+
   private async validateBookingData(booking: Omit<Booking, 'id'>) {
     const isApartmentExist = await this.bookingService.isApartmentExist(
       booking.apartmentId,
@@ -467,58 +515,6 @@ export class BookingController {
     await Promise.all(updatePromises);
   }
 
-  // @post('/api/generate-review-token', {
-  //   responses: {
-  //     '200': {
-  //       description: 'Booking model instance',
-  //       content: {'application/json': {schema: getModelSchemaRef(Booking)}},
-  //     },
-  //   },
-  // })
-  // public async generateReviewToken(
-  //   // @inject(SecurityBindings.USER) currentUser: UserProfile,
-  //   @requestBody({
-  //     content: {
-  //       'application/json': {
-  //         schema: getModelSchemaRef(Booking, {
-  //           title: 'NewBooking',
-  //           exclude: ['reviewUrl', 'reviewTokenExpiry', 'tokenReviewGenerated'],
-  //         }),
-  //       },
-  //     },
-  //   })
-  //   booking: Omit<Booking, 'reviewUrl' | 'reviewTokenExpiry' | 'tokenReviewGenerated'>,
-  // ): Promise<{message: string; code: number, data: Partial<Booking> | null}> {
-  //   const bookingFromFrontend = this.bookingService.excludeUnnecessaryFields(booking);
-  //   try {
-  //     const currentBooking = await this.bookingRepository.findOne({
-  //       where: {
-  //         id: booking.id,
-  //         token: booking.token,
-  //         isArchived: false,
-  //       },
-  //       include: [
-  //         {relation: 'apartment'},
-  //         {relation: 'customer'},
-  //         {relation: 'transfers'},
-  //       ],
-  //     });
-  //     console.log('currentBooking', currentBooking);
-  //     if (!currentBooking) {
-  //       throw new Error('Invalid booking id or token');
-  //     } else {
-  //       const {reviewUrl,reviewTokenExpiry, tokenReviewGenerated, ...bookingFromDB} = currentBooking;
-
-  //       const bookingWithReviewToken = await this.bookingService.generateReviewToken({
-  //         ...bookingFromDB,
-  //         ...bookingFromFrontend,
-  //       });
-  //       // return {message: 'Review token generated', code: 200, data: bookingWithReviewToken as Partial<Booking>};
-  //     }
-  //   } catch (error) {
-  //     return { message: error.message, code: 400, data: null };
-  //   }
-  // }
 
   @post('/api/generate-review-url', {
     responses: {
