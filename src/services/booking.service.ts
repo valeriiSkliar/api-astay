@@ -124,23 +124,26 @@ export class BookingService {
       `${booking.customerId}-${Date.now()}`,
       10,
     );
+    // console.log('reviewToken', reviewToken);
     booking.tokenReview = reviewToken;
-    booking.reviewTokenExpiry = dayjs().add(1, 'hour').toDate();
-    booking.tokenReviewGenerated = new Date();
-    const {apartment, transfers, customer, ...rest} = booking;
+    // booking.reviewTokenExpiry = dayjs().add(1, 'hour').toDate();
+    // booking.tokenReviewGenerated = new Date();
+    // const {id, apartment, transfers, customer, ...rest} = booking;
 
-    console.log('rest', rest);
-    try {
-      await this.bookingRepository.updateById(booking.id, rest);
-    } catch (error) {
-      throw new Error('Error generating review token: ' + error.message);
-      }
-    return booking;
+    // console.log('rest', rest);
+    // try {
+    //   await this.bookingRepository.updateById(booking.id, rest);
+    // } catch (error) {
+    //   throw new Error('Error generating review token: ' + error.message);
+    //   }
+    return reviewToken;
   }
 
   public async generateReviewUrl(booking: Partial<Booking>) {
+
     if (!booking.tokenReview) {
-      throw new Error('Review token is required');
+      booking.tokenReview = await this.generateReviewToken(booking);
+      // throw new Error('Review token is required');
     }
     const bookingExist = await this.bookingRepository.exists(
       booking.id,
@@ -148,12 +151,21 @@ export class BookingService {
     if (!bookingExist) {
       throw new Error('Invalid review token');
     }
-    if(!booking.reviewUrl) {
+    if(booking.reviewUrl) {
       throw new Error('Review url is generated already');
     }
     const bookingUrl = `${process.env.FRONTEND_URL}/apartment/leave-review?token=${booking.tokenReview}`
     try {
-      await this.bookingRepository.updateById(booking.id, booking);
+      // console.log('bookingUrl', {
+      //   reviewUrl: bookingUrl,
+      //   ...booking
+      // });
+      await this.bookingRepository.updateById(booking.id, {
+        reviewUrl: bookingUrl,
+        ...booking
+      });
+      const check = await this.bookingRepository.findById(booking.id);
+      console.log('check', check);
     } catch (error) {
       throw new Error('Error generating review url: ' + error.message);
     }
@@ -176,5 +188,9 @@ export class BookingService {
       ],
     });
 
+  }
+  public excludeUnnecessaryFields(booking: Partial<Booking>) {
+    const {reviewUrl,reviewTokenExpiry, tokenReviewGenerated, ...bookingFromFrontend} = booking;
+    return bookingFromFrontend;
   }
 }

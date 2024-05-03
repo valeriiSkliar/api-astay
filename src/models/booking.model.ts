@@ -131,20 +131,23 @@ export class Booking extends Entity {
   @property({
     type: 'string',
     required: false,
+    mysql: {dataType: 'text', nullable: 'Y'},
   })
-  tokenReview?: string;
+  tokenReview?: string | null;
 
   @property({
     type: 'date',
     required: false,
+    mysql: {dataType: 'date', nullable: 'Y'},
   })
-  reviewTokenExpiry?: Date;
+  reviewTokenExpiry?: Date | null;
 
   @property({
     type: 'date',
     required: false,
+    mysql: {dataType: 'date', nullable: 'Y'},
   })
-  tokenReviewGenerated?: Date;
+  tokenReviewGenerated?: Date | null;
 
   @property({
     type: 'boolean',
