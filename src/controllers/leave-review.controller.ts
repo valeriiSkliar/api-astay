@@ -36,39 +36,39 @@ export class LeaveReviewController {
         },
       },
     })
-    reviewData: Omit<Review, 'id'>,
+    reviewData: Partial<Review>,
   ): Promise<{status: string; message: string}> {
     try {
-    //   const tokenReview = reviewData.tokenReview;
-    //   const reiting_score = reviewData.reiting_score;
-    //   const {review} = reviewData;
+      const tokenReview = reviewData.tokenReview;
+      const reiting_score = reviewData.reiting_score;
+      const {review} = reviewData;
 
-    //   if (!tokenReview) {
-    //     return {status: 'error', message: 'Token for review is required'};
-    //   }
-    //   const bookingValidation =
-    //     await this.reviewService.validateReviewToken(tokenReview);
-    //   if (!bookingValidation) {
-    //     throw new Error('No any related booking found');
-    //   }
-    //   const extractedData =
-    //     await this.reviewService.extractReviewData(bookingValidation);
+      if (!tokenReview) {
+        return {status: 'error', message: 'Token for review is required'};
+      }
+      const bookingValidation =
+        await this.reviewService.validateReviewToken(tokenReview);
+      if (!bookingValidation) {
+        throw new Error('No any related booking found');
+      }
+      const extractedData =
+        await this.reviewService.extractReviewData(bookingValidation);
 
-    //   if (bookingValidation.tokenReview !== tokenReview) {
-    //     throw new Error('Invalid review token');
-    //   }
-    //   if (!extractedData) {
-    //     throw new Error('Null or undefined data in review');
-    //   }
+      if (bookingValidation.tokenReview !== tokenReview) {
+        throw new Error('Invalid review token');
+      }
+      if (!extractedData) {
+        throw new Error('Null or undefined data in review');
+      }
 
-    //   const newReview = await this.reviewService.createReview({
-    //     tokenReview,
-    //     review,
-    //     reiting_score,
-    //     ...extractedData,
-    //   });
+      const newReview = await this.reviewService.createReview({
+        tokenReview,
+        review,
+        reiting_score,
+        ...extractedData,
+      });
 
-    //   console.log('newReview', newReview);
+      console.log('newReview', newReview);
 
       return {status: 'success - test', message: 'Review created successfully'};
     } catch (error) {
