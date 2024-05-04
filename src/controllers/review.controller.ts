@@ -17,13 +17,14 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Review} from '../models';
+import {Booking, Review} from '../models';
 import {ApartmentRepository, ReviewRepository} from '../repositories';
 import {AverageCountScoresReviews} from '../interfaces/expansionDefaultModel/Average(Count)Reviews';
 import {calculateAverageRating} from '../services/reviews/calculateAverageRating.service';
 import {service} from '@loopback/core';
 import {BookingService, ReviewService} from '../services';
 import {authenticate} from '@loopback/authentication';
+import {BookingResponse} from '../types';
 export class ReviewController {
   constructor(
     @repository(ReviewRepository)
@@ -224,5 +225,52 @@ export class ReviewController {
   })
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.reviewRepository.deleteById(id);
+  }
+
+  @post('/api/reviews/validate-token')
+  @response(200, {
+    description: 'Validate booking token',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Booking, {includeRelations: true}),
+      },
+    },
+  })
+  async validateReviewToken(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Booking, {partial: true}),
+        },
+      },
+    })
+    body: Partial<Booking>,
+  ): Promise<{
+    status: string;
+    data: Partial<Booking> | null | BookingResponse;
+    message: string;
+  }> {
+    const token = body.tokenReview;
+    if (!token) {
+      return {
+        status: 'error',
+        message:
+          'No any review token in request. Token is required to proceed.',
+        data: null,
+      };
+    }
+    try {
+      const booking = await this.reviewService.validateReviewToken(token);
+
+      // const {apartment, customer, id, name, email, ...rest} = booking;
+
+      return {
+        message: 'Review token is valid',
+        status: 'success',
+        data: [],
+      };
+    } catch (error) {
+      return {message: error.message, status: 'error', data: null};
+    }
   }
 }

@@ -168,6 +168,7 @@ export class BookingController {
       },
     },
   })
+
   async findById(
     @param.path.number('id') id: number,
     @param.filter(Booking, {exclude: 'where'})
@@ -311,61 +312,6 @@ export class BookingController {
     }
   }
 
-  @post('/api/reviews/validate-token')
-  @response(200, {
-    description: 'Validate booking token',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(Booking, {includeRelations: true}),
-      },
-    },
-  })
-  async validateReviewToken(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Booking, {partial: true}),
-        },
-      },
-    })
-    body: Partial<Booking>,
-  ): Promise<{
-    status: string;
-    data: Partial<Booking> | null | BookingResponse;
-    message: string;
-  }> {
-    const token = body.tokenReview;
-    if (!token) {
-      return {
-        status: 'error',
-        message:
-          'No any review token in request. Token is required to proceed.',
-        data: null,
-      };
-    }
-    try {
-      const booking = await this.reviewService.validateReviewToken(token);
-      // const hostContactData = await this.hostContactsRepository.find()
-      // const convertedTransferObject = this.transferService.convertTransferArrayToObject(booking.transfers);
-      // const bookingsWithTransformedTransfers = {
-      //   ...booking,
-      //   transfers: convertedTransferObject,
-      //   hostContacts: hostContactData[0]
-      // }
-      const {apartment, customer, id, name, email, ...rest} = booking;
-
-      // add room type
-      // set isReviewed to true
-
-      return {
-        message: 'Review token is valid',
-        status: 'success',
-        data: [],
-      };
-    } catch (error) {
-      return {message: error.message, status: 'error', data: null};
-    }
-  }
 
   private async validateBookingData(booking: Omit<Booking, 'id'>) {
     const isApartmentExist = await this.bookingService.isApartmentExist(

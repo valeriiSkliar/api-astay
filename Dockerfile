@@ -20,6 +20,9 @@ RUN mkdir -p /home/node/app
 
 WORKDIR /home/node/app
 
+RUN chown -R node:node /home/node/app/public/uploads
+USER node
+
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
