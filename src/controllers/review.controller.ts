@@ -35,7 +35,6 @@ export class ReviewController {
     @service(BookingService) private bookingService: BookingService,
   ) {}
 
-  @authenticate('jwt')
   @post('/api/reviews')
   @response(200, {
     description: 'Review model instance',
@@ -119,7 +118,6 @@ export class ReviewController {
     }
   }
 
-  @authenticate('jwt')
   @patch('/api/reviews')
   @response(200, {
     description: 'Review PATCH success count',
@@ -139,7 +137,6 @@ export class ReviewController {
     return this.reviewRepository.updateAll(review, where);
   }
 
-  @authenticate('jwt')
   @get('/api/reviews/{id}')
   @response(200, {
     description: 'Review model instance',
@@ -157,7 +154,6 @@ export class ReviewController {
     return this.reviewRepository.findById(id, filter);
   }
 
-  @authenticate('jwt')
   @patch('/api/reviews/{id}')
   @response(204, {
     description: 'Review PATCH success',
@@ -176,7 +172,6 @@ export class ReviewController {
     await this.reviewRepository.updateById(id, review);
   }
 
-  @authenticate('jwt')
   @put('/api/reviews/{id}')
   @response(204, {
     description: 'Review PUT success',
@@ -188,7 +183,6 @@ export class ReviewController {
     await this.reviewRepository.replaceById(id, review);
   }
 
-  @authenticate('jwt')
   @del('/api/reviews/{id}')
   @response(204, {
     description: 'Review DELETE success',
