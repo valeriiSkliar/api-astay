@@ -32,7 +32,7 @@ export class ReviewService {
   }
 
   async createReview(review: Partial<Review>) {
-
+    console.log('review', review);
     const newReview = await this.reviewRepository.create(
       review as DataObject<Booking>
     )
