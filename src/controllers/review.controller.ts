@@ -23,6 +23,7 @@ import {AverageCountScoresReviews} from '../interfaces/expansionDefaultModel/Ave
 import {calculateAverageRating} from '../services/reviews/calculateAverageRating.service';
 import {service} from '@loopback/core';
 import {BookingService, ReviewService} from '../services';
+import {authenticate} from '@loopback/authentication';
 export class ReviewController {
   constructor(
     @repository(ReviewRepository)
@@ -32,6 +33,7 @@ export class ReviewController {
     @service(ReviewService) private reviewService: ReviewService,
     @service(BookingService) private bookingService: BookingService,
   ) {}
+
 
   @post('/api/reviews')
   @response(200, {
@@ -55,62 +57,32 @@ export class ReviewController {
       const reiting_score = reviewData.reiting_score;
       const {review} = reviewData;
 
-      console.log('tokenReview', tokenReview);
-      console.log('reviewData', reviewData);
       if (!tokenReview) {
         return {status: 'error', message: 'Token for review is required'};
       }
-      // const listingId = review.listing_id;
       const bookingValidation =
         await this.reviewService.validateReviewToken(tokenReview);
       if (!bookingValidation) {
         throw new Error('No any related booking found');
       }
-      // console.log('review', review);
       const extractedData =
         await this.reviewService.extractReviewData(bookingValidation);
 
-      // if (bookingValidation.tokenReview !== tokenReview) {
-      //   throw new Error('Invalid review token');
-      // }
-      console.log({
-        tokenReview,
-        review,
-        reiting_score,
-        ...extractedData,
-      })
+      if (bookingValidation.tokenReview !== tokenReview) {
+        throw new Error('Invalid review token');
+      }
+      if (!extractedData) {
+        throw new Error('Null or undefined data in review');
+      }
+
       const newReview = await this.reviewService.createReview({
         tokenReview,
         review,
         reiting_score,
         ...extractedData,
       });
-      if (!extractedData) {
-        throw new Error('New review is null or undefined');
-      }
+
       console.log('newReview', newReview);
-
-      // const reviewsForListing = await this.reviewRepository.find({
-      //   where: {listing_id: listingId},
-      // });
-      // if (!reviewsForListing) {
-      //   throw new Error('Reviews for listing are null or undefined');
-      // }
-
-      // TODO: if apartment does not exist, throw an error and delete review
-
-      // const averageRating = calculateAverageRating(reviewsForListing);
-
-      // await this.apartmentRepository
-      //   .updateById(listingId, {
-      //     review_scores_rating: averageRating,
-      //     number_of_reviews: reviewsForListing.length,
-      //   })
-      //   .catch(error => {
-      //     throw new Error(
-      //       `Failed to update apartment with ID ${listingId}: ${error}`,
-      //     );
-      //   });
 
       return {status: 'success', message: 'Review created successfully'};
     } catch (error) {
@@ -176,6 +148,7 @@ export class ReviewController {
     }
   }
 
+  @authenticate('jwt')
   @patch('/api/reviews')
   @response(200, {
     description: 'Review PATCH success count',
@@ -195,6 +168,7 @@ export class ReviewController {
     return this.reviewRepository.updateAll(review, where);
   }
 
+  @authenticate('jwt')
   @get('/api/reviews/{id}')
   @response(200, {
     description: 'Review model instance',
@@ -212,6 +186,7 @@ export class ReviewController {
     return this.reviewRepository.findById(id, filter);
   }
 
+  @authenticate('jwt')
   @patch('/api/reviews/{id}')
   @response(204, {
     description: 'Review PATCH success',
@@ -230,6 +205,7 @@ export class ReviewController {
     await this.reviewRepository.updateById(id, review);
   }
 
+  @authenticate('jwt')
   @put('/api/reviews/{id}')
   @response(204, {
     description: 'Review PUT success',
@@ -241,6 +217,7 @@ export class ReviewController {
     await this.reviewRepository.replaceById(id, review);
   }
 
+  @authenticate('jwt')
   @del('/api/reviews/{id}')
   @response(204, {
     description: 'Review DELETE success',

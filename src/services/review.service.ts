@@ -17,7 +17,7 @@ export class ReviewService {
   public async validateReviewToken(token: string) {
     const booking = await this.bookingRepository.findOne({
       where: {
-        reviewToken: token,
+        tokenReview: token,
         isArchived: false
       },
       include: [
@@ -33,7 +33,6 @@ export class ReviewService {
   }
 
   async createReview(review: Partial<Review>) {
-    // console.log('newReview', review);
 
     const newReview = await this.reviewRepository.create(
       review as DataObject<Booking>
@@ -44,8 +43,8 @@ export class ReviewService {
   async extractReviewData(booking: Booking): Promise<Partial<Review>> {
 
     const {apartment, customer, ...rest} = booking;
-    const {room_type} = apartment;
-    const roomType = JSON.stringify(room_type);
+    const {room_type:{translations}} = apartment;
+    const roomType = JSON.stringify(translations);
 
     const {name, email} = customer;
     return {
@@ -54,7 +53,6 @@ export class ReviewService {
       customerId: customer.id,
       name,
       roomType,
-      // ...rest,
     };
   }
 }
