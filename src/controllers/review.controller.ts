@@ -35,7 +35,7 @@ export class ReviewController {
     @service(BookingService) private bookingService: BookingService,
   ) {}
 
-
+  @authenticate('jwt')
   @post('/api/reviews')
   @response(200, {
     description: 'Review model instance',
@@ -46,48 +46,18 @@ export class ReviewController {
       content: {
         'application/json': {
           schema: getModelSchemaRef(Review, {
-            exclude: ['id', 'avatar', 'roomType', 'name', 'reiting_score'],
+            exclude: ['id'],
           }),
         },
       },
     })
-    reviewData: Omit<Review, 'id'>,
-  ): Promise<{status: string; message: string}> {
+    review: Omit<Review, 'id'>,
+  ): Promise<{status: string; message: string, data: Review | null}> {
     try {
-      const tokenReview = reviewData.tokenReview;
-      const reiting_score = reviewData.reiting_score;
-      const {review} = reviewData;
-
-      if (!tokenReview) {
-        return {status: 'error', message: 'Token for review is required'};
-      }
-      const bookingValidation =
-        await this.reviewService.validateReviewToken(tokenReview);
-      if (!bookingValidation) {
-        throw new Error('No any related booking found');
-      }
-      const extractedData =
-        await this.reviewService.extractReviewData(bookingValidation);
-
-      if (bookingValidation.tokenReview !== tokenReview) {
-        throw new Error('Invalid review token');
-      }
-      if (!extractedData) {
-        throw new Error('Null or undefined data in review');
-      }
-
-      const newReview = await this.reviewService.createReview({
-        tokenReview,
-        review,
-        reiting_score,
-        ...extractedData,
-      });
-
-      console.log('newReview', newReview);
-
-      return {status: 'success', message: 'Review created successfully'};
+      const newReview = await this.reviewRepository.create(review);
+      return {status: 'success', message: 'Review created successfully', data: newReview};
     } catch (error) {
-      return {status: 'error', message: error.message};
+      return {status: 'error', message: error.message, data: null};
     }
   }
 
@@ -271,6 +241,61 @@ export class ReviewController {
       };
     } catch (error) {
       return {message: error.message, status: 'error', data: null};
+    }
+  }
+
+  @post('/api/reviews/leave-review')
+  @response(200, {
+    description: 'Review model instance',
+    content: {'application/json': {schema: getModelSchemaRef(Review)}},
+  })
+  async leaveReview(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Review, {
+            exclude: ['id', 'avatar', 'roomType', 'name', 'reiting_score'],
+          }),
+        },
+      },
+    })
+    reviewData: Omit<Review, 'id'>,
+  ): Promise<{status: string; message: string}> {
+    try {
+      const tokenReview = reviewData.tokenReview;
+      const reiting_score = reviewData.reiting_score;
+      const {review} = reviewData;
+
+      if (!tokenReview) {
+        return {status: 'error', message: 'Token for review is required'};
+      }
+      const bookingValidation =
+        await this.reviewService.validateReviewToken(tokenReview);
+      if (!bookingValidation) {
+        throw new Error('No any related booking found');
+      }
+      const extractedData =
+        await this.reviewService.extractReviewData(bookingValidation);
+
+      if (bookingValidation.tokenReview !== tokenReview) {
+        throw new Error('Invalid review token');
+      }
+      if (!extractedData) {
+        throw new Error('Null or undefined data in review');
+      }
+
+      const newReview = await this.reviewService.createReview({
+        tokenReview,
+        review,
+        reiting_score,
+        ...extractedData,
+      });
+
+      console.log('newReview', newReview);
+
+      return {status: 'success', message: 'Review created successfully'};
+    } catch (error) {
+      return {status: 'error', message: error.message};
     }
   }
 }

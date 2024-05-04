@@ -23,7 +23,6 @@ export class ReviewService {
       include: [
         {relation: 'apartment', scope: {include: [{relation: 'room_type'}]}},
         {relation: 'customer'},
-        // {relation: 'transfers'},
       ],
     });
     if (!booking) {
