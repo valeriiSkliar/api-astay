@@ -56,8 +56,18 @@ export class LeaveReviewController {
         reiting_score,
         ...extractedData,
       });
+      const highestId = await this.reviewRepository.findOne({
+        order: ['id DESC']
+      });
 
+      console.log('highestId', highestId);
+      if (!highestId) {
+        console.log('Error during review generation');
+      }
+      const lastId = highestId ? highestId?.id : 0;
+      const id = lastId ? lastId + 1 : 0 + 1;
       const newReview = await this.reviewService.createReview({
+        // id: id,
         tokenReview,
         review,
         reiting_score,
