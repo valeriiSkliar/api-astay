@@ -21,9 +21,15 @@ export class LeaveReviewController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Review, {
-            exclude: ['id', 'avatar', 'roomType', 'name', 'reiting_score'],
-          }),
+          schema: {
+            type: 'object',
+            properties: {
+              tokenReview: {type: 'string'},
+              reiting_score: {type: 'number'},
+              review: {type: 'string'},
+            },
+            required: ['tokenReview', 'reiting_score', 'review']
+          },
         },
       },
     })
