@@ -17,7 +17,7 @@ export class LeaveReviewController {
     @service(ReviewService) private reviewService: ReviewService,
   ) {}
 
-  @post('/api/reviews/leave-review')
+  @post('/api/reviews/customer-leave-review')
   @response(200, {
     description: 'Review model instance',
     content: {'application/json': {schema: {
