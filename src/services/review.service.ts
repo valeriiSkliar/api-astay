@@ -1,5 +1,5 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import {BookingRepository} from '../repositories';
+import {ApartmentRepository, BookingRepository, ReviewRepository} from '../repositories';
 import {DataObject, repository} from '@loopback/repository';
 import {Booking, Review} from '../models';
 
@@ -9,9 +9,9 @@ export class ReviewService {
     @repository('BookingRepository')
     public bookingRepository: BookingRepository,
     @repository('ApartmentRepository')
-    public apartmentRepository: BookingRepository,
+    public apartmentRepository: ApartmentRepository,
     @repository('ReviewRepository')
-    public reviewRepository: BookingRepository,
+    public reviewRepository: ReviewRepository,
   ) {}
 
   public async validateReviewToken(token: string) {
@@ -32,9 +32,10 @@ export class ReviewService {
   }
 
   async createReview(review: Partial<Review>) {
-    console.log('review', review);
+    const reviewInstance = new Review(review);
+
     const newReview = await this.reviewRepository.create(
-      review as DataObject<Booking>
+      reviewInstance
     )
     return newReview;
   }
