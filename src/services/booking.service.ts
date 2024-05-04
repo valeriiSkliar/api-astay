@@ -104,7 +104,7 @@ export class BookingService {
     const booking = await this.bookingRepository.findOne({
       where: {
         token: token,
-        isArchived: false
+        isArchived: false,
       },
       include: [
         // {relation: 'apartment'},
@@ -112,14 +112,11 @@ export class BookingService {
         {relation: 'transfers'},
       ],
     });
-    console.log('booking', booking);
     if (!booking) {
-      throw new Error('Invalid booking token');
+      throw new Error('Invalid review token');
     }
     return booking;
   }
-
-
 
   public async generateReviewToken(booking: Partial<Booking>) {
     const reviewToken = await bcrypt.hash(
@@ -131,21 +128,18 @@ export class BookingService {
   }
 
   public async generateReviewUrl(booking: Partial<Booking>) {
-
     if (!booking.tokenReview) {
       booking.tokenReview = await this.generateReviewToken(booking);
       // throw new Error('Review token is required');
     }
-    const bookingExist = await this.bookingRepository.exists(
-      booking.id,
-    )
+    const bookingExist = await this.bookingRepository.exists(booking.id);
     if (!bookingExist) {
       throw new Error('Invalid review token');
     }
-    if(booking.reviewUrl) {
+    if (booking.reviewUrl) {
       throw new Error('Review url is generated already');
     }
-    const bookingUrl = `${process.env.FRONTEND_URL}/apartment/leave-review?token=${booking.tokenReview}`
+    const bookingUrl = `${process.env.FRONTEND_URL}/apartment/leave-review?token=${booking.tokenReview}`;
     try {
       // console.log('bookingUrl', {
       //   reviewUrl: bookingUrl,
@@ -153,7 +147,7 @@ export class BookingService {
       // });
       await this.bookingRepository.updateById(booking.id, {
         reviewUrl: bookingUrl,
-        ...booking
+        ...booking,
       });
       const check = await this.bookingRepository.findById(booking.id);
       console.log('check', check);
@@ -163,26 +157,31 @@ export class BookingService {
     return bookingUrl;
   }
 
-  public async validateReviewToken(token: string) {
+  // public async validateReviewToken(token: string) {
 
-    const booking = await this.bookingRepository.findOne({
-      where: {
-        reviewToken: token,
-        isArchived: false
-      },
-      include: [
-        {relation: 'apartment'},
-        {relation: 'customer'},
-      ],
-    });
+  //   const booking = await this.bookingRepository.findOne({
+  //     where: {
+  //       reviewToken: token,
+  //       isArchived: false
+  //     },
+  //     include: [
+  //       {relation: 'apartment'},
+  //       {relation: 'customer'},
+  //     ],
+  //   });
 
-    if (!booking) {
-      throw new Error('No any related booking found');
-    }
-    return booking;
-  }
+  //   if (!booking) {
+  //     throw new Error('No any related booking found');
+  //   }
+  //   return booking;
+  // }
   public excludeUnnecessaryFields(booking: Partial<Booking>) {
-    const {reviewUrl,reviewTokenExpiry, tokenReviewGenerated, ...bookingFromFrontend} = booking;
+    const {
+      reviewUrl,
+      reviewTokenExpiry,
+      tokenReviewGenerated,
+      ...bookingFromFrontend
+    } = booking;
     return bookingFromFrontend;
   }
 }

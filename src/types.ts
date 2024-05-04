@@ -1,5 +1,5 @@
 import {RequestHandler} from 'express-serve-static-core';
-import { Booking, HostContacts, Transfer} from './models';
+import {Booking, HostContacts, Transfer} from './models';
 export type FileUploadHandler = RequestHandler;
 
 export interface TransferRequest {
@@ -10,4 +10,7 @@ export interface TransferRequest {
 //   transfers: TransferRequest | undefined;
 // }
 
-export type BookingResponse = Omit<Booking, 'transfers'> & {transfers: TransferRequest | undefined, hostContacts: HostContacts}
+export type BookingResponse = Omit<Booking, 'transfers'> & {
+  transfers: TransferRequest | undefined;
+  hostContacts: HostContacts;
+};

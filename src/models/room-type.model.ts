@@ -18,8 +18,8 @@ export class RoomType extends Entity {
   @property({
     type: 'object',
     default: {
-      en: {category: 'new Type', description: 'new Type'},
-      ru: {category: 'новый тип', description: 'новый тип'},
+      en: {type: 'new Type', description: 'new Type'},
+      ru: {type: 'новый тип', description: 'новый тип'},
     },
     mysql: {
       columnName: 'translations',

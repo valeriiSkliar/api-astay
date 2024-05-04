@@ -34,11 +34,8 @@ import {
 } from '../repositories';
 import {inject, service} from '@loopback/core';
 import bcrypt from 'bcrypt';
-import {BookingService, TransferService} from '../services';
+import {BookingService, ReviewService, TransferService} from '../services';
 import {BookingResponse} from '../types';
-
-
-
 
 export class BookingController {
   constructor(
@@ -54,6 +51,7 @@ export class BookingController {
     @service(TransferService) private transferService: TransferService,
     @repository(HostContactsRepository)
     public hostContactsRepository: HostContactsRepository,
+    @service(ReviewService) private reviewService: ReviewService,
   ) {}
 
   @post('/api/bookings')
@@ -279,7 +277,11 @@ export class BookingController {
       },
     })
     body: Partial<Booking>,
-  ): Promise<{status: string; data: Booking | null | BookingResponse; message: string}> {
+  ): Promise<{
+    status: string;
+    data: Booking | null | BookingResponse;
+    message: string;
+  }> {
     const token = body.token;
     if (!token) {
       return {
@@ -290,13 +292,14 @@ export class BookingController {
     }
     try {
       const booking = await this.bookingService.validateBookingToken(token);
-      const hostContactData = await this.hostContactsRepository.find()
-      const convertedTransferObject = this.transferService.convertTransferArrayToObject(booking.transfers);
+      const hostContactData = await this.hostContactsRepository.find();
+      const convertedTransferObject =
+        this.transferService.convertTransferArrayToObject(booking.transfers);
       const bookingsWithTransformedTransfers = {
         ...booking,
         transfers: convertedTransferObject,
-        hostContacts: hostContactData[0]
-      }
+        hostContacts: hostContactData[0],
+      };
 
       return {
         message: 'Booking token is valid',
@@ -306,7 +309,6 @@ export class BookingController {
     } catch (error) {
       return {message: error.message, status: 'error', data: null};
     }
-
   }
 
   @post('/api/reviews/validate-token')
@@ -327,17 +329,22 @@ export class BookingController {
       },
     })
     body: Partial<Booking>,
-  ): Promise<{status: string; data: Partial<Booking> | null | BookingResponse; message: string}> {
+  ): Promise<{
+    status: string;
+    data: Partial<Booking> | null | BookingResponse;
+    message: string;
+  }> {
     const token = body.tokenReview;
     if (!token) {
       return {
         status: 'error',
-        message: 'No any review token in request. Token is required to proceed.',
+        message:
+          'No any review token in request. Token is required to proceed.',
         data: null,
       };
     }
     try {
-      const booking = await this.bookingService.validateBookingToken(token);
+      const booking = await this.reviewService.validateReviewToken(token);
       // const hostContactData = await this.hostContactsRepository.find()
       // const convertedTransferObject = this.transferService.convertTransferArrayToObject(booking.transfers);
       // const bookingsWithTransformedTransfers = {
@@ -345,16 +352,19 @@ export class BookingController {
       //   transfers: convertedTransferObject,
       //   hostContacts: hostContactData[0]
       // }
-      const {apartment, customer, id, name, email, ...rest} = booking
+      const {apartment, customer, id, name, email, ...rest} = booking;
+
+      // add room type
+      // set isReviewed to true
+
       return {
-        message: 'Booking token is valid',
+        message: 'Review token is valid',
         status: 'success',
-        data: {apartment, customer}
+        data: [],
       };
     } catch (error) {
       return {message: error.message, status: 'error', data: null};
     }
-
   }
 
   private async validateBookingData(booking: Omit<Booking, 'id'>) {
@@ -407,7 +417,7 @@ export class BookingController {
       `${booking.apartmentId}-${Date.now()}`,
       saltRounds,
     );
-     const tokenReview = await this.bookingService.generateReviewToken(booking);
+    const tokenReview = await this.bookingService.generateReviewToken(booking);
     // booking.token = tokenPayment;
     // booking.tokenReview = tokenReview;
     // apartment/leave-review?token=abbatoken
@@ -420,7 +430,7 @@ export class BookingController {
       ...booking,
       tokenReview: tokenReview,
       paymentUrl: paymentUrl,
-      token: tokenPayment
+      token: tokenPayment,
     } as Booking;
   }
 
@@ -515,7 +525,6 @@ export class BookingController {
     await Promise.all(updatePromises);
   }
 
-
   @post('/api/generate-review-url', {
     responses: {
       '200': {
@@ -536,10 +545,9 @@ export class BookingController {
         },
       },
     })
-    // booking: Omit<Booking, 'id' | 'token' | 'isArchived'>,
-    booking: Partial<Booking>,
-
-  ): Promise<{message: string; code: number, data: Partial<Booking> | null}> {
+    booking // booking: Omit<Booking, 'id' | 'token' | 'isArchived'>,
+    : Partial<Booking>,
+  ): Promise<{message: string; code: number; data: Partial<Booking> | null}> {
     try {
       const currentBooking = await this.bookingRepository.findOne({
         where: {
@@ -556,21 +564,27 @@ export class BookingController {
       if (!currentBooking) {
         throw new Error('Invalid booking id or token');
       } else {
-        const generatedReviewURL = await this.bookingService.generateReviewUrl(booking);
+        const generatedReviewURL =
+          await this.bookingService.generateReviewUrl(booking);
         if (!generatedReviewURL) {
           throw new Error('Error generating review URL');
         }
-        const {reviewUrl,reviewTokenExpiry, tokenReviewGenerated, ...rest} = currentBooking;
+        const {reviewUrl, reviewTokenExpiry, tokenReviewGenerated, ...rest} =
+          currentBooking;
 
         const bookingWithReviewURL = {
           ...rest,
           reviewUrl: generatedReviewURL,
         };
 
-        return {message: 'Review URL generated', code: 200, data: bookingWithReviewURL};
+        return {
+          message: 'Review URL generated',
+          code: 200,
+          data: bookingWithReviewURL,
+        };
       }
     } catch (error) {
-      return { message: error.message, code: 400, data: null };
+      return {message: error.message, code: 400, data: null};
     }
   }
 }

@@ -21,12 +21,16 @@ import {Review} from '../models';
 import {ApartmentRepository, ReviewRepository} from '../repositories';
 import {AverageCountScoresReviews} from '../interfaces/expansionDefaultModel/Average(Count)Reviews';
 import {calculateAverageRating} from '../services/reviews/calculateAverageRating.service';
+import {service} from '@loopback/core';
+import {BookingService, ReviewService} from '../services';
 export class ReviewController {
   constructor(
     @repository(ReviewRepository)
     public reviewRepository: ReviewRepository,
     @repository(ApartmentRepository)
     public apartmentRepository: ApartmentRepository,
+    @service(ReviewService) private reviewService: ReviewService,
+    @service(BookingService) private bookingService: BookingService,
   ) {}
 
   @post('/api/reviews')
@@ -39,41 +43,74 @@ export class ReviewController {
       content: {
         'application/json': {
           schema: getModelSchemaRef(Review, {
-            exclude: ['id'],
+            exclude: ['id', 'avatar', 'roomType', 'name', 'reiting_score'],
           }),
         },
       },
     })
-    review: Omit<Review, 'id'>,
+    reviewData: Omit<Review, 'id'>,
   ): Promise<{status: string; message: string}> {
-    const listingId = review.listing_id;
     try {
-      const newReview = await this.reviewRepository.create(review);
-      if (!newReview) {
+      const tokenReview = reviewData.tokenReview;
+      const reiting_score = reviewData.reiting_score;
+      const {review} = reviewData;
+
+      console.log('tokenReview', tokenReview);
+      console.log('reviewData', reviewData);
+      if (!tokenReview) {
+        return {status: 'error', message: 'Token for review is required'};
+      }
+      // const listingId = review.listing_id;
+      const bookingValidation =
+        await this.reviewService.validateReviewToken(tokenReview);
+      if (!bookingValidation) {
+        throw new Error('No any related booking found');
+      }
+      // console.log('review', review);
+      const extractedData =
+        await this.reviewService.extractReviewData(bookingValidation);
+
+      // if (bookingValidation.tokenReview !== tokenReview) {
+      //   throw new Error('Invalid review token');
+      // }
+      console.log({
+        tokenReview,
+        review,
+        reiting_score,
+        ...extractedData,
+      })
+      const newReview = await this.reviewService.createReview({
+        tokenReview,
+        review,
+        reiting_score,
+        ...extractedData,
+      });
+      if (!extractedData) {
         throw new Error('New review is null or undefined');
       }
+      console.log('newReview', newReview);
 
-      const reviewsForListing = await this.reviewRepository.find({
-        where: {listing_id: listingId},
-      });
-      if (!reviewsForListing) {
-        throw new Error('Reviews for listing are null or undefined');
-      }
+      // const reviewsForListing = await this.reviewRepository.find({
+      //   where: {listing_id: listingId},
+      // });
+      // if (!reviewsForListing) {
+      //   throw new Error('Reviews for listing are null or undefined');
+      // }
 
       // TODO: if apartment does not exist, throw an error and delete review
 
-      const averageRating = calculateAverageRating(reviewsForListing);
+      // const averageRating = calculateAverageRating(reviewsForListing);
 
-      await this.apartmentRepository
-        .updateById(listingId, {
-          review_scores_rating: averageRating,
-          number_of_reviews: reviewsForListing.length,
-        })
-        .catch(error => {
-          throw new Error(
-            `Failed to update apartment with ID ${listingId}: ${error}`,
-          );
-        });
+      // await this.apartmentRepository
+      //   .updateById(listingId, {
+      //     review_scores_rating: averageRating,
+      //     number_of_reviews: reviewsForListing.length,
+      //   })
+      //   .catch(error => {
+      //     throw new Error(
+      //       `Failed to update apartment with ID ${listingId}: ${error}`,
+      //     );
+      //   });
 
       return {status: 'success', message: 'Review created successfully'};
     } catch (error) {

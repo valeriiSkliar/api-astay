@@ -1,6 +1,7 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
 import {BookingRepository} from '../repositories';
-import {repository} from '@loopback/repository';
+import {DataObject, repository} from '@loopback/repository';
+import {Booking, Review} from '../models';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class ReviewService {
@@ -9,24 +10,51 @@ export class ReviewService {
     public bookingRepository: BookingRepository,
     @repository('ApartmentRepository')
     public apartmentRepository: BookingRepository,
+    @repository('ReviewRepository')
+    public reviewRepository: BookingRepository,
   ) {}
 
   public async validateReviewToken(token: string) {
     const booking = await this.bookingRepository.findOne({
       where: {
-        token: token,
+        reviewToken: token,
         isArchived: false
       },
       include: [
-        // {relation: 'apartment'},
+        {relation: 'apartment', scope: {include: [{relation: 'room_type'}]}},
         {relation: 'customer'},
         // {relation: 'transfers'},
       ],
     });
-    console.log('booking', booking);
     if (!booking) {
-      throw new Error('Invalid booking token');
+      throw new Error('No any related booking found');
     }
     return booking;
+  }
+
+  async createReview(review: Partial<Review>) {
+    // console.log('newReview', review);
+
+    const newReview = await this.reviewRepository.create(
+      review as DataObject<Booking>
+    )
+    return newReview;
+  }
+
+  async extractReviewData(booking: Booking): Promise<Partial<Review>> {
+
+    const {apartment, customer, ...rest} = booking;
+    const {room_type} = apartment;
+    const roomType = JSON.stringify(room_type);
+
+    const {name, email} = customer;
+    return {
+      listing_id: apartment.id,
+      complex_id: apartment.complex_id,
+      customerId: customer.id,
+      name,
+      roomType,
+      // ...rest,
+    };
   }
 }

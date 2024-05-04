@@ -3,8 +3,6 @@ import {Apartment} from './apartment.model';
 import {Complex} from './complex.model';
 import {Customer} from './customer.model';
 
-// TODO: SCORE - property
-
 @model({settings: {strict: false}})
 export class Review extends Entity {
   @property({
@@ -13,6 +11,7 @@ export class Review extends Entity {
     generated: true,
   })
   id?: number;
+
   @property({
     type: 'string',
     mysql: {
@@ -21,19 +20,43 @@ export class Review extends Entity {
       nullable: 'Y',
     },
   })
-  avatar: string;
+  avatar?: string;
 
   @property({
-    type: 'string',
-    required: true,
+    type: 'object',
+    required: false,
+    mysql: {
+      columnName: 'RoomType',
+      dataType: 'json',
+      nullable: 'Y',
+    },
+    default: {},
+    jsonSchema: {
+      type: 'object',
+      properties: {
+        en: {
+          type: 'object',
+          properties: {
+            type: {
+              type: 'string',
+            },
+            description: {
+              type: 'string',
+            },
+          },
+          required: ['type', 'description'],
+        },
+      },
+    },
   })
-  roomType: string;
+  roomType?: string;
 
   @property({
     type: 'date',
+    required: false,
     default: () => new Date().toISOString().split('T')[0],
   })
-  reviewDate: string;
+  reviewDate?: string;
 
   @property({
     type: 'string',
@@ -48,35 +71,39 @@ export class Review extends Entity {
 
   @property({
     type: 'string',
+    default: 'No text review',
+    required: false,
     mysql: {
       columnName: 'positive_review',
       dataType: 'text',
       nullable: 'Y',
     },
   })
-  positive_review: string;
+  positive_review?: string;
 
   @property({
     type: 'string',
+    default: 'No text review',
+    required: false,
     mysql: {
       columnName: 'negative_review',
       dataType: 'text',
       nullable: 'Y',
     },
   })
-  negative_review: string;
+  negative_review?: string;
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  name: string;
+  name?: string;
 
   @property({
     type: 'number',
-    required: true,
+    required: false,
   })
-  reiting_score: number;
+  reiting_score?: number;
 
   @property({
     type: 'boolean',
@@ -91,19 +118,30 @@ export class Review extends Entity {
   status?: boolean;
 
   @property({
+    type: 'string',
+    required: false,
+    mysql: {
+      columnName: 'tokenReview',
+      dataType: 'text',
+      nullable: 'Y',
+    },
+  })
+  tokenReview?: string;
+
+  @property({
     type: 'date',
     default: () => new Date(),
   })
   createdAt?: string;
 
   @belongsTo(() => Apartment, {name: 'apartment'})
-  listing_id: number;
+  listing_id?: number;
 
   @belongsTo(() => Complex, {name: 'complex'})
-  complex_id: number;
+  complex_id?: number;
 
   @belongsTo(() => Customer)
-  customerId: number;
+  customerId?: number;
   // Define well-known properties here
 
   // Indexer property to allow additional data
