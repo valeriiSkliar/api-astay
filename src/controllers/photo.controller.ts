@@ -69,11 +69,14 @@ export class PhotoController {
     },
   })
   async find(@param.filter(Photo) filter?: Filter<Photo>): Promise<Photo[]> {
+    console.log('filter', filter);
     filter = {
       ...filter,
-      order: ['order_number ASC'],
+      order: filter?.order ?? ['order_number ASC'],
     };
-    return this.photoRepository.find(filter);
+    const photos = await this.photoRepository.find(filter);
+    console.log(photos);
+    return photos;
   }
 
   @patch('/api/photos')

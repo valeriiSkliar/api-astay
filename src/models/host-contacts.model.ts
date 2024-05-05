@@ -11,6 +11,12 @@ export class HostContacts extends Entity {
 
   @property({
     type: 'string',
+    required: true,
+  })
+  userId: string;
+
+  @property({
+    type: 'string',
   })
   phone?: string;
 

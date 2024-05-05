@@ -134,6 +134,7 @@ export class ReviewController {
     review: Review,
     @param.where(Review) where?: Where<Review>,
   ): Promise<Count> {
+
     return this.reviewRepository.updateAll(review, where);
   }
 
@@ -169,6 +170,7 @@ export class ReviewController {
     })
     review: Review,
   ): Promise<void> {
+    console.log('review', review);
     await this.reviewRepository.updateById(id, review);
   }
 

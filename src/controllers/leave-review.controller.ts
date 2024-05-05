@@ -62,7 +62,8 @@ export class LeaveReviewController {
         reiting_score,
         ...extractedData,
       });
- 
+
+      
       const newReview = await this.reviewService.createReview({
         tokenReview,
         review,
@@ -74,6 +75,7 @@ export class LeaveReviewController {
 
       return {status: 'success', message: 'Review created successfully'};
     } catch (error) {
+      console.log('error', error);
       return {status: 'error', message: error.message};
     }
   }

@@ -1,6 +1,6 @@
 // Uncomment these imports to begin using these cool features!
 
-import {repository} from '@loopback/repository';
+import {FilterExcludingWhere, repository} from '@loopback/repository';
 import {
   AmenityRepository,
   ApartmentRepository,
@@ -10,7 +10,7 @@ import {
   RoomCategoryRepository,
   RoomTypeRepository,
 } from '../repositories';
-import {get, post} from '@loopback/rest';
+import {get, param, post} from '@loopback/rest';
 import {
   Amenity,
   Apartment,
@@ -21,12 +21,13 @@ import {
 } from '../models';
 
 // import {inject} from '@loopback/core';
-interface IApartmentFormData {
+export interface IApartmentFormData {
   complexes?: Complex[];
   roomTypes?: RoomType[];
   roomCategories?: RoomCategory[];
   locations?: Locations[];
   amenities?: Amenity[];
+  apartment?: Apartment;
   status?: number;
 }
 
@@ -42,9 +43,11 @@ export class AdminServiceController {
     private locationsRepository: LocationsRepository,
     @repository('AmenityRepository')
     private amenityRepository: AmenityRepository,
+    @repository('ApartmentRepository')
+    private apartmentRepository: ApartmentRepository,
   ) {}
 
-  @get('/api/admin-service/apartment', {
+  @get('/api/admin-service/apartment/{id}', {
     responses: {
       '200': {
         description: 'Apartment model instance',
@@ -57,19 +60,24 @@ export class AdminServiceController {
         },
       },
     },
+
   })
-  async getDataForApartmentCreateForm(): Promise<IApartmentFormData> {
+  async getDataForApartmentCreateForm(
+    @param.path.number('id') id: number,
+  ): Promise<IApartmentFormData> {
     const complexes = await this.complexRepository.find();
     const roomTypes = await this.roomTypeRepository.find();
     const roomCategories = await this.roomCategoryRepository.find();
     const locations = await this.locationsRepository.find();
     const amenities = await this.amenityRepository.find();
+    const apartment = await this.apartmentRepository.findById(id);
     return {
       complexes,
       roomTypes,
       roomCategories,
       locations,
       amenities,
+      apartment,
       status: 200,
     };
   }
