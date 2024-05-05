@@ -2,6 +2,8 @@ import {injectable, /* inject, */ BindingScope} from '@loopback/core';
 import nodemailer from 'nodemailer';
 import {MailInterface} from '../interfaces/mailInterface';
 import {emailConfig} from '../datasources/nodemailer.config';
+import {render} from '@react-email/components';
+import AfterPayEmail from '../emailTemplates/AfterPayEmail/AfterPayEmail';
 @injectable({scope: BindingScope.TRANSIENT})
 export class MailService {
   private transporter: nodemailer.Transporter;
@@ -11,6 +13,10 @@ export class MailService {
   }
 
   async sendEmail(option: MailInterface) {
+    const emailHtml = render(AfterPayEmail({}));
+
+    console.log('mail.service.ts ------>', emailHtml);
+
     return this.transporter.sendMail(option, (error, info) => {
       if (error) {
         console.error(`[MessageID]=${info.messageId}`, error);

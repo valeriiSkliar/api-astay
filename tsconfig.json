@@ -4,6 +4,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
+    "jsx": "react",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
