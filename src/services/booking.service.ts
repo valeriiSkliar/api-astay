@@ -1,7 +1,7 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import {repository} from '@loopback/repository';
-import {BookingRepository} from '../repositories';
-import {Apartment, Booking} from '../models';
+import {IsolationLevel, Transaction, repository} from '@loopback/repository';
+import {BookingRepository, CustomerRepository} from '../repositories';
+import {Apartment, Booking, Customer} from '../models';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import bcrypt from 'bcrypt';
@@ -10,11 +10,105 @@ dayjs.extend(utc);
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class BookingService {
+  async handleBookingRequest(booking: Omit<Booking, "id">) {
+    const transaction =
+    await this.bookingRepository.dataSource.beginTransaction({
+      isolationLevel: IsolationLevel.READ_COMMITTED,
+      timeout: 30000,
+    });
+
+    try{
+      const {transfer, email, name, phoneNumber, apartmentId, checkIn, checkOut, locale, ...rest} = booking;
+
+      await this.validateBookingData({apartmentId, email, name});
+
+      const { originalApartmentPrice, priceOfBooking, discountFromApartment} = await this.handleApartmentPriceState(
+        apartmentId,
+        transaction as Transaction,
+      )
+      const { price } = await this.calculateBookingFromApartmentPriceState({ checkIn, checkOut, originalApartmentPrice, priceOfBooking, discountFromApartment});
+      const customer = await this.ensureCustomer({email, name, phoneNumber}, transaction as Transaction);
+
+      const { token, tokenReview, paymentUrl } = await this.handleTokensAndFrontendUrls({apartmentId, customerId: customer.id});
+
+
+      // const transfers = await this.createTransfers(
+      //   booking.transfer,
+      //   customer,
+      //   transaction as Transaction,
+      // );
+
+
+      await transaction.commit();
+
+      const bookingData = {
+        ...rest,
+        price,
+        // customer,
+        customerId: customer.id,
+        email,
+        name,
+        phoneNumber,
+        apartmentId,
+        checkIn,
+        checkOut,
+        originalApartmentPrice,
+        priceOfBooking,
+        discountFromApartment,
+        token,
+        tokenReview,
+        paymentUrl,
+      }
+
+      const newBooking = await this.bookingRepository.create(bookingData, transaction as Transaction);
+      return newBooking;
+    } catch (error) {
+      console.log('error', error);
+      await transaction.rollback();
+
+    }
+
+    return {
+      message: 'Booking request received',
+      code: 200,
+    };
+  }
+
+  private async handleTokensAndFrontendUrls({apartmentId, customerId}: Partial<Booking>): Promise<Partial<Booking>> {
+    const saltRounds = 10;
+    if (!customerId) {
+      throw new Error('Error creating or finding customer');
+    }
+    if (!apartmentId) {
+      throw new Error('Apartment id is required');
+    }
+    const token= await this.generatePaymentToken(apartmentId, saltRounds);
+
+    const tokenReview = await this.generateReviewToken(customerId, saltRounds);
+
+    const paymentUrl = this.generatePaymentUrl(token);
+
+    return {
+      tokenReview,
+      paymentUrl,
+      token,
+    };
+  }
+
+  private generatePaymentUrl(token: string): string {
+    return `${process.env.FRONTEND_URL}/apartment/payment?token=${token}`;
+  }
+
+  // private generateReviewUrl(token: string): string {
+  //   return `${process.env.FRONTEND_URL}/apartment/payment?token=${token}`;
+  // }
   constructor(
     @repository('BookingRepository')
     public bookingRepository: BookingRepository,
     @repository('ApartmentRepository')
     public apartmentRepository: BookingRepository,
+    @repository(CustomerRepository)
+    public customerRepository: CustomerRepository,
   ) {}
 
   public async handleTokenAndPaymentUrl(booking: Omit<Booking, 'id'>) {
@@ -118,18 +212,22 @@ export class BookingService {
     return booking;
   }
 
-  public async generateReviewToken(booking: Partial<Booking>) {
-    const reviewToken = await bcrypt.hash(
-      `${booking.customerId}-${Date.now()}`,
-      10,
+  public async generatePaymentToken(apartmentId: number, saltRounds: number) {
+    return await bcrypt.hash(
+      `${apartmentId}-${Date.now()}`,
+      saltRounds,
     );
-    booking.tokenReview = reviewToken;
-    return reviewToken;
   }
 
+  public async generateReviewToken(customerId: number, saltRounds: number) {
+    return await bcrypt.hash(
+      `${customerId}-${Date.now()}`,
+      saltRounds,
+    );
+  }
   public async generateReviewUrl(booking: Partial<Booking>) {
     if (!booking.tokenReview) {
-      booking.tokenReview = await this.generateReviewToken(booking);
+      booking.tokenReview = 'await this.generateReviewToken(booking)';
       // throw new Error('Review token is required');
     }
     const bookingExist = await this.bookingRepository.exists(booking.id);
@@ -157,24 +255,6 @@ export class BookingService {
     return bookingUrl;
   }
 
-  // public async validateReviewToken(token: string) {
-
-  //   const booking = await this.bookingRepository.findOne({
-  //     where: {
-  //       reviewToken: token,
-  //       isArchived: false
-  //     },
-  //     include: [
-  //       {relation: 'apartment'},
-  //       {relation: 'customer'},
-  //     ],
-  //   });
-
-  //   if (!booking) {
-  //     throw new Error('No any related booking found');
-  //   }
-  //   return booking;
-  // }
   public excludeUnnecessaryFields(booking: Partial<Booking>) {
     const {
       reviewUrl,
@@ -185,36 +265,7 @@ export class BookingService {
     return bookingFromFrontend;
   }
 
-  public async calculatePriceWithDiscount(booking: Partial<Booking>): Promise<Partial<Booking>> {
-    if (!booking?.apartmentId) {
-      throw new Error('Apartment id is required. Apartment not found');
-    }
-    const apartment = await this.apartmentRepository.findById(booking.apartmentId);
-    if (!apartment) {
-      throw new Error('Apartment not found');
-    }
-    if (!apartment.price) {
-      throw new Error('Price is required');
-    }
-    const discount = apartment.discount || 0;
-    const discauntValue = discount && discount > 0 ?
-     (discount / 100) * (apartment.price) : 0;
-     console.log('apartment.discount', apartment.discount)
-    console.log('discount', discount)
-    console.log('discauntValue', discauntValue)
-
-
-    const priceOfBooking = apartment.price - discauntValue;
-    return {
-      ...booking,
-      originalApartmentPrice: apartment?.price,
-      priceOfBooking: priceOfBooking,
-      discountFromApartment: discount,
-    };
-  }
-
-  public async handleApartmentPriceState(booking: Partial<Booking>) {
-    const { priceOfBooking, checkIn, checkOut, ...rest } = await this.calculatePriceWithDiscount(booking);
+  public async calculateBookingFromApartmentPriceState({priceOfBooking, checkIn, checkOut}: Partial<Booking>): Promise<Partial<Booking>> {   // const { priceOfBooking, checkIn, checkOut, ...rest } = await this.calculatePriceWithDiscount(booking);
     if (!priceOfBooking) {
       throw new Error('Error calculating apartment price state');
     }
@@ -222,16 +273,94 @@ export class BookingService {
       throw new Error('CheckIn and CheckOut dates are required');
     }
 
-    console.log('booking', booking);
     const bookingDates = this.getPeriod(new Date(checkIn), new Date(checkOut));
 
     const calculateBookingPrice = priceOfBooking * bookingDates.length;
 
     return {
-      ...rest,
-      priceOfBooking: priceOfBooking,
-      price: calculateBookingPrice,
-    } as Partial<Booking>;
+      price: Math.round(calculateBookingPrice * 100) / 100,
+    };
   }
 
+  public async handleApartmentPriceState(apartmentId: number, transaction: Transaction): Promise<Partial<Booking>> {
+    if (!apartmentId) {
+      throw new Error('Apartment id is required. Apartment not found');
+    }
+    const apartment = await this.apartmentRepository.findById(apartmentId,{}, {
+      transaction
+    });
+    if (!apartment) {
+      throw new Error('Apartment not found');
+    }
+    if (!apartment.price) {
+      throw new Error('Price is required');
+    }
+
+    const discount = apartment.discount || 0;
+    const discauntValue = discount && discount > 0 ?
+     (discount / 100) * (apartment.price) : 0;
+     const priceOfBooking = apartment.price - discauntValue;
+
+    return {
+      originalApartmentPrice: apartment?.price,
+      priceOfBooking: priceOfBooking,
+      discountFromApartment: discount,
+    };
+  }
+
+  private async validateBookingData(
+    booking: Partial<Booking>) {
+    console.log('validateBookingData', booking);
+    if (!booking.apartmentId) {
+      throw new Error('Apartment id is required. ApartmentID not found');
+    }
+    if (!booking.name || !booking.email) {
+      throw new Error('Name and email are required');
+    }
+    const isApartmentExist = await this.apartmentRepository.exists(
+      booking.apartmentId,
+    );
+    // const isApartmentExist = await this.isApartmentExist(
+    //   booking.apartmentId,
+    // );
+
+    return isApartmentExist;
+  }
+
+  private async ensureCustomer(
+    contactData: Partial<Customer>,
+    transaction: Transaction,
+  ): Promise<Customer> {
+    if (!contactData.email) {
+      throw new Error('Email is required');
+    }
+    let customer = await this.findCustomerByEmail(contactData, transaction);
+    if (!customer) {
+      customer = await this.createCustomer(contactData, transaction);
+    }
+    console.log('customer', customer);
+    return customer;
+  }
+  private async findCustomerByEmail({email}: Partial<Customer>, transaction: Transaction): Promise<Customer | null> {
+    try {
+      return await this.customerRepository.findOne({where: {email}}, {transaction}) ;
+    } catch (error) {
+      throw new Error('Error finding customer by email: ' + error.message);
+    }
+  }
+
+  private async createCustomer(
+    {email, name, phoneNumber}: Partial<Customer>,
+    transaction: Transaction,
+  ): Promise<Customer> {
+    try {
+      return await this.customerRepository.create({
+        name,
+        email,
+        phone: phoneNumber || '',
+      }, {transaction});
+    } catch (error) {
+      throw new Error('Error creating customer: ' + error.message);
+    }
+  }
 }

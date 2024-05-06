@@ -88,9 +88,9 @@ export class BookingController {
     // TODO: add rafactor error handling
 
     try {
-      const bookingWithApartmentPrice = await this.bookingService.handleApartmentPriceState(
-        booking
-      )
+      const bookingWithApartmentPrice = booking // await this.bookingService.handleApartmentPriceState(
+      //   booking
+      // )
       this.validateBookingData(bookingWithApartmentPrice);
       const customer = await this.ensureCustomer(bookingWithApartmentPrice);
       const transfers = await this.createTransfers(
@@ -367,7 +367,7 @@ export class BookingController {
       `${booking.apartmentId}-${Date.now()}`,
       saltRounds,
     );
-    const tokenReview = await this.bookingService.generateReviewToken(booking);
+    const tokenReview = 'await this.bookingService.generateReviewToken(booking)';
     const paymentUrl = `${process.env.FRONTEND_URL}/apartment/payment?token=${tokenPayment}`;
 
 

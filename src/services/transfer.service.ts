@@ -1,10 +1,15 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import {Transfer} from '../models';
+import {Customer, Transfer} from '../models';
 import {TransferRequest} from '../types';
+import {Transaction, repository} from '@loopback/repository';
+import {TransferRepository} from '../repositories';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class TransferService {
-  constructor(/* Add @inject to inject parameters */) {}
+  constructor(
+    @repository(TransferRepository)
+    public transferRepository: TransferRepository,
+  ) {}
 
   public convertTransferArrayToObject(
     transfers: Partial<Transfer[]> = [],
@@ -24,5 +29,32 @@ export class TransferService {
       {from: null, to: null} as TransferRequest,
     );
     return transferObj;
+  }
+
+  public async createTransfersFromBookingRequest(
+    transferData: any,
+    customer: Customer,
+    transaction: Transaction,
+  ) {
+    if (!transferData) {
+      return [];
+    }
+
+    const transferPromises = ['from', 'to'].map(async field => {
+      if (transferData[field]) {
+        const transferDetails = {
+          type: field === 'from' ? 'arrival' : 'departure',
+          customerId: customer.id,
+          ...transferData[field],
+        };
+        return await this.transferRepository.create(transferDetails, {
+          transaction,
+        });
+      }
+      return null;
+    });
+
+    const transfers = await Promise.all(transferPromises);
+    return transfers.filter(t => t !== null) as Transfer[];
   }
 }
