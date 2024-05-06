@@ -86,15 +86,19 @@ export class BookingController {
         timeout: 30000,
       });
     // TODO: add rafactor error handling
+
     try {
-      this.validateBookingData(booking);
-      const customer = await this.ensureCustomer(booking);
+      const bookingWithApartmentPrice = await this.bookingService.handleApartmentPriceState(
+        booking
+      )
+      this.validateBookingData(bookingWithApartmentPrice);
+      const customer = await this.ensureCustomer(bookingWithApartmentPrice);
       const transfers = await this.createTransfers(
         booking.transfer,
         customer,
         transaction as Transaction,
       );
-      const bookingWithTokens = await this.handleTokensAndPaymentUrl(booking);
+      const bookingWithTokens = await this.handleTokensAndPaymentUrl(bookingWithApartmentPrice);
       bookingWithTokens.customerId = customer.id;
       const newBooking = await this.createBooking(
         bookingWithTokens,
@@ -364,13 +368,8 @@ export class BookingController {
       saltRounds,
     );
     const tokenReview = await this.bookingService.generateReviewToken(booking);
-    // booking.token = tokenPayment;
-    // booking.tokenReview = tokenReview;
-    // apartment/leave-review?token=abbatoken
     const paymentUrl = `${process.env.FRONTEND_URL}/apartment/payment?token=${tokenPayment}`;
-    // const reviewUrl = `${process.env.FRONTEND_URL}/apartment/leave-review?token=${tokenReview}`;
 
-    // booking.paymentUrl = paymentUrl;
 
     return {
       ...booking,
@@ -395,7 +394,6 @@ export class BookingController {
   ): Promise<Booking> {
     const {transfer, locale, ...bookingValues} = booking;
     try {
-      console.log('bookingValues', bookingValues);
       return await this.bookingRepository.create(bookingValues, {
         transaction,
       });
@@ -405,7 +403,6 @@ export class BookingController {
   }
 
   private async updateTransfers(transfer: any, newBooking: Booking) {
-    console.log('transfer', transfer);
     if (transfer?.from || transfer?.to) {
       const transfers = Object.values(transfer) as Transfer[];
       await Promise.all(

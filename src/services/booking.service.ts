@@ -184,4 +184,54 @@ export class BookingService {
     } = booking;
     return bookingFromFrontend;
   }
+
+  public async calculatePriceWithDiscount(booking: Partial<Booking>): Promise<Partial<Booking>> {
+    if (!booking?.apartmentId) {
+      throw new Error('Apartment id is required. Apartment not found');
+    }
+    const apartment = await this.apartmentRepository.findById(booking.apartmentId);
+    if (!apartment) {
+      throw new Error('Apartment not found');
+    }
+    if (!apartment.price) {
+      throw new Error('Price is required');
+    }
+    const discount = apartment.discount || 0;
+    const discauntValue = discount && discount > 0 ?
+     (discount / 100) * (apartment.price) : 0;
+     console.log('apartment.discount', apartment.discount)
+    console.log('discount', discount)
+    console.log('discauntValue', discauntValue)
+
+
+    const priceOfBooking = apartment.price - discauntValue;
+    return {
+      ...booking,
+      originalApartmentPrice: apartment?.price,
+      priceOfBooking: priceOfBooking,
+      discountFromApartment: discount,
+    };
+  }
+
+  public async handleApartmentPriceState(booking: Partial<Booking>) {
+    const { priceOfBooking, checkIn, checkOut, ...rest } = await this.calculatePriceWithDiscount(booking);
+    if (!priceOfBooking) {
+      throw new Error('Error calculating apartment price state');
+    }
+    if (!checkIn || !checkOut) {
+      throw new Error('CheckIn and CheckOut dates are required');
+    }
+
+    console.log('booking', booking);
+    const bookingDates = this.getPeriod(new Date(checkIn), new Date(checkOut));
+
+    const calculateBookingPrice = priceOfBooking * bookingDates.length;
+
+    return {
+      ...rest,
+      priceOfBooking: priceOfBooking,
+      price: calculateBookingPrice,
+    } as Partial<Booking>;
+  }
+
 }

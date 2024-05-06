@@ -207,6 +207,25 @@ export class Booking extends Entity {
 
   @hasMany(() => Transfer)
   transfers?: Transfer[];
+
+  @property({
+    type: 'number',
+    required: false,
+  })
+  originalApartmentPrice?: number;
+
+  @property({
+    type: 'number',
+    required: false,
+  })
+  priceOfBooking?: number;
+
+  @property({
+    type: 'number',
+    required: false,
+  })
+  discountFromApartment?: number;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
