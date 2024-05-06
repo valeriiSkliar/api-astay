@@ -24,13 +24,25 @@ import {CrudRestComponent} from '@loopback/rest-crud';
 import {SubmitTrackingService} from './services';
 // import {CronComponent} from '@loopback/cron';
 
+const restConfig = {
+  port: 3000,
+  cors: {
+    origin: '*',
+    methods: 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization',
+  },
+};
+
 export {ApplicationConfig};
 
 export class ApiApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
   constructor(options: ApplicationConfig = {}) {
-    super(options);
+    super({
+      ...options,
+      rest: restConfig,
+    });
 
     this.dataSource(LocalMysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     this.component(AuthenticationComponent);
@@ -51,14 +63,14 @@ export class ApiApplication extends BootMixin(
     );
 
     // Customize @loopback/rest-explorer configuration here
-    this.configure(RestExplorerBindings.COMPONENT).to({
-      path: '/api/explorer',
-      cors: {
-        origin: ['*'],
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-      }
-    });
+    // this.configure(RestExplorerBindings.COMPONENT).to({
+    //   path: '/api/explorer',
+    //   cors: {
+    //     origin: ['*'],
+    //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    //     allowedHeaders: ['Content-Type', 'Authorization'],
+    //   }
+    // });
     this.component(RestExplorerComponent);
     this.configureFileUpload(options.fileStorageDirectory);
 
