@@ -19,6 +19,7 @@ export class BookingRequestController {
   ) {}
 
 
+
   @post('/api/booking-requests')
   @response(200, {
     description: 'Get booking request from client',
@@ -38,7 +39,7 @@ export class BookingRequestController {
       'Access-Control-Allow-Origin': {
         schema: { type: 'string' },
         description: 'Allowed Origin',
-        example: '*', // Adjust based on your requirements
+        example: '*',
       },
     },
   })
@@ -57,12 +58,14 @@ export class BookingRequestController {
     }
   })
 
-
   async handleBookingRequest(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Booking),
+          schema: getModelSchemaRef(Booking, {
+            title: 'NewBooking',
+            exclude: ['id'],
+          }),
         },
       },
     })

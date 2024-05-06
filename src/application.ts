@@ -56,16 +56,16 @@ export class ApiApplication extends BootMixin(
     // for cron jobs
     // this.component(CronComponent);
     // Set up default home page
-    this.static('/api/v1', path.join(__dirname, '../public'));
+    this.static('/api', path.join(__dirname, '../public'));
     this.static(
-      '/api/v1/public/uploads/',
+      '/api/public/uploads/',
       path.join(__dirname, '../public/uploads'),
     );
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
       path: '/api/explorer',
-      cors: false,
+      // cors: false
       // cors: {
       //   origin: ['*'],
       //   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
