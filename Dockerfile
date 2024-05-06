@@ -38,6 +38,6 @@ ENV HOST=0.0.0.0 PORT=3030
 EXPOSE ${PORT}
 
 # Run clean and build before starting the app
-CMD [ "npm", "run", "rebuild", "&&", "npm", "start" ]
+# CMD [ "npm", "run", "rebuild", "&&", "npm", "start" ]
 
-# CMD [ "npm", "start" ]
+CMD [ "npm", "start" ]
