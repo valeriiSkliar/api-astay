@@ -41,7 +41,7 @@ export class ApiApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super({
       ...options,
-      rest: restConfig,
+      // rest: restConfig,
     });
 
     this.dataSource(LocalMysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
@@ -63,14 +63,15 @@ export class ApiApplication extends BootMixin(
     );
 
     // Customize @loopback/rest-explorer configuration here
-    // this.configure(RestExplorerBindings.COMPONENT).to({
-    //   path: '/api/explorer',
-    //   cors: {
-    //     origin: ['*'],
-    //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-    //     allowedHeaders: ['Content-Type', 'Authorization'],
-    //   }
-    // });
+    this.configure(RestExplorerBindings.COMPONENT).to({
+      path: '/api/explorer',
+      cors: false,
+      // cors: {
+      //   origin: ['*'],
+      //   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+      //   allowedHeaders: ['Content-Type', 'Authorization'],
+      // }
+    });
     this.component(RestExplorerComponent);
     this.configureFileUpload(options.fileStorageDirectory);
 
