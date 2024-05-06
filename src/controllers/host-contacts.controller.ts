@@ -16,14 +16,25 @@ import {
   del,
   requestBody,
   response,
+  RestBindings,
+  Request,
 } from '@loopback/rest';
 import {HostContacts} from '../models';
 import {HostContactsRepository} from '../repositories';
+import {inject, service} from '@loopback/core';
+import {MyUserService, UserServiceBindings} from '@loopback/authentication-jwt';
+import {authenticate} from '@loopback/authentication';
+
+interface ErrorResponse {
+  message?: string;
+  error: string;
+}
 
 export class HostContactsController {
   constructor(
     @repository(HostContactsRepository)
     public hostContactsRepository: HostContactsRepository,
+    @service(MyUserService) public userService: MyUserService
   ) {}
 
   @post('/api/host-contacts')
@@ -37,7 +48,7 @@ export class HostContactsController {
         'application/json': {
           schema: getModelSchemaRef(HostContacts, {
             title: 'NewHostContacts',
-            exclude: ['id'],
+            exclude: ['id', 'userId'],
           }),
         },
       },
@@ -46,7 +57,48 @@ export class HostContactsController {
   ): Promise<HostContacts> {
     return this.hostContactsRepository.create(hostContacts);
   }
+  @authenticate('jwt')
+  @post('/api/host-contacts/verify')
+  @response(200, {
+    description: 'HostContacts model instance',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(HostContacts),
+      },
+    },
+  })
+  async verify(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              userId: {
+                type: 'string',
+              },
+            },
+            required: ['userId'],
+          },
+        },
+      },
+    })
+    user: { userId: string },
+    @inject(RestBindings.Http.REQUEST) request: Request,
+  ): Promise<HostContacts | ErrorResponse> {
+    try {
+    const userId = await this.userService.findUserById(user.userId);
+    console.log(userId);
+    if (!userId) throw new Error('User not found');
 
+    const hostContacts = await this.hostContactsRepository.findOne({ where: { userId: userId.id } });
+    if (!hostContacts) throw new Error('Host contacts not found');
+
+    return hostContacts;
+  } catch (error) {
+    return { error: error.message };
+  }
+  }
   @get('/api/host-contacts/count')
   @response(200, {
     description: 'HostContacts model count',

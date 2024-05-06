@@ -71,4 +71,15 @@ export class BookingRepository extends DefaultCrudRepository<
       this.apartment.inclusionResolver,
     );
   }
+  // definePersistedModel( entityClass: typeof Booking ) {
+  //   const modelClass = super.definePersistedModel(entityClass);
+  //   modelClass.observe('before save', async (ctx: any) => {
+  //     if (ctx.instance) {
+  //       ctx.instance.updatedAt = new Date();
+  //       console.log('ctx.instance', ctx.instance);
+  //     }
+  //   });
+  //   return modelClass;
+
+  // }
 }

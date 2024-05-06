@@ -17,12 +17,14 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Review} from '../models';
+import {Booking, Review} from '../models';
 import {ApartmentRepository, ReviewRepository} from '../repositories';
 import {AverageCountScoresReviews} from '../interfaces/expansionDefaultModel/Average(Count)Reviews';
 import {calculateAverageRating} from '../services/reviews/calculateAverageRating.service';
 import {service} from '@loopback/core';
 import {BookingService, ReviewService} from '../services';
+import {authenticate} from '@loopback/authentication';
+import {BookingResponse} from '../types';
 export class ReviewController {
   constructor(
     @repository(ReviewRepository)
@@ -43,78 +45,18 @@ export class ReviewController {
       content: {
         'application/json': {
           schema: getModelSchemaRef(Review, {
-            exclude: ['id', 'avatar', 'roomType', 'name', 'reiting_score'],
+            exclude: ['id'],
           }),
         },
       },
     })
-    reviewData: Omit<Review, 'id'>,
-  ): Promise<{status: string; message: string}> {
+    review: Omit<Review, 'id'>,
+  ): Promise<{status: string; message: string, data: Review | null}> {
     try {
-      const tokenReview = reviewData.tokenReview;
-      const reiting_score = reviewData.reiting_score;
-      const {review} = reviewData;
-
-      console.log('tokenReview', tokenReview);
-      console.log('reviewData', reviewData);
-      if (!tokenReview) {
-        return {status: 'error', message: 'Token for review is required'};
-      }
-      // const listingId = review.listing_id;
-      const bookingValidation =
-        await this.reviewService.validateReviewToken(tokenReview);
-      if (!bookingValidation) {
-        throw new Error('No any related booking found');
-      }
-      // console.log('review', review);
-      const extractedData =
-        await this.reviewService.extractReviewData(bookingValidation);
-
-      // if (bookingValidation.tokenReview !== tokenReview) {
-      //   throw new Error('Invalid review token');
-      // }
-      console.log({
-        tokenReview,
-        review,
-        reiting_score,
-        ...extractedData,
-      })
-      const newReview = await this.reviewService.createReview({
-        tokenReview,
-        review,
-        reiting_score,
-        ...extractedData,
-      });
-      if (!extractedData) {
-        throw new Error('New review is null or undefined');
-      }
-      console.log('newReview', newReview);
-
-      // const reviewsForListing = await this.reviewRepository.find({
-      //   where: {listing_id: listingId},
-      // });
-      // if (!reviewsForListing) {
-      //   throw new Error('Reviews for listing are null or undefined');
-      // }
-
-      // TODO: if apartment does not exist, throw an error and delete review
-
-      // const averageRating = calculateAverageRating(reviewsForListing);
-
-      // await this.apartmentRepository
-      //   .updateById(listingId, {
-      //     review_scores_rating: averageRating,
-      //     number_of_reviews: reviewsForListing.length,
-      //   })
-      //   .catch(error => {
-      //     throw new Error(
-      //       `Failed to update apartment with ID ${listingId}: ${error}`,
-      //     );
-      //   });
-
-      return {status: 'success', message: 'Review created successfully'};
+      const newReview = await this.reviewRepository.create(review);
+      return {status: 'success', message: 'Review created successfully', data: newReview};
     } catch (error) {
-      return {status: 'error', message: error.message};
+      return {status: 'error', message: error.message, data: null};
     }
   }
 
@@ -192,6 +134,7 @@ export class ReviewController {
     review: Review,
     @param.where(Review) where?: Where<Review>,
   ): Promise<Count> {
+
     return this.reviewRepository.updateAll(review, where);
   }
 
@@ -227,6 +170,7 @@ export class ReviewController {
     })
     review: Review,
   ): Promise<void> {
+    console.log('review', review);
     await this.reviewRepository.updateById(id, review);
   }
 
@@ -248,4 +192,52 @@ export class ReviewController {
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.reviewRepository.deleteById(id);
   }
+
+  @post('/api/reviews/validate-token')
+  @response(200, {
+    description: 'Validate booking token',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Booking, {includeRelations: true}),
+      },
+    },
+  })
+  async validateReviewToken(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Booking, {partial: true}),
+        },
+      },
+    })
+    body: Partial<Booking>,
+  ): Promise<{
+    status: string;
+    data: Partial<Booking> | null | BookingResponse;
+    message: string;
+  }> {
+    const token = body.tokenReview;
+    if (!token) {
+      return {
+        status: 'error',
+        message:
+          'No any review token in request. Token is required to proceed.',
+        data: null,
+      };
+    }
+    try {
+      const booking = await this.reviewService.validateReviewToken(token);
+
+      // const {apartment, customer, id, name, email, ...rest} = booking;
+
+      return {
+        message: 'Review token is valid',
+        status: 'success',
+        data: [],
+      };
+    } catch (error) {
+      return {message: error.message, status: 'error', data: null};
+    }
+  }
+
 }

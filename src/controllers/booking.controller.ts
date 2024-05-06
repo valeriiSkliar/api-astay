@@ -86,15 +86,19 @@ export class BookingController {
         timeout: 30000,
       });
     // TODO: add rafactor error handling
+
     try {
-      this.validateBookingData(booking);
-      const customer = await this.ensureCustomer(booking);
+      const bookingWithApartmentPrice = booking // await this.bookingService.handleApartmentPriceState(
+      //   booking
+      // )
+      this.validateBookingData(bookingWithApartmentPrice);
+      const customer = await this.ensureCustomer(bookingWithApartmentPrice);
       const transfers = await this.createTransfers(
         booking.transfer,
         customer,
         transaction as Transaction,
       );
-      const bookingWithTokens = await this.handleTokensAndPaymentUrl(booking);
+      const bookingWithTokens = await this.handleTokensAndPaymentUrl(bookingWithApartmentPrice);
       bookingWithTokens.customerId = customer.id;
       const newBooking = await this.createBooking(
         bookingWithTokens,
@@ -168,6 +172,7 @@ export class BookingController {
       },
     },
   })
+
   async findById(
     @param.path.number('id') id: number,
     @param.filter(Booking, {exclude: 'where'})
@@ -311,61 +316,6 @@ export class BookingController {
     }
   }
 
-  @post('/api/reviews/validate-token')
-  @response(200, {
-    description: 'Validate booking token',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(Booking, {includeRelations: true}),
-      },
-    },
-  })
-  async validateReviewToken(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Booking, {partial: true}),
-        },
-      },
-    })
-    body: Partial<Booking>,
-  ): Promise<{
-    status: string;
-    data: Partial<Booking> | null | BookingResponse;
-    message: string;
-  }> {
-    const token = body.tokenReview;
-    if (!token) {
-      return {
-        status: 'error',
-        message:
-          'No any review token in request. Token is required to proceed.',
-        data: null,
-      };
-    }
-    try {
-      const booking = await this.reviewService.validateReviewToken(token);
-      // const hostContactData = await this.hostContactsRepository.find()
-      // const convertedTransferObject = this.transferService.convertTransferArrayToObject(booking.transfers);
-      // const bookingsWithTransformedTransfers = {
-      //   ...booking,
-      //   transfers: convertedTransferObject,
-      //   hostContacts: hostContactData[0]
-      // }
-      const {apartment, customer, id, name, email, ...rest} = booking;
-
-      // add room type
-      // set isReviewed to true
-
-      return {
-        message: 'Review token is valid',
-        status: 'success',
-        data: [],
-      };
-    } catch (error) {
-      return {message: error.message, status: 'error', data: null};
-    }
-  }
 
   private async validateBookingData(booking: Omit<Booking, 'id'>) {
     const isApartmentExist = await this.bookingService.isApartmentExist(
@@ -417,14 +367,9 @@ export class BookingController {
       `${booking.apartmentId}-${Date.now()}`,
       saltRounds,
     );
-    const tokenReview = await this.bookingService.generateReviewToken(booking);
-    // booking.token = tokenPayment;
-    // booking.tokenReview = tokenReview;
-    // apartment/leave-review?token=abbatoken
+    const tokenReview = 'await this.bookingService.generateReviewToken(booking)';
     const paymentUrl = `${process.env.FRONTEND_URL}/apartment/payment?token=${tokenPayment}`;
-    // const reviewUrl = `${process.env.FRONTEND_URL}/apartment/leave-review?token=${tokenReview}`;
 
-    // booking.paymentUrl = paymentUrl;
 
     return {
       ...booking,
@@ -449,7 +394,6 @@ export class BookingController {
   ): Promise<Booking> {
     const {transfer, locale, ...bookingValues} = booking;
     try {
-      console.log('bookingValues', bookingValues);
       return await this.bookingRepository.create(bookingValues, {
         transaction,
       });
@@ -459,7 +403,6 @@ export class BookingController {
   }
 
   private async updateTransfers(transfer: any, newBooking: Booking) {
-    console.log('transfer', transfer);
     if (transfer?.from || transfer?.to) {
       const transfers = Object.values(transfer) as Transfer[];
       await Promise.all(

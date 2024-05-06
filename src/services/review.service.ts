@@ -1,5 +1,5 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import {BookingRepository} from '../repositories';
+import {ApartmentRepository, BookingRepository, ReviewRepository} from '../repositories';
 import {DataObject, repository} from '@loopback/repository';
 import {Booking, Review} from '../models';
 
@@ -9,21 +9,20 @@ export class ReviewService {
     @repository('BookingRepository')
     public bookingRepository: BookingRepository,
     @repository('ApartmentRepository')
-    public apartmentRepository: BookingRepository,
+    public apartmentRepository: ApartmentRepository,
     @repository('ReviewRepository')
-    public reviewRepository: BookingRepository,
+    public reviewRepository: ReviewRepository,
   ) {}
 
   public async validateReviewToken(token: string) {
     const booking = await this.bookingRepository.findOne({
       where: {
-        reviewToken: token,
+        tokenReview: token,
         isArchived: false
       },
       include: [
         {relation: 'apartment', scope: {include: [{relation: 'room_type'}]}},
         {relation: 'customer'},
-        // {relation: 'transfers'},
       ],
     });
     if (!booking) {
@@ -33,10 +32,10 @@ export class ReviewService {
   }
 
   async createReview(review: Partial<Review>) {
-    // console.log('newReview', review);
+    const reviewInstance = new Review(review);
 
     const newReview = await this.reviewRepository.create(
-      review as DataObject<Booking>
+      reviewInstance
     )
     return newReview;
   }
@@ -44,8 +43,8 @@ export class ReviewService {
   async extractReviewData(booking: Booking): Promise<Partial<Review>> {
 
     const {apartment, customer, ...rest} = booking;
-    const {room_type} = apartment;
-    const roomType = JSON.stringify(room_type);
+    const {room_type:{translations}} = apartment;
+    const roomType = JSON.stringify(translations);
 
     const {name, email} = customer;
     return {
@@ -54,7 +53,6 @@ export class ReviewService {
       customerId: customer.id,
       name,
       roomType,
-      // ...rest,
     };
   }
 }
