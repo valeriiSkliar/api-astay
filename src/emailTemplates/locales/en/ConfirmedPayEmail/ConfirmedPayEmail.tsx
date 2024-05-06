@@ -10,15 +10,15 @@ import {
 import React from "react";
 import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
-import { nulling } from "../../../styles/global";
-import { formatDate } from "../../../helpers/farmateDate";
+import { heading, hr, mainImg, nulling, paragraph, textAccent } from "../../../styles/global";
+import { formatDate } from "../../../helpers/formatDate";
 
-interface AfterPayEmailProps {
-  data: AfterPayEmailData;
+interface ConfirmedPayEmailProps {
+  data: ConfirmedPayEmailData;
 }
 
-export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
-  const previewText = `Reservation on ${formatDate(data.checkIn)} Success`;
+export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
+  const previewText = `Reservation on ${formatDate(data.checkIn)} has been successfully confirmed.`;
 
   const headText = `${data.roomCategory} room in ${data.location.city}, ${data.location.country} | by ${data.hostContacts.name}`;
 
@@ -34,7 +34,7 @@ export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
   return (
     <DefaultEmail previewText={previewText} hostData={data.hostContacts}>
       <Section style={{ paddingBottom: "20px", overflow: 'hidden' }}>
-        <Heading as="h2" style={heading}>Your reservation is confirmed</Heading>
+        <Heading as="h2" style={heading}>Your reservation has been confirmed</Heading>
         <Row>
           <div>
             <Text style={{ marginTop: '5px', fontSize: '20px' }}>
@@ -45,22 +45,22 @@ export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
             <Img src={data.img} style={mainImg} width={1920} height={1080} alt={headText} />
           </div>
           <InfoRow leftColumn={checkIn} rightColumn={checkOut} />
-          <Hr style={{ ...hr, margin: 0, }} />
+          <Hr style={hr} />
           <InfoRow leftColumn={data.infoBox.guests} />
-          <Hr style={{ ...hr, margin: 0, }} />
+          <Hr style={hr} />
           <InfoRow leftColumn={data.infoBox.address} />
-          <Hr style={{ ...hr, margin: 0, }} />
+          <Hr style={hr} />
           {data.infoBox.transfer && (
             <>
               <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
                 Transfers
               </Heading>
               <InfoRow leftColumn={data.infoBox.transfer.from} rightColumn={data.infoBox.transfer.to} style={{ padding: '0 0 20px' }} />
-              <Hr style={{ ...hr, margin: 0, }} />
+              <Hr style={hr} />
             </>
           )}
           <InfoRow leftColumn={data.infoBox.totalPrice} rightColumn={{}} />
-          <Hr style={{ ...hr, margin: 0, }} />
+          <Hr style={hr} />
         </Row>
       </Section>
       <Section>
@@ -92,38 +92,11 @@ export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
           </div>
         </Row>
       </Section>
+      <Section>
+        <Text style={nulling}>Best regards,</Text>
+        <Text style={nulling}>The AstayHome Team</Text>
+      </Section>
     </DefaultEmail>
   );
 };
 
-
-const textAccent: React.CSSProperties = {
-  color: 'inherit',
-  fontWeight: 500,
-  textDecoration: 'underline'
-}
-
-
-const heading = {
-  marginBottom: '0',
-  fontSize: "32px",
-  fontWeight: "700",
-};
-
-const paragraph = {
-  fontSize: "18px",
-  lineHeight: "1.4",
-};
-
-const mainImg: Style = {
-  ...nulling,
-  objectFit: "contain",
-  width: '100%',
-  height: '100%',
-  borderRadius: 20
-}
-
-const hr = {
-  borderColor: "#cccccc",
-  margin: "20px 0",
-};

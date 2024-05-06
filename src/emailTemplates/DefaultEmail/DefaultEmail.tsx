@@ -20,12 +20,13 @@ import { nulling } from "../styles/global";
 interface DefaultEmailProps {
   children: React.ReactNode;
   previewText: string;
+  lang?: 'en' | 'ru';
   hostData: HostContacts;
 }
 
-export const DefaultEmail = ({ children, previewText, hostData }: DefaultEmailProps) => {
+export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: DefaultEmailProps) => {
   return (
-    <Html>
+    <Html lang={lang}>
       <Head />
       <Preview>
         {previewText}
@@ -59,8 +60,16 @@ export const DefaultEmail = ({ children, previewText, hostData }: DefaultEmailPr
               </Column>
             </Row>
           </Section>
-          <Section>
-            <Row style={{ marginTop: 20, textAlign: 'end' }}>
+          <Section style={{ marginTop: 10 }}>
+            <Row style={{ textAlign: 'end' }}>
+              <Link
+                href={`mailto:${hostData.email}`}
+                style={contact}
+              >
+                {hostData.email}
+              </Link>
+            </Row>
+            <Row style={{ textAlign: 'end', marginTop: 20 }}>
               <Button href={hostData.telegram} style={socials}>
                 <Img
                   src="https://astayhome.com/socials/telegram.png"

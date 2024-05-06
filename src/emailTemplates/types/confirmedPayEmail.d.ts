@@ -1,20 +1,23 @@
-interface AfterPayEmailData {
+interface ConfirmedPayEmailData {
   checkIn: string;
   checkOut: string;
   roomCategory: string;
   img: string;
-  location: {
-    city: string;
-    country: string;
-  };
+  location: LocationApartment;
   wifiPassword?: string;
   apartmentPassword?: string;
   hostContacts: HostContacts;
   infoBox: InfoBox;
 }
 
+interface LocationApartment {
+  city: string;
+  country: string;
+}
+
 interface HostContacts {
   name: string;
+  email: string;
   phone: string;
   telegram: string;
   whatsapp: string;

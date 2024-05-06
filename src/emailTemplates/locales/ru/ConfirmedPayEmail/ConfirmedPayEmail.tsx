@@ -11,20 +11,13 @@ import React from "react";
 import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
 import { nulling } from "../../../styles/global";
-import { formatDate } from "../../../helpers/farmateDate";
+import { ruFormatDate } from "../../../helpers/formatDate";
 
-interface AfterPayEmailProps {
-  data: AfterPayEmailData;
+interface ConfirmedPayEmailProps {
+  data: ConfirmedPayEmailData;
 }
-
-
-const ruFormatDate = (date: string, showWeekDay = false) => {
-  return formatDate(date, 'ru', showWeekDay).replace(' г.', '');
-}
-
-
-export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
-  const previewText = `Бронирование на ${ruFormatDate(data.checkIn)} успешно`;
+export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
+  const previewText = `Бронирование на ${ruFormatDate(data.checkIn)} успешно подтверждено.`;
 
   const headText = `${data.roomCategory} комната в ${data.location.city}, ${data.location.country} | от ${data.hostContacts.name}`;
 
@@ -38,7 +31,7 @@ export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
   }
 
   return (
-    <DefaultEmail previewText={previewText} hostData={data.hostContacts}>
+    <DefaultEmail lang="ru" previewText={previewText} hostData={data.hostContacts}>
       <Section style={{ paddingBottom: "20px", overflow: 'hidden' }}>
         <Heading as="h2" style={heading}>Ваше бронирование подтверждено.</Heading>
         <Row>
@@ -59,7 +52,7 @@ export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
           {data.infoBox.transfer && (
             <>
               <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
-                Доставка
+                Поездка
               </Heading>
               <InfoRow leftColumn={data.infoBox.transfer.from} rightColumn={data.infoBox.transfer.to} style={{ padding: '0 0 20px' }} />
               <Hr style={{ ...hr, margin: 0, }} />
@@ -72,7 +65,7 @@ export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
       <Section>
         <Row>
           <Text style={{ ...paragraph, fontWeight: "700" }}>
-            Привет!
+            Здравствуйте!
           </Text>
           <div>
             <Text>
@@ -97,6 +90,10 @@ export const AfterPayEmail = ({ data }: AfterPayEmailProps) => {
             <Text>Увидимся <span style={textAccent}>{ruFormatDate(data.checkIn)}</span>.</Text>
           </div>
         </Row>
+      </Section>
+      <Section>
+        <Text style={nulling}>С уважением,</Text>
+        <Text style={nulling}>Команда AstayHome</Text>
       </Section>
     </DefaultEmail>
   );
