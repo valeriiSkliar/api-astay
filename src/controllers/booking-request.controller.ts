@@ -33,7 +33,14 @@ export class BookingRequestController {
           },
         },
       },
-    }
+    },
+    headers: {
+      'Access-Control-Allow-Origin': {
+        schema: { type: 'string' },
+        description: 'Allowed Origin',
+        example: '*', // Adjust based on your requirements
+      },
+    },
   })
   @response(400, {
     description: 'Could not create booking',
@@ -50,6 +57,7 @@ export class BookingRequestController {
     }
   })
 
+
   async handleBookingRequest(
     @requestBody({
       content: {
@@ -61,7 +69,7 @@ export class BookingRequestController {
     booking: Omit<Booking, 'id'>,
   ) {
     try {
-      
+
       const bookingResponse = await this.bookingService.handleBookingRequest(booking);
 
       return {
