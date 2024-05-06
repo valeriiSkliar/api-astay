@@ -36,4 +36,4 @@ RUN npm run build
 ENV HOST=0.0.0.0 PORT=3030
 
 EXPOSE ${PORT}
-CMD [ "node", "." ]
+CMD [ "npm", "start" ]
