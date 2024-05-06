@@ -32,7 +32,7 @@ export default function InfoRow(props: InfoRowProps) {
           {leftColumn.text}
         </Text>
       </Column>
-      {rightColumn && (<Column style={{ textAlign: 'end', width: '50%' }}>
+      {rightColumn && (<Column style={{ textAlign: 'end' }}>
         <Text style={infoH}>
           {rightColumn?.title}
         </Text>
@@ -49,6 +49,7 @@ const infoH: Style = {
   ...nulling,
   fontSize: 20,
   fontWeight: 500,
+  textTransform: 'capitalize',
 }
 
 const infoP: Style = {
