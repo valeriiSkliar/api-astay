@@ -26,7 +26,7 @@ export default function InfoRow(props: InfoRowProps) {
     <Row style={{ ...nulling, padding: '15px 0', ...props.style }}>
       <Column style={{ textAlign: 'start', width: '50%' }}>
         <Text style={infoH}>
-          {leftColumn.title}
+          {leftColumn.title} 
         </Text>
         <Text style={infoP}>
           {leftColumn.text}

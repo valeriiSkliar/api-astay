@@ -1,6 +1,6 @@
 export function formatDate(
   date: string,
-  locale: Intl.LocalesArgument = "en",
+  locale: string = "en",
   showWeekDay = false,
 ) {
   if (showWeekDay) {

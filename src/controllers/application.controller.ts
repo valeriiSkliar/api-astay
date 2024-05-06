@@ -29,7 +29,9 @@ import {
 import {inject} from '@loopback/context';
 import {Request, request, Response} from 'express';
 import axios from 'axios';
-
+import   MailService from '../services/mail.service';
+import {ConfirmedTransferEmail, RequestEmail} from '../emailTemplates/locales/en';
+import {render} from '@react-email/components';
 export class ApplicationController {
   constructor(
     @repository(ApplicationsRepository)
@@ -121,7 +123,58 @@ export class ApplicationController {
       //   console.error('Error making external request:', error);
       //   throw new Error('Failed to fetch data from external API');
       // }
+// MOCKED DATA
+      // const requestData: RequestEmailData = {
+      //   customerName: 'Nik',
+      //   hostContacts: {
+      //     name: "AstayHome",
+      //     email: 'support@astayhome.com',
+      //     phone: "+777712222111",
+      //     telegram: "tg://t.me/@{USERNAME}",
+      //     whatsapp: "https://wa.me/+971542502604",
+      //     instagram: "instagram://user?username={USERNAME}",
+      //     youtube: "https://www.youtube.com/",
+      //   },
+      // }
 
+      const confirmedTransfer: ConfirmedTransferEmailData = {
+        customerName: 'Nik',
+        hostContacts: {
+          name: "AstayHome",
+          email: 'support@astayhome.com',
+          phone: "+777712222111",
+          telegram: "tg://t.me/@{USERNAME}",
+          whatsapp: "https://wa.me/+971542502604",
+          instagram: "instagram://user?username={USERNAME}",
+          youtube: "https://www.youtube.com/",
+        },
+        transfer: {
+          from: {
+            title: 'From Airport',
+            text: '฿1400'
+          },
+          to: {
+            title: 'To Airport',
+            text: '฿1400'
+          }
+        },
+        totalPrice: { title: 'Total', text: '฿2800' },
+      }
+
+
+      // Send email
+      // MailService.sendEmail({
+      //   to: 'valeriisklyarov@gmail.com',
+      //   from: '"AstayHome" support@astayhome.com',
+      //   subject: 'New application submitted',
+      //   html: render(RequestEmail({data: requestData})),
+      // })
+      MailService.sendEmail({
+        to: 'valeriisklyarov@gmail.com',
+        from: '"AstayHome" support@astayhome.com',
+        subject: 'New transfer booking',
+        html: render(ConfirmedTransferEmail({data: confirmedTransfer})),
+      })
       return {status: 'success', message: 'Form submitted successfully!'};
     } catch (err) {
       if (err.name === 'ValidationError') {
