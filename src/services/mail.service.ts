@@ -13,6 +13,7 @@ import {RoomCategory} from '../models';
 import {title} from 'process';
 import {text} from 'stream/consumers';
 import {TransferService} from './transfer.service';
+import {formatDate} from '../emailTemplates/helpers/formatDate';
 @injectable({scope: BindingScope.SINGLETON})
 export class MailService {
   private transporter: nodemailer.Transporter;
@@ -91,11 +92,11 @@ export class MailService {
         transfer: {
           from: {
             title: 'From',
-            text: transferData.from.flightNumber
+            text: formatDate(new Date(transferData.from.date).toISOString(), 'en', true)
           },
           to: {
             title: 'To',
-            text:transferData.to.city
+            text:formatDate(new Date(transferData.to.date).toISOString(), 'en', true)
           }
         },
         hostContacts: hostData
@@ -113,35 +114,7 @@ export class MailService {
         )
       });    }
   }
-    // const image = await this.photoRepository.findOne({
-    //   where: {
-    //     apartment_id: apartment.id
-    //   }
-    // })
-    // const roomCategory = await this.roomCategoryRepository.findOne({
-    //   where: {
-    //     id: apartment.roomCategoryId
-    //   }
-    // }).then((roomCategory: (RoomCategory | null)) => {
-    //   if (!roomCategory) return null;
-    //   // @ts-ignore
-    //   return roomCategory?.translations?.en?.name
-    // })
-
-    // const option: MailInterface = {
-    //   from: customer.email,
-    //   to: `"AstayHome" ${hostData.email}`,
-    //   subject: 'Booking Request',
-    //   html: render(
-    //     ConfirmedBookingEmail( )),
-    // }
-
-
-
-    // const template = (data: any) => `<html><body><h1>Booking Request</h1><p>${data.message}</p></body></html>`;
-    // return this.sendEmailWithTemplate(option, template, data);
 
 
 }
 
-// export const mailServiceInstance = new MailService();

@@ -31,7 +31,11 @@ export const ConfirmedBookingEmail = ({ data }: ConfirmedBookingEmailProps) => {
     text: 'Check out 11AM',
   }
 
-  
+  // const from = {
+  //   title: formatDate(data.transfer.text, 'en', true),
+  //   text: 'Check out 11AM',
+  // }
+
 
   return (
     <DefaultEmail previewText={previewText} hostData={data.hostContacts}>
