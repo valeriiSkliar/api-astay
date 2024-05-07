@@ -74,7 +74,13 @@ export class ReviewController {
     where?: Where<Review> & {average?: boolean; listing_id?: number},
   ): Promise<AverageCountScoresReviews> {
     if (where && where.average) {
-      const reviews = await this.reviewRepository.find();
+      const whereObj: Where<Review> = {
+        average: true,
+        status: true,
+        isArchived: false,
+        listing_id: where.listing_id,
+      };
+      const reviews = await this.reviewRepository.find(whereObj);
       const averageRating = calculateAverageRating(reviews);
       return {count: reviews.length, average: averageRating};
     } else if (where && where.listing_id) {

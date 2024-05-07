@@ -69,7 +69,6 @@ export class MailService {
     });
     if (apartmentData) {
       const {roomCategory, images, locationDetails} = apartmentData;
-    console.log('transferData', transferData);
 
       const dataForEmail: ConfirmedBookingEmailData = {
         customerName: customer.name,
@@ -109,12 +108,24 @@ export class MailService {
         from: `"AstayHome" support@astayhome.com`,
         subject: 'Booking Request',
         html: render(
-          // @ts-ignore
           ConfirmedBookingEmail({data: dataForEmail})
         )
-      });    }
+      });
+     }
   }
 
+  async sendSubmitedFormEmail({customer, apartment}: any) {
+
+
+  //   this.sendEmail({
+  //     to: customer.email,
+  //     from: `"AstayHome" support@astayhome.com`,
+  //     subject: 'AstayHome Form Request',
+  //     html: render(
+  //       // SubmitedFormEmail({customer, apartment})
+  //     )
+  //   })
+  }
 
 }
 
