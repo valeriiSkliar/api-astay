@@ -78,14 +78,17 @@ export class ReviewController {
         average: true,
         status: true,
         isArchived: false,
-        listing_id: where.listing_id,
       };
       const reviews = await this.reviewRepository.find(whereObj);
       const averageRating = calculateAverageRating(reviews);
       return {count: reviews.length, average: averageRating};
     } else if (where && where.listing_id) {
       const reviews = await this.reviewRepository.find({
-        where: {listing_id: where.listing_id},
+        where: {
+          status: true,
+          isArchived: false,
+          listing_id: where.listing_id
+        },
       });
       const averageRating = calculateAverageRating(reviews);
       return {count: reviews.length, average: averageRating};
