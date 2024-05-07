@@ -2,8 +2,9 @@ import { getModelSchemaRef, post, requestBody, response, HttpErrors } from '@loo
 import { Review } from '../models';
 import { IsolationLevel, Transaction, repository } from '@loopback/repository';
 import { ReviewRepository } from '../repositories';
-import { BookingService, ReviewService } from '../services';
+import { BookingService, MailService, ReviewService } from '../services';
 import { service } from '@loopback/core';
+import Mail from 'nodemailer/lib/mailer';
 
 export class LeaveReviewController {
   constructor(
@@ -11,6 +12,7 @@ export class LeaveReviewController {
     public reviewRepository: ReviewRepository,
     @service(ReviewService) private reviewService: ReviewService,
     @service(BookingService) private bookingServise: BookingService,
+    @service(MailService) private mailService: MailService,
   ) {}
 
   @post('/api/reviews/customer-leave-review')
@@ -82,4 +84,39 @@ export class LeaveReviewController {
       return {status: 'error', message: error.message};
     }
   }
+
+  @post('/api/reviews/send-review-link')
+  @response(200, {
+    description: 'Send review link to customer',
+    content: {'application/json': {schema: {message: 'string', status: 'string'}}},
+  })
+  async sendReviewLink(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              tokenReview: {type: 'string'},
+            },
+            required: ['tokenReview']
+          },
+        },
+      },
+    })
+    reviewData: Partial<Review>,
+  ) {
+    try {
+      console.log('reviewData', reviewData);
+      const { tokenReview } = reviewData;
+      if (!tokenReview) {
+        throw new Error('Token for review is required');
+      }
+      await this.mailService.sendLeaveReviewEmail(tokenReview);
+
+      return {status: 'success', message: 'Review link sent successfully'};
+  } catch (error) {
+    return {status: 'error', message: error.message};
+  }
+}
 }

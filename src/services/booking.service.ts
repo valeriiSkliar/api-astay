@@ -97,7 +97,7 @@ export class BookingService {
   }
 
   private generateReviewUrl(token: string): string {
-    return `${process.env.FRONTEND_URL}/apartment/payment?token=${token}`;
+    return `${process.env.FRONTEND_URL}/apartment/leave-review?token=${token}`; 
   }
   constructor(
     @repository('BookingRepository')

@@ -5,11 +5,11 @@ import {emailConfig} from '../datasources/nodemailer.config';
 import {RenderMailTemplateService} from './render-mail-template.service';
 import {HostContactsService} from './host-contacts.service';
 import {Html, render} from '@react-email/components';
-import {ConfirmedBookingEmail} from '../emailTemplates/locales/en';
+import {ConfirmedBookingEmail, LeaveReviewEmail, RequestEmail} from '../emailTemplates/locales/en';
 import { ConfirmedBookingEmailProps } from '../emailTemplates/locales/en/ConfirmedBookingEmail/ConfirmedBookingEmail';
 import {repository} from '@loopback/repository';
-import {ApartmentRepository, PhotoRepository, RoomCategoryRepository} from '../repositories';
-import {RoomCategory} from '../models';
+import {ApartmentRepository, BookingRepository, PhotoRepository, RoomCategoryRepository} from '../repositories';
+import {Booking, BookingRelations, RoomCategory} from '../models';
 import {title} from 'process';
 import {text} from 'stream/consumers';
 import {TransferService} from './transfer.service';
@@ -22,6 +22,7 @@ export class MailService {
     @service(RenderMailTemplateService) private renderMailTemplateService: RenderMailTemplateService,
     @service(HostContactsService) private hostContactsService: HostContactsService,
     @repository(PhotoRepository) private photoRepository: PhotoRepository,
+    @repository(BookingRepository) private bookingRepository: BookingRepository,
     @service(RoomCategoryRepository) private roomCategoryRepository: RoomCategoryRepository,
     @repository(ApartmentRepository) private apartmentRepository: ApartmentRepository,
     @service( TransferService) private transferService: TransferService
@@ -114,17 +115,61 @@ export class MailService {
      }
   }
 
-  async sendSubmitedFormEmail({customer, apartment}: any) {
+  async sendSubmitedFormEmail({email, name}: {email: string, name: string}) {
+    const hostContacts = await this.hostContactsService.getHostContacts();
+    const dataForEmail: RequestEmailData = {
+      customerName: name,
+      hostContacts: hostContacts
+    }
 
+    this.sendEmail({
+      to: email,
+      from: `"AstayHome" support@astayhome.com`,
+      subject: 'AstayHome Form Request',
+      html: render(
+        RequestEmail({data: dataForEmail})
+      )
+    })
+  }
 
-  //   this.sendEmail({
-  //     to: customer.email,
-  //     from: `"AstayHome" support@astayhome.com`,
-  //     subject: 'AstayHome Form Request',
-  //     html: render(
-  //       // SubmitedFormEmail({customer, apartment})
-  //     )
-  //   })
+  async sendLeaveReviewEmail( tokenReview: string ) {
+    const hostContacts = await this.hostContactsService.getHostContacts();
+    const booking: (Booking & BookingRelations | null) = await this.bookingRepository.findOne({
+      where: {
+        tokenReview: tokenReview,
+      },
+      include: [
+        {relation: 'apartment', scope: {include: [{relation: 'roomCategory'}, {relation: 'images'}, {relation: 'locationDetails'}]}},
+        {relation: 'customer'},
+      ],
+    });
+    if (!booking || !booking.reviewUrl ) {
+      throw new Error('Invalid review token. No any related booking found or reviewUrl not generated yet');
+    }
+    const {apartment, customer} = booking;
+    console.log('apartment', apartment);
+    if (!apartment || !customer  ) {
+      throw new Error('Invalid review token. No any related apartment or customer found');
+    }
+    const dataForEmail: LeaveReviewEmailData = {
+      customerName: customer.name,
+      reviewLink: booking?.reviewUrl || '',
+      img: apartment.images[0]?.url,
+      roomCategory: apartment.roomCategory.translations.en.category,
+      location: {
+        city: apartment.locationDetails.translations.en.city,
+        country: apartment.locationDetails.translations.en.country
+      },
+      hostContacts: hostContacts
+    }
+    this.sendEmail({
+      to: customer.email,
+      from: `"AstayHome" support@astayhome.com`,
+      subject: 'Leave a Review - AstayHome',
+      html: render(
+        LeaveReviewEmail({data: dataForEmail})
+      )
+    });
   }
 
 }

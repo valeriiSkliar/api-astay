@@ -1,3 +1,4 @@
+
 interface Style extends React.CSSProperties {}
 
 interface ConfirmedBookingEmailData {
