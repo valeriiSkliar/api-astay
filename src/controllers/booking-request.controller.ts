@@ -4,8 +4,8 @@ import {repository} from '@loopback/repository';
 import {BookingRepository} from '../repositories';
 
 import {inject, service} from '@loopback/core';
-import {BookingService} from '../services';
-import {getModelSchemaRef, post, requestBody, response} from '@loopback/rest';
+import {BookingService, MailService} from '../services';
+import {Request, RestBindings, getModelSchemaRef, post, requestBody, response} from '@loopback/rest';
 import {Booking} from '../models';
 
 
@@ -14,6 +14,9 @@ export class BookingRequestController {
     @repository(BookingRepository)
     public bookingRepository: BookingRepository,
     @service(BookingService) private bookingService: BookingService,
+    @inject(RestBindings.Http.REQUEST)
+    private req: Request,
+    @service(MailService) private mailService: MailService
   ) {}
 
 
@@ -72,6 +75,12 @@ export class BookingRequestController {
     try {
 
       const bookingResponse = await this.bookingService.handleBookingRequest(booking);
+      try {
+        await this.mailService.sendBookingRequestEmail(bookingResponse);
+      } catch (error) {
+        console.log(error);
+      }
+
 
       return {
         message: 'Booking request received. Thank you!',

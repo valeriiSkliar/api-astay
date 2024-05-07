@@ -7,3 +7,4 @@ export * from './apartment.service';
 export * from './mail.service';
 export * from './transfer.service';
 export * from './review.service';
+export * from './render-mail-template.service';

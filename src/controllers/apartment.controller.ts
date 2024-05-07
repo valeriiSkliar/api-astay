@@ -24,7 +24,7 @@ import {inject, service} from '@loopback/core';
 import {ApartmentService, MailService} from '../services';
 import {authenticate} from '@loopback/authentication';
 import {Request, RestBindings} from '@loopback/rest';
-import mailService from '../services/mail.service';
+// import mailService from '../services/mail.service';
 
 export class ApartmentController {
   constructor(

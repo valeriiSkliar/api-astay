@@ -29,7 +29,7 @@ import {
 import {inject} from '@loopback/context';
 import {Request, request, Response} from 'express';
 import axios from 'axios';
-import   MailService from '../services/mail.service';
+// import   MailService from '../services/mail.service';
 import {ConfirmedTransferEmail, RequestEmail} from '../emailTemplates/locales/en';
 import {render} from '@react-email/components';
 export class ApplicationController {
@@ -169,12 +169,12 @@ export class ApplicationController {
       //   subject: 'New application submitted',
       //   html: render(RequestEmail({data: requestData})),
       // })
-      MailService.sendEmail({
-        to: 'valeriisklyarov@gmail.com',
-        from: '"AstayHome" support@astayhome.com',
-        subject: 'New transfer booking',
-        html: render(ConfirmedTransferEmail({data: confirmedTransfer})),
-      })
+      // MailService.sendEmail({
+      //   to: 'valeriisklyarov@gmail.com',
+      //   from: '"AstayHome" support@astayhome.com',
+      //   subject: 'New transfer booking',
+      //   html: render(ConfirmedTransferEmail({data: confirmedTransfer})),
+      // })
       return {status: 'success', message: 'Form submitted successfully!'};
     } catch (err) {
       if (err.name === 'ValidationError') {

@@ -23,7 +23,7 @@ export class BookingService {
 
       await this.validateBookingData({apartmentId, email, name});
 
-      const { originalApartmentPrice, priceOfBooking, discountFromApartment} = await this.handleApartmentPriceState(
+      const { originalApartmentPrice, priceOfBooking, discountFromApartment, apartment} = await this.handleApartmentPriceState(
         apartmentId,
         transaction as Transaction,
       )
@@ -58,10 +58,10 @@ export class BookingService {
         throw new Error('Error creating booking');
       }
 
-      await this.transferService.createTransfersModelEntitys(transfer, customer, newBooking, transaction as Transaction);
+      const transferData = await this.transferService.createTransfersModelEntitys(transfer, customer, newBooking, transaction as Transaction);
 
       await transaction.commit();
-      return newBooking;
+      return {newBooking, customer, transferData, apartment};
 
     } catch (error) {
       console.log('error', error);
@@ -301,6 +301,7 @@ export class BookingService {
       originalApartmentPrice: apartment?.price,
       priceOfBooking: priceOfBooking,
       discountFromApartment: discount,
+      apartment: apartment
     };
   }
 

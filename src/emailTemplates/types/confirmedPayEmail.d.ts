@@ -15,15 +15,16 @@ interface LocationApartment {
   country: string;
 }
 
-interface HostContacts {
-  name: string;
-  email: string;
-  phone: string;
-  telegram: string;
-  whatsapp: string;
-  instagram: string;
-  youtube: string;
-}
+
+// interface HostContacts {
+//   name: string;
+//   email: string;
+//   phone: string;
+//   telegram: string;
+//   whatsapp: string;
+//   instagram: string;
+//   youtube: string;
+// }
 
 interface InfoBox {
   guests: Guests;
@@ -48,7 +49,7 @@ interface TotalPrice {
 }
 
 interface Transfer {
-  from: From;
+  from: From ;
   to: To;
 }
 

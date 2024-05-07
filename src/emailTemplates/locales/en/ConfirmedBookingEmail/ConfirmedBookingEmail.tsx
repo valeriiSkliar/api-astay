@@ -12,7 +12,7 @@ import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
 import { heading, hr, mainImg, nulling, paragraph } from "../../../styles/global";
 import { formatDate } from "../../../helpers/formatDate";
 
-interface ConfirmedBookingEmailProps {
+export interface ConfirmedBookingEmailProps {
   data: ConfirmedBookingEmailData;
 }
 
@@ -30,6 +30,8 @@ export const ConfirmedBookingEmail = ({ data }: ConfirmedBookingEmailProps) => {
     title: formatDate(data.checkOut, 'en', true),
     text: 'Check out 11AM',
   }
+
+  
 
   return (
     <DefaultEmail previewText={previewText} hostData={data.hostContacts}>

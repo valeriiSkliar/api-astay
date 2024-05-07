@@ -100,6 +100,7 @@ export class ReviewController {
     },
   })
   async find(@param.filter(Review) filter?: Filter<Review>): Promise<Review[]> {
+    console.log('filter', filter);
     if (!filter) {
       filter = {};
     }
@@ -108,6 +109,7 @@ export class ReviewController {
       filter.order = [filter.order];
     }
     filter.order.push('reviewDate DESC');
+    console.log('filter', filter);
     try {
       return await this.reviewRepository.find(filter);
     } catch (error) {

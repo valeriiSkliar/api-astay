@@ -32,41 +32,7 @@ export class TransferService {
     return transferObj;
   }
 
-  // public async createTransfers(
-  //   transfers: DataObject<Transfer>[],
-  //   bookingId: number,
-  //   customerId: number,
-  //   transaction: Transaction,
-  // ) {
-  //   if (!transfers) {
-  //     {
-  //       return [];
-  //     }
-  //   }
-  //   if (!customerId) {
-  //     throw new Error('Customer not found');
-  //   }
-  //   if (!bookingId) {
-  //     throw new Error('Booking not found');
-  //   }
-  //   // return await this.transferRepository.createAll(
-  //     transfers.map(async (transfer) => {
-  //     if (transfer) {
-  //       transfer.customerId = customerId;
-  //       transfer.bookingId = bookingId;
 
-  //       transfer.
-  //       // return await this.transferRepository.create({
-  //       //   ...transfer,
-  //       //   bookingId,
-  //       //   customerId,
-  //       // }, {
-  //       //   transaction,
-  //       // });
-  //   }
-  // });
-
-  // }
 
   public async createTransfersModelEntitys(
     transferData: {from: Partial<TransferRequest>; to: Partial<TransferRequest>},
