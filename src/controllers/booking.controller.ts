@@ -241,7 +241,6 @@ export class BookingController {
       },
     },
   })
-  @authenticate('jwt')
   async validateBookingToken(
     @requestBody({
       content: {
