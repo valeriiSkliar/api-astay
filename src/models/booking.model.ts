@@ -153,14 +153,21 @@ export class Booking extends Entity {
     type: 'date',
     required: false,
     mysql: {dataType: 'date', nullable: 'Y'},
+    default: () => new Date(),
   })
-  tokenReview_createdAt?: Date | null;
+  tokenReview_createdAt: Date | null;
 
   @property({
     type: 'boolean',
     default: false,
   })
   isArchived?: boolean;
+
+  @property({
+    type: 'boolean',
+    required: false,
+  })
+  isReviewed: boolean
 
   @property({
     type: 'string',

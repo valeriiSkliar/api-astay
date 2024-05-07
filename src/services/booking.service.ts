@@ -1,7 +1,7 @@
 import {injectable, /* inject, */ BindingScope, service} from '@loopback/core';
 import {IsolationLevel, Transaction, repository} from '@loopback/repository';
 import {BookingRepository, CustomerRepository, TransferRepository} from '../repositories';
-import {Apartment, Booking, Customer, Transfer} from '../models';
+import { Booking, Customer} from '../models';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import bcrypt from 'bcrypt';
@@ -200,7 +200,6 @@ export class BookingService {
         isArchived: false,
       },
       include: [
-        // {relation: 'apartment'},
         {relation: 'customer'},
         {relation: 'transfers'},
       ],
@@ -317,9 +316,6 @@ export class BookingService {
     const isApartmentExist = await this.apartmentRepository.exists(
       booking.apartmentId,
     );
-    // const isApartmentExist = await this.isApartmentExist(
-    //   booking.apartmentId,
-    // );
 
     return isApartmentExist;
   }
@@ -361,5 +357,12 @@ export class BookingService {
     } catch (error) {
       throw new Error('Error creating customer: ' + error.message);
     }
+  }
+
+  public setBookingAsReviewed(booking: Partial<Booking>, transaction: Transaction) {
+    return this.bookingRepository.updateById(booking.id, {
+      tokenReview: null,
+      isReview: true
+    }, {transaction});
   }
 }

@@ -1,8 +1,8 @@
 import { getModelSchemaRef, post, requestBody, response, HttpErrors } from '@loopback/rest';
 import { Review } from '../models';
-import { repository } from '@loopback/repository';
+import { IsolationLevel, Transaction, repository } from '@loopback/repository';
 import { ReviewRepository } from '../repositories';
-import { ReviewService } from '../services';
+import { BookingService, ReviewService } from '../services';
 import { service } from '@loopback/core';
 
 export class LeaveReviewController {
@@ -10,6 +10,7 @@ export class LeaveReviewController {
     @repository(ReviewRepository)
     public reviewRepository: ReviewRepository,
     @service(ReviewService) private reviewService: ReviewService,
+    @service(BookingService) private bookingServise: BookingService,
   ) {}
 
   @post('/api/reviews/customer-leave-review')
@@ -35,47 +36,49 @@ export class LeaveReviewController {
     })
     reviewData: Partial<Review>,
   ): Promise<{status: string; message: string}> {
+    const transaction =
+    await this.reviewRepository.dataSource.beginTransaction({
+      isolationLevel: IsolationLevel.READ_COMMITTED,
+      timeout: 30000,
+    });
     try {
+
       const { tokenReview, reiting_score, review } = reviewData;
 
       if (!tokenReview) {
-        throw new HttpErrors.BadRequest('Token for review is required');
+        throw new Error('Token for review is required');
       }
 
       const bookingValidation = await this.reviewService.validateReviewToken(tokenReview);
       if (!bookingValidation) {
-        throw new HttpErrors.NotFound('No related booking found for the provided token');
-      }
-
-      if (bookingValidation.tokenReview !== tokenReview) {
-        throw new HttpErrors.Unauthorized('Invalid review token');
+        throw new Error('No related booking found for the provided token');
       }
 
       const extractedData = await this.reviewService.extractReviewData(bookingValidation);
       if (!extractedData) {
-        throw new HttpErrors.InternalServerError('Failed to extract review data');
+        throw new Error('Failed to extract review data');
       }
 
-      console.log('extractedData', {
-        tokenReview,
-        review,
-        reiting_score,
-        ...extractedData,
-      });
 
-      
       const newReview = await this.reviewService.createReview({
         tokenReview,
         review,
         reiting_score,
         ...extractedData,
-      });
+      }, transaction);
 
-      console.log('newReview', newReview);
+      if (!newReview) {
+        throw new Error('Failed to create review');
+      }
+
+      await this.bookingServise.setBookingAsReviewed(bookingValidation, transaction as Transaction);
+
+      await transaction.commit();
 
       return {status: 'success', message: 'Review created successfully'};
     } catch (error) {
       console.log('error', error);
+      await transaction.rollback();
       return {status: 'error', message: error.message};
     }
   }
