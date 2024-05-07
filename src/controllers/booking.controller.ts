@@ -76,10 +76,11 @@ export class BookingController {
     })
     booking: Omit<Booking, 'id'>,
   ): Promise<Booking>{
-   
+
     return this.bookingRepository.create(booking);
   }
 
+  @authenticate('jwt')
   @get('/api/bookings/count')
   @response(200, {
     description: 'Booking model count',
@@ -88,7 +89,6 @@ export class BookingController {
   async count(@param.where(Booking) where?: Where<Booking>): Promise<Count> {
     return this.bookingRepository.count(where);
   }
-
   @get('/api/bookings')
   @response(200, {
     description: 'Array of Booking model instances',
@@ -101,6 +101,7 @@ export class BookingController {
       },
     },
   })
+  @authenticate('jwt')
   async find(
     @param.filter(Booking) filter?: Filter<Booking>,
   ): Promise<Booking[]> {
@@ -112,6 +113,7 @@ export class BookingController {
     description: 'Booking PATCH success count',
     content: {'application/json': {schema: CountSchema}},
   })
+  @authenticate('jwt')
   async updateAll(
     @requestBody({
       content: {
@@ -135,7 +137,7 @@ export class BookingController {
       },
     },
   })
-
+  @authenticate('jwt')
   async findById(
     @param.path.number('id') id: number,
     @param.filter(Booking, {exclude: 'where'})
@@ -156,6 +158,7 @@ export class BookingController {
       },
     },
   })
+  @authenticate('jwt')
   async updateById(
     @param.path.number('id') id: number,
     @requestBody({
@@ -212,6 +215,7 @@ export class BookingController {
   @response(204, {
     description: 'Booking PUT success',
   })
+  @authenticate('jwt')
   async replaceById(
     @param.path.number('id') id: number,
     @requestBody() booking: Booking,
@@ -223,6 +227,7 @@ export class BookingController {
   @response(204, {
     description: 'Booking DELETE success',
   })
+  @authenticate('jwt')
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.bookingRepository.deleteById(id);
   }
@@ -236,6 +241,7 @@ export class BookingController {
       },
     },
   })
+  @authenticate('jwt')
   async validateBookingToken(
     @requestBody({
       content: {
@@ -280,157 +286,6 @@ export class BookingController {
   }
 
 
-  private async validateBookingData(booking: Omit<Booking, 'id'>) {
-    const isApartmentExist = await this.bookingService.isApartmentExist(
-      booking.apartmentId,
-    );
-    if (!isApartmentExist) {
-      return false;
-    }
-    if (!booking.name || !booking.email) {
-      throw new Error('Name and email are required');
-    }
-  }
-
-  private async ensureCustomer(
-    booking: Omit<Booking, 'id'>,
-  ): Promise<Customer> {
-    let customer = await this.findCustomerByEmail(booking.email);
-    if (!customer) {
-      customer = await this.createCustomer(booking);
-    }
-    return customer;
-  }
-
-  private async findCustomerByEmail(email: string): Promise<Customer | null> {
-    try {
-      return await this.customerRepository.findOne({where: {email}});
-    } catch (error) {
-      throw new Error('Error finding customer: ' + error.message);
-    }
-  }
-
-  private async createCustomer(
-    booking: Omit<Booking, 'id'>,
-  ): Promise<Customer> {
-    try {
-      return await this.customerRepository.create({
-        name: booking.name,
-        email: booking.email,
-        phone: booking?.phoneNumber || '',
-      });
-    } catch (error) {
-      throw new Error('Error creating customer: ' + error.message);
-    }
-  }
-
-  private async handleTokensAndPaymentUrl(booking: Omit<Booking, 'id'>) {
-    const saltRounds = 10;
-    const tokenPayment = await bcrypt.hash(
-      `${booking.apartmentId}-${Date.now()}`,
-      saltRounds,
-    );
-    const tokenReview = 'await this.bookingService.generateReviewToken(booking)';
-    const paymentUrl = `${process.env.FRONTEND_URL}/apartment/payment?token=${tokenPayment}`;
-
-
-    return {
-      ...booking,
-      tokenReview: tokenReview,
-      paymentUrl: paymentUrl,
-      token: tokenPayment,
-    } as Booking;
-  }
-
-  private async handleBookingAndTransfers(
-    booking: Omit<Booking, 'id'>,
-  ): Promise<{message: string; code: number}> {
-    const {transfer, ...bookingValues} = booking;
-    let newBooking = await this.createBooking(bookingValues);
-    await this.updateTransfers(transfer, newBooking);
-    return {message: 'Booking created', code: 200};
-  }
-
-  private async createBooking(
-    booking: any,
-    transaction?: Transaction,
-  ): Promise<Booking> {
-    const {transfer, locale, ...bookingValues} = booking;
-    try {
-      return await this.bookingRepository.create(bookingValues, {
-        transaction,
-      });
-    } catch (error) {
-      throw new Error('Error creating booking: ' + error.message);
-    }
-  }
-
-  private async updateTransfers(transfer: any, newBooking: Booking) {
-    if (transfer?.from || transfer?.to) {
-      const transfers = Object.values(transfer) as Transfer[];
-      await Promise.all(
-        transfers.map(async (transfer: Transfer) => {
-          if (transfer) {
-            try {
-              await this.transferRepository.updateById(transfer.id, {
-                bookingId: newBooking.id,
-              });
-            } catch (error) {
-              throw new Error('Error updating transfer: ' + error.message);
-            }
-          }
-        }),
-      );
-    }
-  }
-  private async createTransfers(
-    transferData: any,
-    customer: Customer,
-    transaction: Transaction,
-  ): Promise<Transfer[]> {
-    if (!transferData) {
-      return [];
-    }
-
-    const transferPromises = ['from', 'to'].map(async field => {
-      if (transferData[field]) {
-        const transferDetails = {
-          type: field === 'from' ? 'arrival' : 'departure',
-          customerId: customer.id,
-          ...transferData[field],
-        };
-        return await this.transferRepository.create(transferDetails, {
-          transaction,
-        });
-      }
-      return null;
-    });
-
-    const transfers = await Promise.all(transferPromises);
-    return transfers.filter(t => t !== null) as Transfer[];
-  }
-
-  private async linkTransfersWithBooking(
-    transfers: Transfer[],
-    booking: Booking,
-    transaction: Transaction,
-  ) {
-    const updatePromises = transfers.map(transfer => {
-      if (transfer) {
-        return this.transferRepository.updateById(
-          transfer.id,
-          {
-            bookingId: booking.id,
-          },
-          {
-            transaction,
-          },
-        );
-      }
-    });
-    await Promise.all(updatePromises);
-  }
-
   @post('/api/generate-review-url', {
     responses: {
       '200': {
@@ -439,6 +294,7 @@ export class BookingController {
       },
     },
   })
+  @authenticate('jwt')
   public async generateReviewUrl(
     @requestBody({
       content: {
