@@ -36,6 +36,8 @@ RUN npm run build
 ENV HOST=0.0.0.0 PORT=3030
 
 EXPOSE ${PORT}
+EXPOSE 465  
+
 
 # Run clean and build before starting the app
 # CMD [ "npm", "run", "rebuild", "&&", "npm", "start" ]
