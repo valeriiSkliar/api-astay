@@ -1,8 +1,9 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import {Customer, Transfer} from '../models';
+import {Booking, Customer, Transfer} from '../models';
 import {TransferRequest} from '../types';
-import {Transaction, repository} from '@loopback/repository';
+import {DataObject, Transaction, repository} from '@loopback/repository';
 import {TransferRepository} from '../repositories';
+import {Mode} from 'fs';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class TransferService {
@@ -29,6 +30,96 @@ export class TransferService {
       {from: null, to: null} as TransferRequest,
     );
     return transferObj;
+  }
+
+  // public async createTransfers(
+  //   transfers: DataObject<Transfer>[],
+  //   bookingId: number,
+  //   customerId: number,
+  //   transaction: Transaction,
+  // ) {
+  //   if (!transfers) {
+  //     {
+  //       return [];
+  //     }
+  //   }
+  //   if (!customerId) {
+  //     throw new Error('Customer not found');
+  //   }
+  //   if (!bookingId) {
+  //     throw new Error('Booking not found');
+  //   }
+  //   // return await this.transferRepository.createAll(
+  //     transfers.map(async (transfer) => {
+  //     if (transfer) {
+  //       transfer.customerId = customerId;
+  //       transfer.bookingId = bookingId;
+
+  //       transfer.
+  //       // return await this.transferRepository.create({
+  //       //   ...transfer,
+  //       //   bookingId,
+  //       //   customerId,
+  //       // }, {
+  //       //   transaction,
+  //       // });
+  //   }
+  // });
+
+  // }
+
+  public async createTransfersModelEntitys(
+    transferData: {from: Partial<TransferRequest>; to: Partial<TransferRequest>},
+    customer: Customer,
+    booking: Booking,
+    transaction: Transaction,
+  ) {
+    if (!transferData) {
+      return [];
+    }
+    if (!customer.id) {
+      throw new Error('Customer not found');
+    }
+
+    const transfers = ['from', 'to'].map(field => {
+      if (transferData[field as keyof typeof transferData]) {
+        const transferDetails = {
+          type: field === 'from' ? 'arrival' : 'departure',
+          customerId: customer.id,
+          bookingId: booking.id,
+          ...transferData[field as keyof typeof transferData],
+        };
+        return  new Transfer( transferDetails );
+      }
+      return null;
+    });
+    const savedTransfers = await Promise.all(
+      transfers.filter(t => t !== null).map(
+        async (transfer: Transfer | null) => {
+          if (transfer) {
+            return await this.transferRepository.create(transfer, {
+              transaction,
+            });
+          }
+          return null;
+        }),
+    )
+    return transfers.filter(t => t !== null) as Transfer[];
+  }
+
+  public async createTransfer(
+    transfersEntity: Partial<Transfer[]> = [],
+    bookingId: number,
+    transaction: Transaction,
+
+  ): Promise<Transfer> {
+    if (!transfersEntity) {
+      throw new Error('Transfer not found');
+    }
+    return await this.transferRepository.create({
+      ...transfersEntity,
+      bookingId,
+    }, { transaction });
   }
 
   public async createTransfersFromBookingRequest(

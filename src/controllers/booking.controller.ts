@@ -36,6 +36,7 @@ import {inject, service} from '@loopback/core';
 import bcrypt from 'bcrypt';
 import {BookingService, ReviewService, TransferService} from '../services';
 import {BookingResponse} from '../types';
+import {authenticate} from '@loopback/authentication';
 
 export class BookingController {
   constructor(
@@ -58,15 +59,10 @@ export class BookingController {
   @response(200, {
     description: 'Booking model instance',
     content: {
-      'application/json': {schema: {message: 'string', code: 'number'}},
-    },
+      'application/json': { schema: getModelSchemaRef(Booking) },
+    }
   })
-  @response(400, {
-    description: 'Could not create booking',
-    content: {
-      'application/json': {schema: {message: 'string', code: 'number'}},
-    },
-  })
+  @authenticate('jwt')
   async create(
     @requestBody({
       content: {
@@ -79,42 +75,9 @@ export class BookingController {
       },
     })
     booking: Omit<Booking, 'id'>,
-  ): Promise<{message: string; code: number}> {
-    const transaction =
-      await this.bookingRepository.dataSource.beginTransaction({
-        isolationLevel: IsolationLevel.READ_COMMITTED,
-        timeout: 30000,
-      });
-    // TODO: add rafactor error handling
-
-    try {
-      const bookingWithApartmentPrice = booking // await this.bookingService.handleApartmentPriceState(
-      //   booking
-      // )
-      this.validateBookingData(bookingWithApartmentPrice);
-      const customer = await this.ensureCustomer(bookingWithApartmentPrice);
-      const transfers = await this.createTransfers(
-        booking.transfer,
-        customer,
-        transaction as Transaction,
-      );
-      const bookingWithTokens = await this.handleTokensAndPaymentUrl(bookingWithApartmentPrice);
-      bookingWithTokens.customerId = customer.id;
-      const newBooking = await this.createBooking(
-        bookingWithTokens,
-        transaction as Transaction,
-      );
-      await this.linkTransfersWithBooking(
-        transfers,
-        newBooking,
-        transaction as Transaction,
-      );
-      await transaction.commit();
-      return {message: 'Booking created', code: 200};
-    } catch (error) {
-      await transaction.rollback();
-      return {message: error.message, code: error.code};
-    }
+  ): Promise<Booking>{
+   
+    return this.bookingRepository.create(booking);
   }
 
   @get('/api/bookings/count')
@@ -477,7 +440,6 @@ export class BookingController {
     },
   })
   public async generateReviewUrl(
-    // @inject(SecurityBindings.USER) currentUser: UserProfile,
     @requestBody({
       content: {
         'application/json': {
@@ -488,7 +450,7 @@ export class BookingController {
         },
       },
     })
-    booking // booking: Omit<Booking, 'id' | 'token' | 'isArchived'>,
+    booking
     : Partial<Booking>,
   ): Promise<{message: string; code: number; data: Partial<Booking> | null}> {
     try {
@@ -498,17 +460,13 @@ export class BookingController {
           token: booking.reviewToken,
           isArchived: false,
         },
-        // include: [
-        //   {relation: 'apartment'},
-        //   {relation: 'customer'},
-        //   {relation: 'transfers'},
-        // ],
+
       });
       if (!currentBooking) {
         throw new Error('Invalid booking id or token');
       } else {
         const generatedReviewURL =
-          await this.bookingService.generateReviewUrl(booking);
+          await this.bookingService.getReviewUrl(booking);
         if (!generatedReviewURL) {
           throw new Error('Error generating review URL');
         }

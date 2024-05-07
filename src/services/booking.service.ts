@@ -1,10 +1,11 @@
-import {injectable, /* inject, */ BindingScope} from '@loopback/core';
+import {injectable, /* inject, */ BindingScope, service} from '@loopback/core';
 import {IsolationLevel, Transaction, repository} from '@loopback/repository';
-import {BookingRepository, CustomerRepository} from '../repositories';
-import {Apartment, Booking, Customer} from '../models';
+import {BookingRepository, CustomerRepository, TransferRepository} from '../repositories';
+import {Apartment, Booking, Customer, Transfer} from '../models';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import bcrypt from 'bcrypt';
+import {TransferService} from './transfer.service';
 
 dayjs.extend(utc);
 
@@ -27,24 +28,15 @@ export class BookingService {
         transaction as Transaction,
       )
       const { price } = await this.calculateBookingFromApartmentPriceState({ checkIn, checkOut, originalApartmentPrice, priceOfBooking, discountFromApartment});
+
       const customer = await this.ensureCustomer({email, name, phoneNumber}, transaction as Transaction);
 
       const { token, tokenReview, paymentUrl } = await this.handleTokensAndFrontendUrls({apartmentId, customerId: customer.id});
 
 
-      // const transfers = await this.createTransfers(
-      //   booking.transfer,
-      //   customer,
-      //   transaction as Transaction,
-      // );
-
-
-      await transaction.commit();
-
       const bookingData = {
         ...rest,
         price,
-        // customer,
         customerId: customer.id,
         email,
         name,
@@ -61,17 +53,22 @@ export class BookingService {
       }
 
       const newBooking = await this.bookingRepository.create(bookingData, transaction as Transaction);
+
+      if (!newBooking) {
+        throw new Error('Error creating booking');
+      }
+
+      await this.transferService.createTransfersModelEntitys(transfer, customer, newBooking, transaction as Transaction);
+
+      await transaction.commit();
       return newBooking;
+
     } catch (error) {
       console.log('error', error);
       await transaction.rollback();
 
     }
 
-    return {
-      message: 'Booking request received',
-      code: 200,
-    };
   }
 
   private async handleTokensAndFrontendUrls({apartmentId, customerId}: Partial<Booking>): Promise<Partial<Booking>> {
@@ -99,9 +96,9 @@ export class BookingService {
     return `${process.env.FRONTEND_URL}/apartment/payment?token=${token}`;
   }
 
-  // private generateReviewUrl(token: string): string {
-  //   return `${process.env.FRONTEND_URL}/apartment/payment?token=${token}`;
-  // }
+  private generateReviewUrl(token: string): string {
+    return `${process.env.FRONTEND_URL}/apartment/payment?token=${token}`;
+  }
   constructor(
     @repository('BookingRepository')
     public bookingRepository: BookingRepository,
@@ -109,6 +106,8 @@ export class BookingService {
     public apartmentRepository: BookingRepository,
     @repository(CustomerRepository)
     public customerRepository: CustomerRepository,
+    @service(TransferService)
+    public transferService: TransferService,
   ) {}
 
   public async handleTokenAndPaymentUrl(booking: Omit<Booking, 'id'>) {
@@ -225,7 +224,7 @@ export class BookingService {
       saltRounds,
     );
   }
-  public async generateReviewUrl(booking: Partial<Booking>) {
+  public async getReviewUrl(booking: Partial<Booking>) {
     if (!booking.tokenReview) {
       booking.tokenReview = 'await this.generateReviewToken(booking)';
       // throw new Error('Review token is required');
@@ -237,12 +236,10 @@ export class BookingService {
     if (booking.reviewUrl) {
       throw new Error('Review url is generated already');
     }
-    const bookingUrl = `${process.env.FRONTEND_URL}/apartment/leave-review?token=${booking.tokenReview}`;
+
+    const bookingUrl =  this.generateReviewUrl(booking.tokenReview);
     try {
-      // console.log('bookingUrl', {
-      //   reviewUrl: bookingUrl,
-      //   ...booking
-      // });
+
       await this.bookingRepository.updateById(booking.id, {
         reviewUrl: bookingUrl,
         ...booking,
@@ -338,7 +335,9 @@ export class BookingService {
     if (!customer) {
       customer = await this.createCustomer(contactData, transaction);
     }
-    console.log('customer', customer);
+    if (!customer ) {
+      throw new Error('Error creating or finding customer');
+    }
     return customer;
   }
   private async findCustomerByEmail({email}: Partial<Customer>, transaction: Transaction): Promise<Customer | null> {

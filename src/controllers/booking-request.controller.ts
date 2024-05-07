@@ -11,8 +11,6 @@ import {Booking} from '../models';
 
 export class BookingRequestController {
   constructor(
-    // @inject(RestBindings.Http.REQUEST)
-    // private req: Request,
     @repository(BookingRepository)
     public bookingRepository: BookingRepository,
     @service(BookingService) private bookingService: BookingService,
