@@ -1,4 +1,3 @@
-
 interface Style extends React.CSSProperties {}
 
 interface ConfirmedBookingEmailData {
@@ -24,7 +23,7 @@ interface ConfirmedTransferEmailData {
     from?: From;
     to?: To;
   };
-  totalPrice: { title: string; text: string };
+  totalPrice: {title: string; text: string};
 }
 
 interface LeaveReviewEmailData {

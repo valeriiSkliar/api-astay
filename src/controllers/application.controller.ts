@@ -31,7 +31,10 @@ import {inject} from '@loopback/context';
 import {Request, request, Response} from 'express';
 import axios from 'axios';
 // import   MailService from '../services/mail.service';
-import {ConfirmedTransferEmail, RequestEmail} from '../emailTemplates/locales/en';
+import {
+  ConfirmedTransferEmail,
+  RequestEmail,
+} from '../emailTemplates/locales/en';
 import {render} from '@react-email/components';
 import {service} from '@loopback/core';
 export class ApplicationController {
@@ -109,18 +112,17 @@ export class ApplicationController {
         email: type === 'forOwners-short' ? email || '' : email,
       });
 
-      const application = await this.applicationsRepository.create(newApplication);
+      const application =
+        await this.applicationsRepository.create(newApplication);
       if (application.id && application.email && application.name) {
-                await this.mailService.sendSubmitedFormEmail(
-          {
-            email: application.email,
-            name: application.name,
-          });
+        await this.mailService.sendSubmitedFormEmail({
+          email: application.email,
+          name: application.name,
+        });
       } else {
         throw new Error('Error creating application');
       }
-        // TODO: turn on this code when ready
-
+      // TODO: turn on this code when ready
 
       return {status: 'success', message: 'Form submitted successfully!'};
     } catch (err) {

@@ -51,10 +51,14 @@ export class ReviewController {
       },
     })
     review: Omit<Review, 'id'>,
-  ): Promise<{status: string; message: string, data: Review | null}> {
+  ): Promise<{status: string; message: string; data: Review | null}> {
     try {
       const newReview = await this.reviewRepository.create(review);
-      return {status: 'success', message: 'Review created successfully', data: newReview};
+      return {
+        status: 'success',
+        message: 'Review created successfully',
+        data: newReview,
+      };
     } catch (error) {
       return {status: 'error', message: error.message, data: null};
     }
@@ -87,7 +91,7 @@ export class ReviewController {
         where: {
           status: true,
           isArchived: false,
-          listing_id: where.listing_id
+          listing_id: where.listing_id,
         },
       });
       const averageRating = calculateAverageRating(reviews);
@@ -145,7 +149,6 @@ export class ReviewController {
     review: Review,
     @param.where(Review) where?: Where<Review>,
   ): Promise<Count> {
-
     return this.reviewRepository.updateAll(review, where);
   }
 
@@ -250,5 +253,4 @@ export class ReviewController {
       return {message: error.message, status: 'error', data: null};
     }
   }
-
 }

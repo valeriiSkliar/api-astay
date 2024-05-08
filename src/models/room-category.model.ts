@@ -31,9 +31,23 @@ export class RoomCategory extends Entity {
     jsonSchema: {
       type: 'object',
       properties: {
-        en: {type: 'object', properties: {category: {type: 'string'}, description: {type: 'string'}}, required: ['category', 'description']},
-        ru: {type: 'object', properties: {category: {type: 'string'}, description: {type: 'string'}}, required: ['category', 'description']},
-      }
+        en: {
+          type: 'object',
+          properties: {
+            category: {type: 'string'},
+            description: {type: 'string'},
+          },
+          required: ['category', 'description'],
+        },
+        ru: {
+          type: 'object',
+          properties: {
+            category: {type: 'string'},
+            description: {type: 'string'},
+          },
+          required: ['category', 'description'],
+        },
+      },
     },
     default: {
       en: {category: 'new Category', description: 'new Category'},

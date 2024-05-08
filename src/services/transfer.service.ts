@@ -32,10 +32,11 @@ export class TransferService {
     return transferObj;
   }
 
-
-
   public async createTransfersModelEntitys(
-    transferData: {from: Partial<TransferRequest>; to: Partial<TransferRequest>},
+    transferData: {
+      from: Partial<TransferRequest>;
+      to: Partial<TransferRequest>;
+    },
     customer: Customer,
     booking: Booking,
     transaction: Transaction,
@@ -55,13 +56,14 @@ export class TransferService {
           bookingId: booking.id,
           ...transferData[field as keyof typeof transferData],
         };
-        return  new Transfer( transferDetails );
+        return new Transfer(transferDetails);
       }
       return null;
     });
     const savedTransfers = await Promise.all(
-      transfers.filter(t => t !== null).map(
-        async (transfer: Transfer | null) => {
+      transfers
+        .filter(t => t !== null)
+        .map(async (transfer: Transfer | null) => {
           if (transfer) {
             return await this.transferRepository.create(transfer, {
               transaction,
@@ -69,7 +71,7 @@ export class TransferService {
           }
           return null;
         }),
-    )
+    );
     return transfers.filter(t => t !== null) as Transfer[];
   }
 
@@ -77,15 +79,17 @@ export class TransferService {
     transfersEntity: Partial<Transfer[]> = [],
     bookingId: number,
     transaction: Transaction,
-
   ): Promise<Transfer> {
     if (!transfersEntity) {
       throw new Error('Transfer not found');
     }
-    return await this.transferRepository.create({
-      ...transfersEntity,
-      bookingId,
-    }, { transaction });
+    return await this.transferRepository.create(
+      {
+        ...transfersEntity,
+        bookingId,
+      },
+      {transaction},
+    );
   }
 
   public async createTransfersFromBookingRequest(

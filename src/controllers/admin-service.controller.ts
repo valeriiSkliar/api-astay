@@ -60,7 +60,6 @@ export class AdminServiceController {
         },
       },
     },
-
   })
   async getDataForApartmentCreateForm(
     @param.path.number('id') id: number,

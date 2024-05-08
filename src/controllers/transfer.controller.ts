@@ -18,12 +18,16 @@ import {
   response,
 } from '@loopback/rest';
 import {Transfer} from '../models';
-import {TransferRepository} from '../repositories';
+import {CustomerRepository, TransferRepository} from '../repositories';
+import {service} from '@loopback/core';
+import {MailService} from '../services';
 
 export class TransferController {
   constructor(
     @repository(TransferRepository)
     public transferRepository: TransferRepository,
+    @service(CustomerRepository) private customerRepository: CustomerRepository,
+    @service(MailService) private mailService: MailService,
   ) {}
 
   @post('/api/transfers')
@@ -44,18 +48,48 @@ export class TransferController {
     })
     transfer: Omit<Transfer, 'id'>,
   ): Promise<{message: string; status: number}> {
-    // TODO: Check if customer email exists connected to this transfer to it
-    // if customer is new create customer and connect to transfer
-    const {contactInfo, ...transferData} = transfer;
-    const newTransfer = await this.transferRepository.create(transferData);
-    if (newTransfer) {
+    try {
+      const {contactInfo, ...transferData} = transfer;
+      const isCustomer = await this.customerRepository.findOne({
+        where: {
+          email: contactInfo.email,
+        },
+      });
+      let customerName = isCustomer
+        ? isCustomer.name ?? isCustomer?.nameOfSignage
+        : 'new client';
+      let email = isCustomer ? isCustomer.email : contactInfo.email;
+      if (!isCustomer) {
+        const newCustomer = await this.customerRepository.create({
+          ...contactInfo,
+          name: customerName,
+        });
+        customerName = newCustomer.name;
+
+        if (newCustomer) {
+          transferData.customerId = newCustomer.id;
+        } else {
+          return {
+            message: 'Customer could not be created',
+            status: 400,
+          };
+        }
+      } else {
+        transferData.customerId = isCustomer.id;
+      }
+      const newTransfer = await this.transferRepository.create(transferData);
+
+      if (!newTransfer) throw new Error('Transfer could not be created');
+
+      await this.mailService.sendTransferRequestEmail({customerName, email});
+
       return {
         message: 'Transfer created successfully',
         status: 200,
       };
-    } else {
+    } catch (error) {
       return {
-        message: 'Transfer could not be created',
+        message: 'Transfer could not be created ' + error.message,
         status: 400,
       };
     }

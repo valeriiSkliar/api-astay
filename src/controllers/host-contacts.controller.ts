@@ -34,7 +34,7 @@ export class HostContactsController {
   constructor(
     @repository(HostContactsRepository)
     public hostContactsRepository: HostContactsRepository,
-    @service(MyUserService) public userService: MyUserService
+    @service(MyUserService) public userService: MyUserService,
   ) {}
 
   @post('/api/host-contacts')
@@ -83,21 +83,23 @@ export class HostContactsController {
         },
       },
     })
-    user: { userId: string },
+    user: {userId: string},
     @inject(RestBindings.Http.REQUEST) request: Request,
   ): Promise<HostContacts | ErrorResponse> {
     try {
-    const userId = await this.userService.findUserById(user.userId);
-    console.log(userId);
-    if (!userId) throw new Error('User not found');
+      const userId = await this.userService.findUserById(user.userId);
+      console.log(userId);
+      if (!userId) throw new Error('User not found');
 
-    const hostContacts = await this.hostContactsRepository.findOne({ where: { userId: userId.id } });
-    if (!hostContacts) throw new Error('Host contacts not found');
+      const hostContacts = await this.hostContactsRepository.findOne({
+        where: {userId: userId.id},
+      });
+      if (!hostContacts) throw new Error('Host contacts not found');
 
-    return hostContacts;
-  } catch (error) {
-    return { error: error.message };
-  }
+      return hostContacts;
+    } catch (error) {
+      return {error: error.message};
+    }
   }
   @get('/api/host-contacts/count')
   @response(200, {

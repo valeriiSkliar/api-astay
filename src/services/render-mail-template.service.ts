@@ -3,12 +3,9 @@ import {Request} from 'express';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class RenderMailTemplateService {
-  constructor(
-
-  ) {}
+  constructor() {}
 
   public renderTemplate(request: Request, data: any) {
     console.log('RenderMailTemplateService');
-    
   }
 }

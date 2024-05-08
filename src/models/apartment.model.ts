@@ -31,6 +31,18 @@ export class Apartment extends Entity {
   host_name?: string;
 
   @property({
+    type: 'string',
+    required: false,
+  })
+  wifiPassword?: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  apartmentPassword?: string;
+
+  @property({
     type: 'number',
   })
   guests?: number;

@@ -1,5 +1,9 @@
 import {injectable, /* inject, */ BindingScope} from '@loopback/core';
-import {ApartmentRepository, BookingRepository, ReviewRepository} from '../repositories';
+import {
+  ApartmentRepository,
+  BookingRepository,
+  ReviewRepository,
+} from '../repositories';
 import {DataObject, repository} from '@loopback/repository';
 import {Booking, Review} from '../models';
 import {Transaction} from 'loopback-datasource-juggler';
@@ -32,14 +36,17 @@ export class ReviewService {
     }
     if (booking.isReviewed) throw new Error('You have left Review already');
 
-
     const now = new Date();
     const createdAt = booking.tokenReview_createdAt;
-    if (!createdAt) throw new Error('Review token is invalid. No review token createdAt date found');
-    const differenceInMonths = (now.getFullYear() - createdAt.getFullYear()) * 12 + (now.getMonth() - createdAt.getMonth());
+    if (!createdAt)
+      throw new Error(
+        'Review token is invalid. No review token createdAt date found',
+      );
+    const differenceInMonths =
+      (now.getFullYear() - createdAt.getFullYear()) * 12 +
+      (now.getMonth() - createdAt.getMonth());
     console.log('differenceInMonths', differenceInMonths);
     if (differenceInMonths > 2) throw new Error('Review token is too old');
-
 
     return booking;
   }
@@ -47,17 +54,17 @@ export class ReviewService {
   async createReview(review: Partial<Review>, transaction: Transaction) {
     const reviewInstance = new Review(review);
 
-    const newReview = await this.reviewRepository.create(
-      reviewInstance,
-      {transaction},
-    )
+    const newReview = await this.reviewRepository.create(reviewInstance, {
+      transaction,
+    });
     return newReview;
   }
 
   async extractReviewData(booking: Booking): Promise<Partial<Review>> {
-
     const {apartment, customer, ...rest} = booking;
-    const {room_type:{translations}} = apartment;
+    const {
+      room_type: {translations},
+    } = apartment;
     const roomType = JSON.stringify(translations);
 
     const {name, email} = customer;

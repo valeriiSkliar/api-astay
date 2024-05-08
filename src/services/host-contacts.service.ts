@@ -5,11 +5,12 @@ import {HostContactsRepository} from '../repositories';
 @injectable({scope: BindingScope.TRANSIENT})
 export class HostContactsService {
   constructor(
-    @repository(HostContactsRepository) private hostContactsRepository: HostContactsRepository,
+    @repository(HostContactsRepository)
+    private hostContactsRepository: HostContactsRepository,
   ) {}
 
-    public async getHostContacts() {
-      const hostContacts = await this.hostContactsRepository.find();
-      return hostContacts[0];
-    }
+  public async getHostContacts() {
+    const hostContacts = await this.hostContactsRepository.find();
+    return hostContacts[0];
+  }
 }

@@ -8,7 +8,6 @@ import {
 import {Apartment} from './apartment.model';
 import {Transfer} from './transfer.model';
 import {Customer} from './customer.model';
-import e from 'express';
 
 @model({settings: {strict: false}})
 export class Booking extends Entity {
@@ -67,6 +66,13 @@ export class Booking extends Entity {
     required: false,
   })
   isAvailableApart?: boolean;
+
+  @property({
+    type: 'boolean',
+    required: false,
+    default: false,
+  })
+  isPaid?: boolean;
 
   @property({
     type: 'string',
@@ -167,11 +173,11 @@ export class Booking extends Entity {
     type: 'boolean',
     required: false,
   })
-  isReviewed: boolean
+  isReviewed: boolean;
 
   @property({
     type: 'string',
-    enum: ['pending', 'cancelled', 'archived', 'confirmed'],
+    enum: ['pending', 'archived', 'confirmed'],
     default: 'pending',
     required: false,
   })

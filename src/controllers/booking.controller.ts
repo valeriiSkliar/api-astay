@@ -59,8 +59,8 @@ export class BookingController {
   @response(200, {
     description: 'Booking model instance',
     content: {
-      'application/json': { schema: getModelSchemaRef(Booking) },
-    }
+      'application/json': {schema: getModelSchemaRef(Booking)},
+    },
   })
   @authenticate('jwt')
   async create(
@@ -75,8 +75,7 @@ export class BookingController {
       },
     })
     booking: Omit<Booking, 'id'>,
-  ): Promise<Booking>{
-
+  ): Promise<Booking> {
     return this.bookingRepository.create(booking);
   }
 
@@ -284,7 +283,6 @@ export class BookingController {
     }
   }
 
-
   @post('/api/generate-review-url', {
     responses: {
       '200': {
@@ -305,8 +303,7 @@ export class BookingController {
         },
       },
     })
-    booking
-    : Partial<Booking>,
+    booking: Partial<Booking>,
   ): Promise<{message: string; code: number; data: Partial<Booking> | null}> {
     try {
       const currentBooking = await this.bookingRepository.findOne({
@@ -315,7 +312,6 @@ export class BookingController {
           token: booking.reviewToken,
           isArchived: false,
         },
-
       });
       if (!currentBooking) {
         throw new Error('Invalid booking id or token');

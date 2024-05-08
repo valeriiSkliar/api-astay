@@ -15,7 +15,6 @@ interface LocationApartment {
   country: string;
 }
 
-
 // interface HostContacts {
 //   name: string;
 //   email: string;
@@ -49,7 +48,7 @@ interface TotalPrice {
 }
 
 interface Transfer {
-  from: From ;
+  from: From;
   to: To;
 }
 
