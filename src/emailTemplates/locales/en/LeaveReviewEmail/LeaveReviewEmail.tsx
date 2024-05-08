@@ -37,7 +37,7 @@ export const LeaveReviewEmail = ({ data }: LeaveReviewEmailProps) => {
             Hi {data.customerName},
           </Text>
           <Text>
-            We hope you've managed to make precious memories during your stay with us. We certainly had a blast hosting you at {headText}.
+            We hope you've managed to make precious memories during your stay with us. We certainly had a blast hosting you.
           </Text>
           <Text>
             Would you mind sharing your experience with us by leaving a review? You can find out how to here.

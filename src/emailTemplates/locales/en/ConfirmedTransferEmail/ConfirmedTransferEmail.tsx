@@ -10,6 +10,7 @@ import React from "react";
 import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
 import { heading, hr, mainImg, nulling, paragraph } from "../../../styles/global";
+import InfoTransfers from "../../../ui/InfoTransfers";
 
 interface ConfirmedTransferEmailProps {
   data: ConfirmedTransferEmailData;
@@ -29,24 +30,8 @@ export const ConfirmedTransferEmail = ({ data }: ConfirmedTransferEmailProps) =>
           <div style={{ overflow: 'hidden' }}>
             <Img src="https://media4.giphy.com/media/o3LUQmlpSX54N8tc9s/giphy.gif?cid=790b76110968b654391fa3042fcfa2bbbc9d07dfd91c9e2d&rid=giphy.gif&ct=g" style={mainImg} width={580} height={290} alt="" />
           </div>
-          {data.transfer.from && (
-            <>
-              <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
-                Transfers
-              </Heading>
-              <InfoRow leftColumn={data.transfer.from} rightColumn={data.transfer.to} style={{ padding: '0 0 20px' }} />
-              <Hr style={hr} />
-            </>
-          )}
-          {!data.transfer.from && data.transfer.to && (
-            <>
-              <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
-                Transfer
-              </Heading>
-              <InfoRow leftColumn={data.transfer.to} rightColumn={{}} style={{ padding: '0 0 20px' }} />
-              <Hr style={hr} />
-            </>
-          )}
+          <InfoTransfers transfer={data.transfer} />
+          <Hr style={hr} />
           <InfoRow leftColumn={data.totalPrice} rightColumn={{}} />
           <Hr style={hr} />
         </Row>

@@ -1,6 +1,7 @@
 interface ConfirmedPayEmailData {
   checkIn: string;
   checkOut: string;
+  customerName: string;
   roomCategory: string;
   img: string;
   location: LocationApartment;
@@ -27,6 +28,10 @@ interface LocationApartment {
 
 interface InfoBox {
   guests: Guests;
+  rooms: {
+    title: string;
+    text: string;
+  };
   address: Address;
   totalPrice: TotalPrice;
   transfer?: Transfer;
@@ -48,8 +53,8 @@ interface TotalPrice {
 }
 
 interface Transfer {
-  from: From;
-  to: To;
+  from?: From;
+  to?: To;
 }
 
 interface From {

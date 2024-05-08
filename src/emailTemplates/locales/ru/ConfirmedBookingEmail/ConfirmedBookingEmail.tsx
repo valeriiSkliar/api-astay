@@ -11,6 +11,7 @@ import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
 import { heading, hr, mainImg, nulling, paragraph } from "../../../styles/global";
 import { ruFormatDate } from "../../../helpers/formatDate";
+import InfoTransfers from "../../../ui/InfoTransfers";
 
 interface ConfirmedBookingEmailProps {
   data: ConfirmedBookingEmailData;
@@ -48,15 +49,8 @@ export const ConfirmedBookingEmail = ({ data }: ConfirmedBookingEmailProps) => {
           <Hr style={hr} />
           <InfoRow leftColumn={guests} rightColumn={rooms} />
           <Hr style={hr} />
-          {data.transfer && (
-            <>
-              <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
-                Поездка
-              </Heading>
-              <InfoRow leftColumn={data.transfer.from} rightColumn={data.transfer.to} style={{ padding: '0 0 20px' }} />
-              <Hr style={hr} />
-            </>
-          )}
+          <InfoTransfers transfer={data.transfer} lang="ru" />
+          <Hr style={hr} />
         </Row>
       </Section>
       <Section>

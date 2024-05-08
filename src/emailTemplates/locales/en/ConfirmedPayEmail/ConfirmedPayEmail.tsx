@@ -1,4 +1,5 @@
 import {
+  Button,
   Heading,
   Hr,
   Img,
@@ -10,8 +11,9 @@ import {
 import React from "react";
 import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
-import { heading, hr, mainImg, nulling, paragraph, textAccent } from "../../../styles/global";
+import { button, heading, hr, mainImg, nulling, paragraph, textAccent } from "../../../styles/global";
 import { formatDate } from "../../../helpers/formatDate";
+import InfoTransfers from "../../../ui/InfoTransfers";
 
 interface ConfirmedPayEmailProps {
   data: ConfirmedPayEmailData;
@@ -44,29 +46,27 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
           <div style={{ overflow: 'hidden' }}>
             <Img src={data.img} style={mainImg} width={1920} height={1080} alt={headText} />
           </div>
+        </Row>
+        <Row style={{ textAlign: 'center', margin: '20px 0' }}>
+          <Button href={`https://astayhome.com/ru/apartment/${data.apartmentId}`} style={{ ...button, padding: '15px 0', width: '100%' }}>See room</Button>
+        </Row>
+        <Row>
           <InfoRow leftColumn={checkIn} rightColumn={checkOut} />
           <Hr style={hr} />
-          <InfoRow leftColumn={data.infoBox.guests} />
+          <InfoRow leftColumn={data.infoBox.guests} rightColumn={data.infoBox.rooms} />
           <Hr style={hr} />
           <InfoRow leftColumn={data.infoBox.address} />
           <Hr style={hr} />
-          {data.infoBox.transfer && (
-            <>
-              <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
-                Transfers
-              </Heading>
-              <InfoRow leftColumn={data.infoBox.transfer.from} rightColumn={data.infoBox.transfer.to} style={{ padding: '0 0 20px' }} />
-              <Hr style={hr} />
-            </>
-          )}
-          <InfoRow leftColumn={data.infoBox.totalPrice} rightColumn={{}} />
+          <InfoTransfers transfer={data.infoBox.transfer} />
           <Hr style={hr} />
+          <InfoRow leftColumn={data.infoBox.totalPrice} rightColumn={{}} />
+          <Hr style={{ ...hr, margin: 0, }} />
         </Row>
       </Section>
       <Section>
         <Row>
           <Text style={{ ...paragraph, fontWeight: "700" }}>
-            Hi!
+            Hi {data.customerName},
           </Text>
           <div>
             <Text>

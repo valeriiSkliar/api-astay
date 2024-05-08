@@ -1,4 +1,5 @@
 import {
+  Button,
   Heading,
   Hr,
   Img,
@@ -10,8 +11,9 @@ import {
 import React from "react";
 import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
-import { nulling } from "../../../styles/global";
+import { button, nulling } from "../../../styles/global";
 import { ruFormatDate } from "../../../helpers/formatDate";
+import InfoTransfers from "../../../ui/InfoTransfers";
 
 interface ConfirmedPayEmailProps {
   data: ConfirmedPayEmailData;
@@ -19,7 +21,7 @@ interface ConfirmedPayEmailProps {
 export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
   const previewText = `Бронирование на ${ruFormatDate(data.checkIn)} успешно подтверждено.`;
 
-  const headText = `${data.roomCategory} комната в ${data.location.city}, ${data.location.country} | от ${data.hostContacts.name}`;
+  const headText = `${data.roomCategory} апартамент в ${data.location.city}, ${data.location.country} | от ${data.hostContacts.name}`;
 
   const checkIn = {
     title: ruFormatDate(data.checkIn, true),
@@ -43,21 +45,19 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
           <div style={{ overflow: 'hidden' }}>
             <Img src={data.img} style={mainImg} width={1920} height={1080} alt={headText} />
           </div>
+        </Row>
+        <Row style={{ textAlign: 'center', margin: '20px 0' }}>
+          <Button href={`https://astayhome.com/ru/apartment/${data.apartmentId}`} style={{ ...button, padding: '15px 0', width: '100%' }}>Посмотреть апартамент</Button>
+        </Row>
+        <Row>
           <InfoRow leftColumn={checkIn} rightColumn={checkOut} />
           <Hr style={{ ...hr, margin: 0, }} />
-          <InfoRow leftColumn={data.infoBox.guests} />
+          <InfoRow leftColumn={data.infoBox.guests} rightColumn={data.infoBox.rooms} />
           <Hr style={{ ...hr, margin: 0, }} />
           <InfoRow leftColumn={data.infoBox.address} />
           <Hr style={{ ...hr, margin: 0, }} />
-          {data.infoBox.transfer && (
-            <>
-              <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
-                Поездка
-              </Heading>
-              <InfoRow leftColumn={data.infoBox.transfer.from} rightColumn={data.infoBox.transfer.to} style={{ padding: '0 0 20px' }} />
-              <Hr style={{ ...hr, margin: 0, }} />
-            </>
-          )}
+          <InfoTransfers transfer={data.infoBox.transfer} lang="ru" />
+          <Hr style={hr} />
           <InfoRow leftColumn={data.infoBox.totalPrice} rightColumn={{}} />
           <Hr style={{ ...hr, margin: 0, }} />
         </Row>
@@ -65,7 +65,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
       <Section>
         <Row>
           <Text style={{ ...paragraph, fontWeight: "700" }}>
-            Здравствуйте!
+            Здравствуйте {data.customerName},
           </Text>
           <div>
             <Text>
