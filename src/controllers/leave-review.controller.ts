@@ -7,7 +7,7 @@ import {
 } from '@loopback/rest';
 import {Review} from '../models';
 import {IsolationLevel, Transaction, repository} from '@loopback/repository';
-import {ReviewRepository} from '../repositories';
+import {ApartmentRepository, ReviewRepository} from '../repositories';
 import {BookingService, MailService, ReviewService} from '../services';
 import {service} from '@loopback/core';
 import Mail from 'nodemailer/lib/mailer';
@@ -19,6 +19,7 @@ export class LeaveReviewController {
     @service(ReviewService) private reviewService: ReviewService,
     @service(BookingService) private bookingServise: BookingService,
     @service(MailService) private mailService: MailService,
+    @repository(ApartmentRepository) private apartmentRepository: ApartmentRepository,
   ) {}
 
   @post('/api/reviews/customer-leave-review')
@@ -84,6 +85,30 @@ export class LeaveReviewController {
       if (!newReview) {
         throw new Error('Failed to create review');
       }
+
+      //TODO: TEST IT
+
+      const apartment = await this.apartmentRepository.findById(
+        extractedData.apartmentId,
+        {
+          include: [{relation: 'reviews', scope: {where: {apartmentId: extractedData.apartmentId}}}],
+        },
+        transaction as Transaction,
+      );
+      if (!apartment) {
+        throw new Error('Failed to find apartment');
+      }
+
+      const averageRating = apartment.reviews.reduce(
+        (sum, review) => sum + (review.reiting_score || 0),
+        0,
+      ) / (apartment.reviews.length || 1);
+      await this.apartmentRepository.updateById(
+        extractedData.apartmentId,
+        {averageRating},
+        {transaction: transaction as Transaction},
+      );
+
 
       await this.bookingServise.setBookingAsReviewed(
         bookingValidation,

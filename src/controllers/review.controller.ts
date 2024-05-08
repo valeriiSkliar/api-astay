@@ -97,7 +97,11 @@ export class ReviewController {
       const averageRating = calculateAverageRating(reviews);
       return {count: reviews.length, average: averageRating};
     }
-    return this.reviewRepository.count(where);
+    return this.reviewRepository.count({
+      status: true,
+      isArchived: false,
+      ...where,
+    });
   }
 
   @get('/api/reviews')
