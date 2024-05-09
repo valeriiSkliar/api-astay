@@ -237,16 +237,7 @@ export class MailService {
         'No token provided for confirmed pay email. Can not send email',
       );
     }
-    // const booking: (Booking & BookingRelations | null) = await this.bookingRepository.findOne({
-    //   where: {
-    //     token: token,
-    //   },
-    //   include: [
-    //     {relation: 'apartment', scope: {include: [{relation: 'roomCategory'}, {relation: 'images'}, {relation: 'locationDetails'}]}},
-    //     {relation: 'customer'},
-    //     {relation: 'transfers'},
-    //   ],
-    // });
+  
 
     if (!booking.checkIn || !booking.checkOut) {
       throw new Error(
@@ -266,14 +257,13 @@ export class MailService {
     }
     const {roomCategory, images, locationDetails, in_complex, wifiPassword, apartmentPassword} = apartment;
 
-    console.log( 'in_complex', in_complex.translations.en.address);
     const guests: {guests: number, rooms: number} = booking?.guests as {guests: number, rooms: number};
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: ConfirmedPayEmailData = {
       checkIn: booking.checkIn,
       checkOut: booking.checkOut,
       roomCategory: roomCategory.translations.en.category,
-      img: images[0]?.url,
+      img: images[0]?.url, // TODO: add default image
       location: {
         city: locationDetails.translations.en.city,
         country: locationDetails.translations.en.country,
@@ -304,4 +294,6 @@ export class MailService {
       html: render(ConfirmedPayEmail({data: dataForEmail})),
     });
   }
+
+
 }

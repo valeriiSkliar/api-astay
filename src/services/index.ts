@@ -9,3 +9,4 @@ export * from './transfer.service';
 export * from './review.service';
 export * from './render-mail-template.service';
 export * from './uploader.service';
+export * from './date-time.service';

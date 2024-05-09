@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import bcrypt from 'bcrypt';
 import {TransferService} from './transfer.service';
+import { format, compareAsc, differenceInDays } from "date-fns";
 
 dayjs.extend(utc);
 
@@ -61,11 +62,19 @@ export class BookingService {
         checkIn,
         checkOut,
         locale,
+        tzOffset,
         ...rest
       } = booking;
 
       await this.validateBookingData({apartmentId, email, name});
-
+      const {normalisedCheckIn, normalisedCheckOut} = await this.handleDates({
+        checkIn,
+        checkOut,
+        locale,
+        tzOffset,
+      })
+      console.log('normalisedCheckIn', normalisedCheckIn);
+      console.log('normalisedCheckOut', normalisedCheckOut);
       const {
         originalApartmentPrice,
         priceOfBooking,
@@ -76,12 +85,13 @@ export class BookingService {
         transaction as Transaction,
       );
       const {price} = await this.calculateBookingFromApartmentPriceState({
-        checkIn,
-        checkOut,
+        normalisedCheckIn,
+        normalisedCheckOut,
         originalApartmentPrice,
         priceOfBooking,
         discountFromApartment,
       });
+      console.log('price', price);
 
       const customer = await this.ensureCustomer(
         {email, name, phoneNumber},
@@ -102,8 +112,8 @@ export class BookingService {
         name,
         phoneNumber,
         apartmentId,
-        checkIn,
-        checkOut,
+        checkIn: normalisedCheckIn.toISOString(),
+        checkOut: normalisedCheckOut.toISOString(),
         originalApartmentPrice,
         priceOfBooking,
         discountFromApartment,
@@ -135,6 +145,20 @@ export class BookingService {
       console.log('error', error);
       await transaction.rollback();
     }
+  }
+  handleDates({checkIn, checkOut, locale, tzOffset}: {
+    checkIn: Date;
+    checkOut: Date;
+    locale: string;
+    tzOffset: number;
+  }): { normalisedCheckIn: Date; normalisedCheckOut: Date } {
+
+    const fornatCheckIn = format(checkIn, 'yyyy-MM-dd')
+    const normalisedCheckIn = new Date(fornatCheckIn);
+    const fornatCheckOut = format(checkOut, 'yyyy-MM-dd')
+    const normalisedCheckOut = new Date(fornatCheckOut);
+
+    return { normalisedCheckIn, normalisedCheckOut };
   }
 
   private async handleTokensAndFrontendUrls({
@@ -322,22 +346,26 @@ export class BookingService {
 
   public async calculateBookingFromApartmentPriceState({
     priceOfBooking,
-    checkIn,
-    checkOut,
+    normalisedCheckIn,
+    normalisedCheckOut,
   }: Partial<Booking>): Promise<Partial<Booking>> {
     if (!priceOfBooking) {
       throw new Error('Error calculating apartment price state');
     }
-    if (!checkIn || !checkOut) {
-      throw new Error('CheckIn and CheckOut dates are required');
+    if (!normalisedCheckIn || !normalisedCheckOut) {
+      throw new Error('normalisedCheckIn and normalisedCheckOut dates are required');
+    }
+    console.log('normalisedCheckIn', normalisedCheckIn, 'normalisedCheckOut', normalisedCheckOut);
+    const period = differenceInDays(normalisedCheckOut, normalisedCheckIn);
+
+    if (period < 0) {
+      throw new Error('CheckIn date must be before CheckOut date');
     }
 
-    const bookingDates = this.getPeriod(new Date(checkIn), new Date(checkOut));
-    console.log('bookingDates', bookingDates);
-    const calculateBookingPrice = priceOfBooking * bookingDates.length - 1; // TODO: Change logic? use Data-fns lib
+    const calculateBookingPrice = priceOfBooking * period ;
 
     return {
-      price: Math.round(calculateBookingPrice * 100) / 100,
+      price: Math.ceil(Number(calculateBookingPrice.toFixed(2))),
     };
   }
 

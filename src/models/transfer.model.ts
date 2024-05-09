@@ -130,6 +130,27 @@ export class Transfer extends Entity {
   })
   bookingId?: number;
 
+  @property({
+    type: 'string',
+    required: false,
+    default: 'en',
+  })
+  locale: string;
+
+  @property({
+    type: 'string',
+    required: false,
+    default: '-0',
+  })
+  tzOffset: string;
+
+  @property({
+    type: 'string',
+    required: false,
+    default: '',
+  })
+  timeZone: string;
+
   @belongsTo(() => Customer)
   customerId: number;
   // Define well-known properties here

@@ -14,6 +14,7 @@ import {
   response,
 } from '@loopback/rest';
 import {Booking} from '../models';
+import {authenticate} from '@loopback/authentication';
 
 export class BookingRequestController {
   constructor(
@@ -80,7 +81,7 @@ export class BookingRequestController {
         await this.bookingService.handleBookingRequest(booking);
 
       try {
-        await this.mailService.sendBookingRequestEmail(bookingResponse);
+        // await this.mailService.sendBookingRequestEmail(bookingResponse);
       } catch (error) {
         console.log(error);
       }
@@ -98,6 +99,7 @@ export class BookingRequestController {
     }
   }
 
+  @authenticate('jwt')
   @post('/api/confirm-booking-payment')
   @response(200, {
     description: 'Confirm booking payment',
@@ -131,12 +133,13 @@ export class BookingRequestController {
     },
   ) {
     const token = body.token;
+    console.log('token', token);
     try {
       const booking = await this.bookingRepository.findOne({
         where: {
           token: token,
-          isPaid: false,
-          status: 'pending',
+          // isPaid: false,
+          // status: 'pending',
         },
         include: [
           {
@@ -154,10 +157,12 @@ export class BookingRequestController {
           {relation: 'transfers'},
         ],
       });
+
       if (!booking) {
         return {
           message: 'Invalid token. Could not confirm booking payment.',
           code: 400,
+          booking: null,
         };
       }
       await this.bookingRepository.updateById(booking.id, {
@@ -167,21 +172,26 @@ export class BookingRequestController {
 
       try {
         await this.mailService.sendConfirmedPayEmail(booking);
+        return {
+          message: 'Booking payment confirmed',
+          code: 200,
+          booking: booking,
+        };
+
       } catch (error) {
+        console.log(error);
         throw new Error(
-          'Could not send confirmed pay email. Error: ' + error.message,
+          'Error during sending email: ' + error.message,
         );
       }
 
-      return {
-        message: 'Booking payment confirmed',
-        code: 200,
-      };
+
     } catch (error) {
       return {
         message:
           'Booking payment could not be confirmed. Error: ' + error.message,
         code: 400,
+        booking: null,
       };
     }
   }

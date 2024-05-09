@@ -34,9 +34,10 @@ import {
 } from '../repositories';
 import {inject, service} from '@loopback/core';
 import bcrypt from 'bcrypt';
-import {BookingService, ReviewService, TransferService} from '../services';
+import {BookingService, DateTimeService, ReviewService, TransferService} from '../services';
 import {BookingResponse} from '../types';
 import {authenticate} from '@loopback/authentication';
+import {format, isAfter, isBefore} from 'date-fns';
 
 export class BookingController {
   constructor(
@@ -53,6 +54,7 @@ export class BookingController {
     @repository(HostContactsRepository)
     public hostContactsRepository: HostContactsRepository,
     @service(ReviewService) private reviewService: ReviewService,
+    @service(DateTimeService) private dateTimeService: DateTimeService,
   ) {}
 
   @post('/api/bookings')
@@ -168,17 +170,22 @@ export class BookingController {
       },
     })
     booking: Booking,
-  ): Promise<{status: string; data: Booking[]}> {
+  ): Promise<{status: string; data: Booking[], message?: string}> {
     if (!booking.status) {
       return {status: 'error', data: []};
     }
 
+
     try {
+      const { normalizeDate } = this.dateTimeService.validateDatesCheckInCheckOutDates(booking?.checkIn, booking?.checkOut);
+      booking.checkIn = normalizeDate.checkIn;
+      booking.checkOut = normalizeDate.checkOut;
+      
       const isApartmentExist = await this.bookingService.isApartmentExist(
         booking.apartmentId,
       );
       if (!isApartmentExist) {
-        throw new HttpErrors.NotFound('Apartment not exist');
+        throw new Error('Apartment not exist');
       }
       const updatedBooking =
         await this.bookingService.handleBookingStatus(booking);
@@ -202,7 +209,7 @@ export class BookingController {
         ],
       });
       if (!updatedBookings) {
-        throw new HttpErrors.NotFound('Booking not found');
+        throw new Error('Booking not found');
       }
       return {status: 'success', data: updatedBookings};
     } catch (error) {
