@@ -1,55 +1,30 @@
 interface ConfirmedPayEmailData {
+  companyName?: string;
+  emailTitle?: string;
   checkIn: string;
   checkOut: string;
   customerName: string;
-  roomCategory: string;
+  apartmentId: number;
+  apartmentName: string;
   img: string;
-  location: LocationApartment;
   wifiPassword?: string;
   apartmentPassword?: string;
   hostContacts: HostContacts;
-  infoBox: InfoBox;
-}
-
-interface LocationApartment {
-  city: string;
-  country: string;
-}
-
-// interface HostContacts {
-//   name: string;
-//   email: string;
-//   phone: string;
-//   telegram: string;
-//   whatsapp: string;
-//   instagram: string;
-//   youtube: string;
-// }
-
-interface InfoBox {
-  guests: Guests;
-  rooms: {
-    title: string;
-    text: string;
-  };
-  address: Address;
-  totalPrice: TotalPrice;
+  guests: string | number;
+  rooms: string | number;
+  address: string;
+  totalPrice: string;
   transfer?: Transfer;
 }
 
-interface Guests {
-  title: string;
-  text: string;
-}
-
-interface Address {
-  title: string;
-  text: string;
-}
-
-interface TotalPrice {
-  title: string;
-  text: string;
+interface HostContacts {
+  name: string;
+  email: string;
+  phone: string;
+  telegram: string;
+  whatsapp: string;
+  instagram: string;
+  youtube: string;
 }
 
 interface Transfer {
@@ -58,11 +33,11 @@ interface Transfer {
 }
 
 interface From {
-  title: string;
-  text: string;
+  price?: string;
+  date?: string;
 }
 
 interface To {
-  title: string;
-  text: string;
+  price?: string;
+  date?: string;
 }

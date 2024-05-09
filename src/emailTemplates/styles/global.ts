@@ -42,3 +42,11 @@ export const button: Style = {
   textTransform: "uppercase",
   borderRadius: 15,
 };
+
+export const bullet: Style = {
+  verticalAlign: "middle",
+  width: 6,
+  height: 6,
+  backgroundColor: "#484848",
+  borderRadius: "100%",
+};

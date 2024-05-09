@@ -6,15 +6,15 @@ import {
 import React from "react";
 import { nulling } from "../styles/global";
 
+
+export interface InfoData {
+  title: string;
+  text: string;
+}
+
 interface InfoRowProps {
-  leftColumn: {
-    title: string;
-    text: string;
-  };
-  rightColumn?: {
-    title?: string;
-    text?: string;
-  };
+  leftColumn: InfoData;
+  rightColumn?: Partial<InfoData>
   style?: Style,
 }
 

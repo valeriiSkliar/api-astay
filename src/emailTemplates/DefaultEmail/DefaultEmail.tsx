@@ -16,19 +16,42 @@ import {
 } from "@react-email/components";
 import React from "react";
 import { nulling } from "../styles/global";
-import { HostContacts } from '../../models';
 
 interface DefaultEmailProps {
   children: React.ReactNode;
   previewText: string;
   lang?: 'en' | 'ru';
   hostData: HostContacts;
+  companyName?: string;
+  emailTitle?: string;
 }
 
-export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: DefaultEmailProps) => {
+
+
+
+export const DefaultEmail = ({ children, previewText, lang = 'en', hostData, emailTitle = 'AstayHome', companyName = 'AstayHome' }: DefaultEmailProps) => {
+
+  const t = {
+    ru: {
+      first: 'С уважением,',
+      second: `Команда ${companyName}`
+    },
+    en: {
+      first: 'Best regards,',
+      second: `${companyName} Team`
+    }
+  }
+
   return (
     <Html lang={lang}>
-      <Head />
+      <Head>
+        <meta charSet="UTF-8" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta name="x-apple-disable-message-reformatting" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="telephone=no" name="format-detection" />
+        <title>{emailTitle}</title>
+      </Head>
       <Preview>
         {previewText}
       </Preview>
@@ -39,20 +62,25 @@ export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: D
               src="https://astayhome.com/emailLogo.png"
               width="90"
               height="60"
-              alt="AstayHome"
+              alt={companyName}
             />
           </Section>
           {children}
+          <Section>
+            <Text style={nulling}>{t[lang].first}</Text>
+            <Text style={nulling}>{t[lang].second}</Text>
+          </Section>
           <Section>
             <Hr style={hr} />
             <Row>
               <Column>
                 <Text style={footer}>
-                  AstayHome, Inc., Pattaya City, Thailand
+                  {companyName}, Inc., Pattaya City, Thailand
                 </Text>
               </Column>
               <Column style={{ textAlign: 'end', width: '50%' }}>
                 <Link
+                  target="_blank"
                   href={`tel:${hostData.phone}`}
                   style={contact}
                 >
@@ -64,6 +92,7 @@ export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: D
           <Section style={{ marginTop: 10 }}>
             <Row style={{ textAlign: 'end' }}>
               <Link
+                target="_blank"
                 href={`mailto:${hostData.email}`}
                 style={contact}
               >
@@ -71,7 +100,7 @@ export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: D
               </Link>
             </Row>
             <Row style={{ textAlign: 'end', marginTop: 20 }}>
-              <Button href={hostData.telegram} style={socials}>
+              <Button target="_blank" href={hostData.telegram} style={socials}>
                 <Img
                   src="https://astayhome.com/socials/telegram.png"
                   width={30}
@@ -79,7 +108,7 @@ export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: D
                   alt="Telegram"
                 />
               </Button>
-              <Button href={hostData.whatsapp} style={socials}>
+              <Button target="_blank" href={hostData.whatsapp} style={socials}>
                 <Img
                   src="https://astayhome.com/socials/whatsapp.png"
                   width={30}
@@ -88,6 +117,7 @@ export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: D
                 />
               </Button>
               <Button
+                target="_blank"
                 href={hostData.instagram}
                 style={socials}
               >
@@ -98,7 +128,7 @@ export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: D
                   alt="Telegram"
                 />
               </Button>
-              <Button href={hostData.youtube}>
+              <Button target="_blank" href={hostData.youtube}>
                 <Img
                   src="https://astayhome.com/socials/youtube.png"
                   width={30}

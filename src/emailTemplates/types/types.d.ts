@@ -1,15 +1,13 @@
 interface Style extends React.CSSProperties {}
 
 interface ConfirmedBookingEmailData {
+  companyName?: string;
+  emailTitle?: string;
   customerName: string;
   img: string;
-  roomCategory: string;
-  location: LocationApartment;
-  guests: Guests;
-  rooms: {
-    title: string;
-    text: string;
-  };
+  apartmentName: string;
+  guests: string | number;
+  rooms: string | number;
   checkIn: string;
   checkOut: string;
   transfer?: Transfer;
@@ -17,25 +15,27 @@ interface ConfirmedBookingEmailData {
 }
 
 interface ConfirmedTransferEmailData {
+  companyName?: string;
+  emailTitle?: string;
   customerName: string;
   hostContacts: HostContacts;
-  transfer: {
-    from?: From;
-    to?: To;
-  };
-  totalPrice: {title: string; text: string};
+  transfer?: Transfer;
+  totalPrice: string;
 }
 
 interface LeaveReviewEmailData {
+  companyName?: string;
+  emailTitle?: string;
   customerName: string;
   reviewLink: string;
+  apartmentName: string;
   img: string;
-  roomCategory: string;
-  location: LocationApartment;
   hostContacts: HostContacts;
 }
 
 interface RequestEmailData {
+  companyName?: string;
+  emailTitle?: string;
   customerName: string;
   hostContacts: HostContacts;
 }

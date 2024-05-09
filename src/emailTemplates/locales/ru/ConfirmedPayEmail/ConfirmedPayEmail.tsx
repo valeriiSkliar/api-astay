@@ -14,6 +14,7 @@ import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
 import { button, nulling } from "../../../styles/global";
 import { ruFormatDate } from "../../../helpers/formatDate";
 import InfoTransfers from "../../../ui/InfoTransfers";
+import { textRu } from "../../../helpers/translate/translate";
 
 interface ConfirmedPayEmailProps {
   data: ConfirmedPayEmailData;
@@ -21,21 +22,14 @@ interface ConfirmedPayEmailProps {
 export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
   const previewText = `Бронирование на ${ruFormatDate(data.checkIn)} успешно подтверждено.`;
 
-  const headText = `${data.roomCategory} апартамент в ${data.location.city}, ${data.location.country} | от ${data.hostContacts.name}`;
+  const headText = `${data.apartmentName} | от ${data.hostContacts.name}`;
 
-  const checkIn = {
-    title: ruFormatDate(data.checkIn, true),
-    text: 'Check in after 2PM'
-  };
-  const checkOut = {
-    title: ruFormatDate(data.checkOut, true),
-    text: 'Check out 11AM',
-  }
+  const text = textRu(data);
 
   return (
     <DefaultEmail lang="ru" previewText={previewText} hostData={data.hostContacts}>
       <Section style={{ paddingBottom: "20px", overflow: 'hidden' }}>
-        <Heading as="h2" style={heading}>Ваше бронирование подтверждено.</Heading>
+        <Heading as="h2" style={heading}>Ваше бронирование подтверждено</Heading>
         <Row>
           <div>
             <Text style={{ marginTop: '5px', fontSize: '20px' }}>
@@ -47,18 +41,18 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
           </div>
         </Row>
         <Row style={{ textAlign: 'center', margin: '20px 0' }}>
-          <Button href={`https://astayhome.com/ru/apartment/${data.apartmentId}`} style={{ ...button, padding: '15px 0', width: '100%' }}>Посмотреть апартамент</Button>
+          <Button target="_blank" href={`https://astayhome.com/ru/apartment/${data.apartmentId}`} style={{ ...button, padding: '15px 0', width: '100%' }}>Посмотреть апартамент</Button>
         </Row>
         <Row>
-          <InfoRow leftColumn={checkIn} rightColumn={checkOut} />
+          <InfoRow leftColumn={text.checkIn} rightColumn={text.checkOut} />
           <Hr style={{ ...hr, margin: 0, }} />
-          <InfoRow leftColumn={data.infoBox.guests} rightColumn={data.infoBox.rooms} />
+          <InfoRow leftColumn={text.guests} rightColumn={text.rooms} />
           <Hr style={{ ...hr, margin: 0, }} />
-          <InfoRow leftColumn={data.infoBox.address} />
+          <InfoRow leftColumn={text.address} />
           <Hr style={{ ...hr, margin: 0, }} />
-          <InfoTransfers transfer={data.infoBox.transfer} lang="ru" />
+          <InfoTransfers transfer={data.transfer} lang="ru" />
           <Hr style={hr} />
-          <InfoRow leftColumn={data.infoBox.totalPrice} rightColumn={{}} />
+          <InfoRow leftColumn={text.totalPrice} rightColumn={{}} />
           <Hr style={{ ...hr, margin: 0, }} />
         </Row>
       </Section>
@@ -69,8 +63,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
           </Text>
           <div>
             <Text>
-              Мы надеемся, что вы уже готовы к поселению <span style={textAccent}>{ruFormatDate(data.checkIn)}</span> и с нетерпением ждете вашего пребывания у нас.
-              Вы можете поселиться с <span style={textAccent}>15:00</span> или вы можете прибыть в любое время после этого, если хотите.
+              Мы надеемся, что вы с нетерпением ждете вашего заезда <span style={textAccent}>{ruFormatDate(data.checkIn)}</span> года. Вы можете заселиться с <span style={textAccent}>14:00</span> или прибыть в любое удобное для вас время после этого.
             </Text>
 
             {data.apartmentPassword &&
@@ -85,16 +78,19 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
               )
             }
 
-            <Text>Если у вас возникнут проблемы с попаданием в ваш номер, не стесняйтесь связаться с нами по номеру <Link href={`tel:${data.hostContacts.phone}`} style={{ ...textAccent, textDecoration: 'underline' }}>{data.hostContacts.phone}</Link> в любое время. Мы всегда рады помочь.</Text>
+            <Text>
+              Наш менеджер будет ожидать вас в лобби, поэтому пожалуйста, свяжитесь с ним за 2 часа до вашего приезда по номеру <Link target="_blank" href={`tel:${data.hostContacts.phone}`} style={{ ...textAccent, textDecoration: 'underline' }}>{data.hostContacts.phone}</Link>. Также по этому же номеру вы можете заказать трансфер из аэропорта. Мы всегда рады помочь.
+            </Text>
 
-            <Text>Увидимся <span style={textAccent}>{ruFormatDate(data.checkIn)}</span>.</Text>
+            <Text>
+              Мы понимаем, что возможно вам понадобится обменять вашу валюту на тайский бат, поэтому полную оплату за проживание можно будет сделать в течение дня после заселения.
+            </Text>
+
+            <Text>С нетерпением ждем встречи с вами <span style={textAccent}>{ruFormatDate(data.checkIn)}</span> года.</Text>
           </div>
         </Row>
       </Section>
-      <Section>
-        <Text style={nulling}>С уважением,</Text>
-        <Text style={nulling}>Команда AstayHome</Text>
-      </Section>
+
     </DefaultEmail>
   );
 };

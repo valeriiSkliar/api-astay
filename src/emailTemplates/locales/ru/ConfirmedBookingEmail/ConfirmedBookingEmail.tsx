@@ -9,9 +9,10 @@ import {
 import React from "react";
 import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
-import { heading, hr, mainImg, nulling, paragraph } from "../../../styles/global";
+import { heading, hr, mainImg, paragraph } from "../../../styles/global";
 import { ruFormatDate } from "../../../helpers/formatDate";
 import InfoTransfers from "../../../ui/InfoTransfers";
+import { textRu } from "../../../helpers/translate/translate";
 
 interface ConfirmedBookingEmailProps {
   data: ConfirmedBookingEmailData;
@@ -19,35 +20,27 @@ interface ConfirmedBookingEmailProps {
 
 export const ConfirmedBookingEmail = ({ data }: ConfirmedBookingEmailProps) => {
   const previewText = `Ваше бронирование на ${ruFormatDate(data.checkIn)} успешно отправлено.`;
-  const { customerName, guests, location, roomCategory, rooms } = data;
+  const { customerName, apartmentName } = data;
 
-  const aptName = `${roomCategory} апартамент в ${location.city}, ${location.country}`;
-
-  const checkIn = {
-    title: ruFormatDate(data.checkIn, true),
-    text: 'Check in after 2PM'
-  };
-  const checkOut = {
-    title: ruFormatDate(data.checkOut, true),
-    text: 'Check out 11AM',
-  }
+  const headText = `${apartmentName} | от ${data.hostContacts.name}`;
+  const text = textRu(data);
 
   return (
     <DefaultEmail lang="ru" previewText={previewText} hostData={data.hostContacts}>
       <Section style={{ paddingBottom: "20px", overflow: 'hidden' }}>
-        <Heading as="h2" style={heading}>Ваше бронирование отправлено.</Heading>
+        <Heading as="h2" style={heading}>Ваше бронирование отправлено</Heading>
         <Row>
           <div>
             <Text style={{ marginTop: '5px', fontSize: '20px' }}>
-              {aptName}
+              {headText}
             </Text>
           </div>
           <div style={{ overflow: 'hidden' }}>
-            <Img src={data.img} style={mainImg} width={1920} height={1080} alt={aptName} />
+            <Img src={data.img} style={mainImg} width={1920} height={1080} alt={headText} />
           </div>
-          <InfoRow leftColumn={checkIn} rightColumn={checkOut} />
+          <InfoRow leftColumn={text.checkIn} rightColumn={text.checkOut} />
           <Hr style={hr} />
-          <InfoRow leftColumn={guests} rightColumn={rooms} />
+          <InfoRow leftColumn={text.guests} rightColumn={text.rooms} />
           <Hr style={hr} />
           <InfoTransfers transfer={data.transfer} lang="ru" />
           <Hr style={hr} />
@@ -60,18 +53,15 @@ export const ConfirmedBookingEmail = ({ data }: ConfirmedBookingEmailProps) => {
           </Text>
           <div>
             <Text>
-              Ваш запрос на бронирование {aptName} был отправлен. Мы хотим ясно указать, что это еще не подтвержденное бронирование. По крайней мере, пока нет.
+              Мы получили ваш запрос на бронирование апартаментов в Паттайе, Таиланд. Хотим подчеркнуть, что это ещё не подтверждённое бронирование. По крайней мере, не в данный момент.
             </Text>
             <Text>
-              Наш менеджер ответит на ваш запрос в течение 24 часов, но чаще всего это происходит еще быстрее!
+              Наш менеджер ответит на ваш запрос в течение 8 часов, но обычно это происходит даже быстрее!
             </Text>
           </div>
         </Row>
       </Section>
-      <Section>
-        <Text style={nulling}>С уважением,</Text>
-        <Text style={nulling}>Команда AstayHome</Text>
-      </Section>
+
     </DefaultEmail>
   );
 };
