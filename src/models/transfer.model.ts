@@ -33,7 +33,7 @@ export class Transfer extends Entity {
     required: false,
     default: '',
     mysql: {
-      columnName: 'flight_number',
+      columnName: 'flightNumber',
       dataType: 'varchar',
       dataLength: 255,
       nullable: 'Y',
