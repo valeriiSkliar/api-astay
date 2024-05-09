@@ -146,11 +146,12 @@ const translations = [
 const amenities = () => {
   return translations.map(({en, ru}) => {
     return {
-      icon: en.title,
+      icon: `https://astayhome.com/assets/icons/amenities/${encodeURI(en.title)}.png`,
       translations: {en, ru},
     };
   });
 };
+
 
 exports.amenities = amenities();
 // const amenities = [

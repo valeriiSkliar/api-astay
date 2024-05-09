@@ -1,3 +1,4 @@
+
 import {inject} from '@loopback/core';
 import {
   post,
@@ -97,7 +98,7 @@ export class FileUploadController {
     files: Array<any>,
     fields: object,
   ): Promise<object> {
-    const photos = files.map(async (f: any, i: number) => {
+    const photos = files.map(async (f: any, index: number) => {
       const sizes = [
         {name: 's650', scales: {width: 650, height: 650}},
         {name: 's720', scales: {width: 720, height: 480}},
@@ -143,10 +144,11 @@ export class FileUploadController {
         );
       };
       await createSizes();
-
+// TODO: get index of last file
+      
       return await this.photoRepository.create({
         fileName: f.filename,
-        order_number: i,
+        order_number: index,
         sizes: photoSizes,
         url: `${BASE_URL}${path.relative(path.dirname(__dirname), originalPath).replace(/\\/g, '/').slice(2)}`,
         ...fields,
