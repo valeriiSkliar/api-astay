@@ -108,7 +108,6 @@ export class UploaderService {
   return await this.photoRepository.find(
     {
       where: { apartment_id },
-      fields: ['id', 'order_number'],
       order: ['order_number ASC'],
     }
   )
