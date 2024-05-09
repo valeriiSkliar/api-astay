@@ -21,6 +21,7 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db) {
   var filePath = path.join(__dirname, 'sqls', '20240430204108-Review-up.sql');
   return new Promise(async function (resolve, reject) {
+    resolve()
     //fs.writeFileSync(filePath, await generateContent('Review'));
     fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
       if (err) return reject(err);
@@ -29,7 +30,7 @@ exports.up = function (db) {
       resolve(data);
     });
   }).then(function (data) {
-    return db.runSql(data);
+    // return db.runSql(data);
   });
 };
 

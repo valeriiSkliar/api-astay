@@ -9,7 +9,7 @@ async function generateComplexesContent(tableName) {
         return data.map(location => {
           return {
             ...location,
-            translations: location.translations,
+            translations: JSON.parse(location.translations),
           };
         });
       },

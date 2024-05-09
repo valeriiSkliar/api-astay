@@ -27,18 +27,19 @@ exports.up = function (db) {
     '20240408102856-Aplications-up.sql',
   );
   return new Promise(async function (resolve, reject) {
-    fs.writeFileSync(
-      filePath,
-      await generateAplicationsContent('Applications'),
-    );
-    fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
-      if (err) return reject(err);
-      console.log('received data: ' + data);
+    resolve()
+    // fs.writeFileSync(
+    //   filePath,
+    //   await generateAplicationsContent('Applications'),
+  //   // );
+  //   fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
+  //     if (err) return reject(err);
+  //     console.log('received data: ' + data);
 
-      resolve(data);
-    });
-  }).then(function (data) {
-    return db.runSql(data);
+  //     resolve(data);
+  //   });
+  // }).then(function (data) {
+  //   return db.runSql(data);
   });
 };
 
