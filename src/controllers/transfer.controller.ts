@@ -172,10 +172,17 @@ export class TransferController {
       },
     })
     transfer: Partial<Transfer>,
-  ): Promise<void> {
+  ): Promise<{message: string; status: number, transfer: Transfer}> {
     console.log('transfer', transfer);
 
-    await this.transferRepository.updateById(id, transfer);
+     await this.transferRepository.updateById(id, transfer);
+     const uptated = await this.transferRepository.findById(id);
+
+     return {
+       message: 'Transfer updated successfully',
+       status: 200,
+       transfer: uptated
+     }
   }
 
   @put('/api/transfers/{id}')

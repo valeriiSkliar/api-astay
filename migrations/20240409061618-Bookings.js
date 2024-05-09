@@ -22,15 +22,16 @@ exports.setup = function (options, seedLink) {
 exports.up = function (db) {
   var filePath = path.join(__dirname, 'sqls', '20240409061618-Bookings-up.sql');
   return new Promise(async function (resolve, reject) {
-    fs.writeFileSync(filePath, await generateBookings('Booking', 10));
+    resolve()
+    // fs.writeFileSync(filePath, await generateBookings('Booking', 10));
     fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
       if (err) return reject(err);
       console.log('received data: ' + data);
 
-      resolve(data);
+      // resolve(data);
     });
   }).then(function (data) {
-    return db.runSql(data);
+    // return db.runSql(data);
   });
 };
 

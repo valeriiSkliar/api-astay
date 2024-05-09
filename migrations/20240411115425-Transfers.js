@@ -28,15 +28,16 @@ exports.up = function (db) {
     '20240411115425-Transfers-up.sql',
   );
   return new Promise(async function (resolve, reject) {
-    fs.writeFileSync(filePath, await generateTransfersContent('Transfer', 10));
+    resolve()
+    // fs.writeFileSync(filePath, await generateTransfersContent('Transfer', 10));
     fs.readFile(filePath, {encoding: 'utf-8'}, function (err, data) {
       if (err) return reject(err);
       console.log('received data: ' + data);
 
-      resolve(data);
+      // resolve(data);
     });
   }).then(function (data) {
-    return db.runSql(data);
+    // return db.runSql(data);
   });
 };
 

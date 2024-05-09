@@ -27,7 +27,7 @@ export interface IApartmentFormData {
   roomCategories?: RoomCategory[];
   locations?: Locations[];
   amenities?: Amenity[];
-  apartment?: Apartment;
+  apartment?: Apartment | any;
   status?: number;
 }
 
@@ -69,7 +69,7 @@ export class AdminServiceController {
     const roomCategories = await this.roomCategoryRepository.find();
     const locations = await this.locationsRepository.find();
     const amenities = await this.amenityRepository.find();
-    const apartment = await this.apartmentRepository.findById(id);
+    const apartment =  id ? await this.apartmentRepository.findById(id) : {};
     return {
       complexes,
       roomTypes,

@@ -1,4 +1,5 @@
-import {inject} from '@loopback/core';
+
+import {inject, service} from '@loopback/core';
 import {
   post,
   Request,
@@ -16,6 +17,7 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import {Photo} from '../models';
+import {UploaderService} from '../services';
 dotenv.config();
 const {BASE_URL} = process.env;
 
@@ -29,6 +31,7 @@ export class FileUploadController {
     @repository(PhotoRepository)
     public photoRepository: PhotoRepository,
     @inject(FILE_UPLOAD_SERVICE) private handler: FileUploadHandler,
+    @service(UploaderService) private uploaderService: UploaderService,
   ) {}
   @post('/api/files', {
     responses: {
@@ -97,7 +100,9 @@ export class FileUploadController {
     files: Array<any>,
     fields: object,
   ): Promise<object> {
-    const photos = files.map(async (f: any, i: number) => {
+    const orderNumber = await this.uploaderService.repositoryFabric(fields)
+
+    const photos = files.map(async (f: any, index: number) => {
       const sizes = [
         {name: 's650', scales: {width: 650, height: 650}},
         {name: 's720', scales: {width: 720, height: 480}},
@@ -144,9 +149,12 @@ export class FileUploadController {
       };
       await createSizes();
 
+      const orderNumber = await this.uploaderService.repositoryFabric(fields)
+// TODO: get index of last file
+      console.log('fields', fields);
       return await this.photoRepository.create({
         fileName: f.filename,
-        order_number: i,
+        order_number: orderNumber,
         sizes: photoSizes,
         url: `${BASE_URL}${path.relative(path.dirname(__dirname), originalPath).replace(/\\/g, '/').slice(2)}`,
         ...fields,

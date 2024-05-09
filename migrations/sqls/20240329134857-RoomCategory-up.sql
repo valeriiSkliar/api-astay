@@ -1,4 +1,4 @@
 INSERT INTO RoomCategory (translations, color) VALUES
-('{"en":{"category":"Apartment","description":"Basic apartment"},"ru":{"category":"Апартамент","description":"Базовый апартамент"}}', '#0066ff'),
-('{"en":{"category":"Penthouse","description":"Exclusive penthouse"},"ru":{"category":"Пентхаус","description":"Эксклюзивный пентхаус"}}', '#ff00ff'),
-('{"en":{"category":"Studio","description":"Small studio"},"ru":{"category":"Студия","description":"Маленькая студия"}}', '#0000ff')
+('{"en":{"category":"Economy","description":"Basic apartment"},"ru":{"category":"Эконом","description":"Базовый апартамент"}}', '#0066ff'),
+('{"en":{"category":"Luxury","description":"Exclusive luxury apartment"},"ru":{"category":"Люкс","description":"Эксклюзивный люкс апартамент"}}', '#ff00ff'),
+('{"en":{"category":"Comfort","description":"Best conditions at an affordable price"},"ru":{"category":"Комфорт","description":"Лучшие условия в адекватной цене"}}', '#0000ff')

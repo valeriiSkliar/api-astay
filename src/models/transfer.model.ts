@@ -30,46 +30,66 @@ export class Transfer extends Entity {
 
   @property({
     type: 'string',
+    required: false,
+    default: '',
+    mysql: {
+      columnName: 'flight_number',
+      dataType: 'varchar',
+      dataLength: 255,
+      nullable: 'Y',
+    }
   })
-  flightNumber?: string;
+  flightNumber?: string | null;
 
   @property({
     type: 'string',
+    required: false,
   })
   nameOfSignage?: string;
 
   @property({
     type: 'number',
+    required: false,
+    default: 1,
   })
   guests?: number;
 
   @property({
     type: 'number',
+    required: false,
+    default: 1,
   })
   amountBags?: number;
 
   @property({
     type: 'string',
+    required: false,
   })
   phone?: string;
 
   @property({
     type: 'string',
+    required: false,
+    default: '',
   })
   city?: string;
 
   @property({
     type: 'string',
+    required: false,
   })
   time?: string;
 
   @property({
     type: 'string',
+    required: false,
+    default: '',
   })
   notes?: string;
 
   @property({
     type: 'string',
+    required: false,
   })
   comments?: string;
 
@@ -87,11 +107,15 @@ export class Transfer extends Entity {
 
   @property({
     type: 'number',
+    required: false,
+    default: 0,
   })
   price?: number;
 
   @property({
     type: 'number',
+    required: false,
+    default: 0,
   })
   discount?: number;
 

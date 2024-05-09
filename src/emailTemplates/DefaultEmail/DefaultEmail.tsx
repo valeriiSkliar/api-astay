@@ -16,6 +16,7 @@ import {
 } from "@react-email/components";
 import React from "react";
 import { nulling } from "../styles/global";
+import { HostContacts } from '../../models';
 
 interface DefaultEmailProps {
   children: React.ReactNode;
