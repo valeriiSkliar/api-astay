@@ -16,7 +16,7 @@ import {
 } from "@react-email/components";
 import React from "react";
 import { nulling } from "../styles/global";
-import {HostContacts} from '../../models';
+import { HostContacts } from '../../models';
 
 interface DefaultEmailProps {
   children: React.ReactNode;
@@ -36,9 +36,9 @@ export const DefaultEmail = ({ children, previewText, lang = 'en', hostData }: D
         <Container style={container}>
           <Section>
             <Img
-              src="https://astayhome.com/logo.png"
-              width="120"
-              height="50"
+              src="https://astayhome.com/emailLogo.png"
+              width="90"
+              height="60"
               alt="AstayHome"
             />
           </Section>
