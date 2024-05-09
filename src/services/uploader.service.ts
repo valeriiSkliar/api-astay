@@ -48,4 +48,70 @@ export class UploaderService {
       ? lastImageOrderNumber : lastImageOrderNumber + 1;
   }
 
+  public async reBuildOrderIndexesWhenDeletingPhoto({apartment_id, complex_id}: {apartment_id?: number, complex_id?: number}) {
+    if (apartment_id) {
+      const images = await this.reBuildOrderIndexesWhenDeletingPhotoByApartmentId(apartment_id);
+      return images;
+    } else if (complex_id) {
+      const images = await this.reBuildOrderIndexesWhenDeletingPhotoByComplexId(complex_id);
+      return images;
+    }
+  }
+  private async reBuildOrderIndexesWhenDeletingPhotoByComplexId(complex_id: number) {
+    const complexImages = await this.photoRepository.find(
+      {
+        where: { complex_id },
+        fields: ['id', 'order_number'],
+        order: ['order_number ASC'],
+      }
+    )
+  // Rebuild the order indexes starting from 1
+  if (complexImages.length > 0) {
+    for (let index = 0; index < complexImages.length; index++) {
+      const image = complexImages[index];
+      const newOrderNumber = index + 1;
+
+      // Only update if the new order number is different
+      if (image.order_number !== newOrderNumber) {
+        await this.photoRepository.updateById(image.id, { order_number: newOrderNumber });
+      }
+    }
+  }
+  return await this.photoRepository.find(
+    {
+      where: { complex_id },
+      fields: ['id', 'order_number'],
+      order: ['order_number ASC'],
+    }
+  )
+  }
+  private async reBuildOrderIndexesWhenDeletingPhotoByApartmentId(apartment_id: number) {
+    const apartmentImages = await this.photoRepository.find(
+      {
+        where: { apartment_id },
+        fields: ['id', 'order_number'],
+        order: ['order_number ASC'],
+      }
+    )
+  // Rebuild the order indexes starting from 1
+  if (apartmentImages.length > 0) {
+      for (let index = 0; index < apartmentImages.length; index++) {
+    const image = apartmentImages[index];
+    const newOrderNumber = index + 1;
+
+    // Only update if the new order number is different
+    if (image.order_number !== newOrderNumber) {
+      await this.photoRepository.updateById(image.id, { order_number: newOrderNumber });
+    }
+  }
+
+  }
+  return await this.photoRepository.find(
+    {
+      where: { apartment_id },
+      fields: ['id', 'order_number'],
+      order: ['order_number ASC'],
+    }
+  )
+  }
 }

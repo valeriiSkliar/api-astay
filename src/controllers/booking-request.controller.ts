@@ -78,17 +78,18 @@ export class BookingRequestController {
     try {
       const bookingResponse =
         await this.bookingService.handleBookingRequest(booking);
+
       try {
         await this.mailService.sendBookingRequestEmail(bookingResponse);
       } catch (error) {
         console.log(error);
       }
-
       return {
         message: 'Booking request received. Thank you!',
         code: 200,
         booking: bookingResponse,
       };
+
     } catch (error) {
       return {
         message: 'Booking request failed',

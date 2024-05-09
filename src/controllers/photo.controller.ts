@@ -19,11 +19,15 @@ import {
 } from '@loopback/rest';
 import {Photo} from '../models';
 import {PhotoRepository} from '../repositories';
+import {service} from '@loopback/core';
+import {UploaderService} from '../services';
+import e from 'express';
 
 export class PhotoController {
   constructor(
     @repository(PhotoRepository)
     public photoRepository: PhotoRepository,
+    @service(UploaderService) private uploaderService: UploaderService,
   ) {}
 
   @post('/api/photos')
@@ -148,8 +152,14 @@ export class PhotoController {
   @response(204, {
     description: 'Photo DELETE success',
   })
-  async deleteById(@param.path.string('id') id: number): Promise<void> {
+  async deleteById(@param.path.string('id') id: number): Promise<Photo[]> {
+    const {apartment_id, complex_id} = await this.photoRepository.findById(id);
     await this.photoRepository.deleteById(id);
+    if (apartment_id || complex_id) {
+      return await this.uploaderService.reBuildOrderIndexesWhenDeletingPhoto({apartment_id, complex_id}) || [];
+    } else {
+      return [];
+    }
   }
 
   @put('/api/photos/update-order')
