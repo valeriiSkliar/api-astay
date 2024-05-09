@@ -20,7 +20,9 @@ import {
 import {Transfer} from '../models';
 import {CustomerRepository, TransferRepository} from '../repositories';
 import {service} from '@loopback/core';
-import {MailService} from '../services';
+import {DateTimeService, MailService} from '../services';
+import {authenticate} from '@loopback/authentication';
+import {format} from 'date-fns';
 
 export class TransferController {
   constructor(
@@ -28,6 +30,7 @@ export class TransferController {
     public transferRepository: TransferRepository,
     @service(CustomerRepository) private customerRepository: CustomerRepository,
     @service(MailService) private mailService: MailService,
+    @service(DateTimeService) private dateTimeService: DateTimeService,
   ) {}
 
   @post('/api/transfers')
@@ -49,7 +52,8 @@ export class TransferController {
     transfer: Omit<Transfer, 'id'>,
   ): Promise<{message: string; status: number}> {
     try {
-      const {contactInfo, ...transferData} = transfer;
+      const {contactInfo, locale, date, ...transferData} = transfer;
+      const normalizedDate = this.dateTimeService.normalizeDate(date);
       const isCustomer = await this.customerRepository.findOne({
         where: {
           email: contactInfo.email,
@@ -62,6 +66,7 @@ export class TransferController {
       if (!isCustomer) {
         const newCustomer = await this.customerRepository.create({
           ...contactInfo,
+          locale: locale,
           name: customerName,
         });
         customerName = newCustomer.name;
@@ -77,7 +82,7 @@ export class TransferController {
       } else {
         transferData.customerId = isCustomer.id;
       }
-      const newTransfer = await this.transferRepository.create(transferData);
+      const newTransfer = await this.transferRepository.create({...transferData, date:normalizedDate, locale});
 
       if (!newTransfer) throw new Error('Transfer could not be created');
 
@@ -104,6 +109,7 @@ export class TransferController {
     return this.transferRepository.count(where);
   }
 
+  // @authenticate('jwt')
   @get('/api/transfers')
   @response(200, {
     description: 'Array of Transfer model instances',
@@ -122,6 +128,7 @@ export class TransferController {
     return this.transferRepository.find(filter);
   }
 
+  // @authenticate('jwt')
   @patch('/api/transfers')
   @response(200, {
     description: 'Transfer PATCH success count',
@@ -140,7 +147,7 @@ export class TransferController {
   ): Promise<Count> {
     return this.transferRepository.updateAll(transfer, where);
   }
-
+  // @authenticate('jwt')
   @get('/api/transfers/{id}')
   @response(200, {
     description: 'Transfer model instance',
@@ -157,7 +164,7 @@ export class TransferController {
   ): Promise<Transfer> {
     return this.transferRepository.findById(id, filter);
   }
-
+  // @authenticate('jwt')
   @patch('/api/transfers/{id}')
   @response(204, {
     description: 'Transfer PATCH success',
@@ -172,10 +179,18 @@ export class TransferController {
       },
     })
     transfer: Partial<Transfer>,
-  ): Promise<{message: string; status: number, transfer: Transfer}> {
-    console.log('transfer', transfer);
+  ): Promise<{message: string; status: number, transfer: Transfer | null}> {
+     const {date, ...transferData} = transfer;
+     if (!date) {
+       return {
+         message: 'Date is required',
+         status: 400,
+         transfer: null
+       }
+     }
+     console.log('transfer', {...transferData, date: this.dateTimeService.normalizeDate(date)});
 
-     await this.transferRepository.updateById(id, transfer);
+     await this.transferRepository.updateById(id, {...transferData, date: this.dateTimeService.normalizeDate(date)});
      const uptated = await this.transferRepository.findById(id);
 
      return {
@@ -184,7 +199,7 @@ export class TransferController {
        transfer: uptated
      }
   }
-
+  // @authenticate('jwt')
   @put('/api/transfers/{id}')
   @response(204, {
     description: 'Transfer PUT success',
@@ -196,6 +211,7 @@ export class TransferController {
     await this.transferRepository.replaceById(id, transfer);
   }
 
+  // @authenticate('jwt')
   @del('/api/transfers/{id}')
   @response(204, {
     description: 'Transfer DELETE success',

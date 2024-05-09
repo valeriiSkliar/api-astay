@@ -26,7 +26,7 @@ export class Transfer extends Entity {
       nullable: 'Y',
     },
   })
-  date?: string;
+  date: string;
 
   @property({
     type: 'string',

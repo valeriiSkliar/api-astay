@@ -4,7 +4,7 @@ import {repository} from '@loopback/repository';
 import {BookingRepository} from '../repositories';
 
 import {inject, service} from '@loopback/core';
-import {BookingService, MailService} from '../services';
+import {BookingService, DateTimeService, MailService} from '../services';
 import {
   Request,
   RestBindings,
@@ -24,6 +24,7 @@ export class BookingRequestController {
     @inject(RestBindings.Http.REQUEST)
     private req: Request,
     @service(MailService) private mailService: MailService,
+    @service(DateTimeService) private dateTimeService: DateTimeService,
   ) {}
 
   @post('/api/booking-requests')

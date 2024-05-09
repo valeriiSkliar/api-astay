@@ -1,15 +1,17 @@
-import {injectable, /* inject, */ BindingScope} from '@loopback/core';
+import {injectable, /* inject, */ BindingScope, service} from '@loopback/core';
 import {Booking, Customer, Transfer} from '../models';
 import {TransferRequest} from '../types';
 import {DataObject, Transaction, repository} from '@loopback/repository';
 import {TransferRepository} from '../repositories';
 import {Mode} from 'fs';
+import {DateTimeService} from './date-time.service';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class TransferService {
   constructor(
     @repository(TransferRepository)
     public transferRepository: TransferRepository,
+    @service(DateTimeService) public dateTimeService: DateTimeService,
   ) {}
 
   public convertTransferArrayToObject(
@@ -47,6 +49,8 @@ export class TransferService {
     if (!customer.id) {
       throw new Error('Customer not found');
     }
+
+    console.log('transferData', transferData);
 
     const transfers = ['from', 'to'].map(field => {
       if (transferData[field as keyof typeof transferData]) {
@@ -103,9 +107,12 @@ export class TransferService {
 
     const transferPromises = ['from', 'to'].map(async field => {
       if (transferData[field]) {
+        const date = this.dateTimeService.normalizeDate(transferData[field].date);
+        console.log('data', date);
         const transferDetails = {
           type: field === 'from' ? 'arrival' : 'departure',
           customerId: customer.id,
+          date: date,
           ...transferData[field],
         };
         return await this.transferRepository.create(transferDetails, {
