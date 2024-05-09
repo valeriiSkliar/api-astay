@@ -22,6 +22,7 @@ import {PhotoRepository} from '../repositories';
 import {service} from '@loopback/core';
 import {UploaderService} from '../services';
 import e from 'express';
+import {authenticate} from '@loopback/authentication';
 
 export class PhotoController {
   constructor(
@@ -147,7 +148,7 @@ export class PhotoController {
   ): Promise<void> {
     await this.photoRepository.replaceById(id, photo);
   }
-
+  @authenticate('jwt')
   @del('/api/photos/{id}')
   @response(204, {
     description: 'Photo DELETE success',

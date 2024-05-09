@@ -80,7 +80,6 @@ export class UploaderService {
   return await this.photoRepository.find(
     {
       where: { complex_id },
-      fields: ['id', 'order_number'],
       order: ['order_number ASC'],
     }
   )
