@@ -152,6 +152,7 @@ export class BookingController {
     return this.bookingRepository.findById(id, filter);
   }
 
+  @authenticate('jwt')
   @patch('/api/bookings/{id}')
   @response(200, {
     description: 'Booking PATCH success',
@@ -164,7 +165,6 @@ export class BookingController {
       },
     },
   })
-  @authenticate('jwt')
   async updateById(
     @param.path.number('id') id: number,
     @requestBody({
@@ -176,9 +176,15 @@ export class BookingController {
     })
     booking: Booking,
   ): Promise<{status: string; data: Booking[]; message?: string}> {
+    const bookingData = await this.bookingRepository.findById(id);
+    if (!bookingData) {
+      throw new EntityNotFoundError(Booking, id);
+    }
+
     if (!booking.status) {
       return {status: 'error', data: []};
     }
+
 
     try {
       const {normalizeDate} =
@@ -192,11 +198,13 @@ export class BookingController {
       const isApartmentExist = await this.bookingService.isApartmentExist(
         booking.apartmentId,
       );
+
+
       if (!isApartmentExist) {
         throw new Error('Apartment not exist');
       }
       const updatedBooking =
-        await this.bookingService.handleBookingStatus(booking);
+        await this.bookingService.handleBookingStatus({...bookingData, ...booking});
 
       const updatedBookingData: DataObject<Booking> = {
         ...updatedBooking,
@@ -216,12 +224,13 @@ export class BookingController {
           {relation: 'apartment'},
         ],
       });
+
       if (!updatedBookings) {
         throw new Error('Booking not found');
       }
       return {status: 'success', data: updatedBookings};
     } catch (error) {
-      return {status: 'error', data: []};
+      return {status: 'error', data: [], message: error.message};
     }
   }
 

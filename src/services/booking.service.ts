@@ -5,12 +5,14 @@ import {
   CustomerRepository,
   TransferRepository,
 } from '../repositories';
-import {Booking, Customer} from '../models';
+import {Apartment, Booking, Customer} from '../models';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import bcrypt from 'bcrypt';
 import {TransferService} from './transfer.service';
 import {format, compareAsc, differenceInDays} from 'date-fns';
+import {ApartmentService} from './apartment.service';
+import {DateTimeService} from './date-time.service';
 
 dayjs.extend(utc);
 
@@ -112,6 +114,10 @@ export class BookingService {
         name,
         phoneNumber,
         apartmentId,
+        bookingDates: this.dateTimeService.getDatesBetweenCheckInCheckOutDateArray(
+          normalisedCheckIn.toISOString(),
+          normalisedCheckOut.toISOString(),
+        ),
         checkIn: normalisedCheckIn.toISOString(),
         checkOut: normalisedCheckOut.toISOString(),
         originalApartmentPrice,
@@ -205,6 +211,8 @@ export class BookingService {
     public customerRepository: CustomerRepository,
     @service(TransferService)
     public transferService: TransferService,
+    @service(ApartmentService) private apartmentService: ApartmentService,
+    @service(DateTimeService) private dateTimeService: DateTimeService,
   ) {}
 
   public async handleTokenAndPaymentUrl(booking: Omit<Booking, 'id'>) {
@@ -222,9 +230,6 @@ export class BookingService {
     if (booking.status === 'confirmed') {
       return await this.confirmBookingDates(booking);
     }
-    if (booking.status === 'cancelled') {
-      return await this.cancelBookingDates(booking);
-    }
     if (booking.status === 'archived') {
       return await this.archiveBooking(booking);
     }
@@ -234,12 +239,15 @@ export class BookingService {
     return booking;
   }
   async pendingBooking(booking: Partial<Booking>) {
+    await this.apartmentService.deleteBookingDatesFromApartmentDisabledDates(booking);
     return {
       ...booking,
       bookingDates: [],
     };
   }
   async archiveBooking(booking: Partial<Booking>) {
+    await this.apartmentService.deleteBookingDatesFromApartmentDisabledDates(booking);
+
     return {
       ...booking,
       isArchived: true,
@@ -252,18 +260,18 @@ export class BookingService {
     }
     const bookingDates = this.getPeriod(new Date(checkIn), new Date(checkOut));
 
+    await this.apartmentService.addBookingDatesToApartmentDisabledDates(
+      booking,
+      bookingDates,
+    );
+
+
     return {
       ...booking,
-      bookingDates: bookingDates,
+      bookingDates: bookingDates
     };
   }
 
-  private async cancelBookingDates(booking: Partial<Booking>) {
-    return {
-      ...booking,
-      bookingDates: [],
-    };
-  }
   private getPeriod(start: Date, end: Date) {
     const dates: Date[] = [];
     let currentDate = dayjs(start);
@@ -276,7 +284,6 @@ export class BookingService {
   }
 
   public async isApartmentExist(apartmentId: number) {
-    console.log('apartmentId', apartmentId);
     if (!apartmentId) {
       throw new Error('Apartment ID is required');
     }
@@ -286,7 +293,6 @@ export class BookingService {
         where: {isArchived: false},
       },
     );
-    console.log('isApartmentExist', isApartmentExist);
     return isApartmentExist;
   }
 

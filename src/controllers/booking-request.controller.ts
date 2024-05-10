@@ -4,7 +4,7 @@ import {repository} from '@loopback/repository';
 import {BookingRepository} from '../repositories';
 
 import {inject, service} from '@loopback/core';
-import {BookingService, DateTimeService, MailService} from '../services';
+import {ApartmentService, BookingService, DateTimeService, MailService} from '../services';
 import {
   Request,
   RestBindings,
@@ -25,6 +25,7 @@ export class BookingRequestController {
     private req: Request,
     @service(MailService) private mailService: MailService,
     @service(DateTimeService) private dateTimeService: DateTimeService,
+    @service(ApartmentService) private apartmentService: ApartmentService,
   ) {}
 
   @post('/api/booking-requests')
@@ -133,7 +134,6 @@ export class BookingRequestController {
     },
   ) {
     const token = body.token;
-    console.log('token', token);
     try {
       const booking = await this.bookingRepository.findOne({
         where: {
@@ -170,8 +170,10 @@ export class BookingRequestController {
         status: 'confirmed',
       });
 
+      await this.apartmentService.updateApartmentDisabledDates(booking.apartment.id, booking.checkIn, booking.checkOut);
+
       try {
-        await this.mailService.sendConfirmedPayEmail(booking);
+        // await this.mailService.sendConfirmedPayEmail(booking);
         return {
           message: 'Booking payment confirmed',
           code: 200,

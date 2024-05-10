@@ -42,6 +42,34 @@ export class DateTimeService {
 
   public getPeriod(start: Date, end: Date) {}
 
+  public getDatesBetweenCheckInCheckOut(startDate: string, endDate: string, format?: string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const dates: Date[] = [];
+    let currentDate = start;
+    while (currentDate <= end) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    if (format === 'date') {
+      return dates;
+    }
+    return dates.map(date => date.toISOString().split('T')[0]);
+  }
+
+  public getDatesBetweenCheckInCheckOutDateArray(startDate: string, endDate: string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const dates: Date[] = [];
+    let currentDate = start;
+    while (currentDate <= end) {
+      dates.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+      return dates;
+  }
+
+
   private convertToDateFns(date: string) {
     return format(date, 'yyyy-MM-dd');
   }

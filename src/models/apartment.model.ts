@@ -65,13 +65,11 @@ export class Apartment extends Entity {
   @property.array(String)
   neighborhood?: string[] = [];
 
-  // @property.array(Date)
-  // disabledDates?: Date[];
-
   @property.array(Date)
   hostDisabledDates?: Date[];
 
-  // TODO: rename to apartmentPrice -константа. вказуєтьься при створені або редагуванні
+  @property.array(Date)
+  disabledDates?: Date[];
 
   @property({
     type: 'number',
@@ -117,19 +115,11 @@ export class Apartment extends Entity {
   })
   isVisible?: boolean;
 
-  // @property({
-  //   type: 'string',
-  // })
-  // oldPrice?: string;
-
   @property({
     type: 'number',
     default: 0,
   })
   number_of_reviews?: number;
-
-  @property.array(Date)
-  disabledDates?: Date[] = [];
 
   @property({
     type: 'number',
