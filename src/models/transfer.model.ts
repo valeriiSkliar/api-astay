@@ -37,7 +37,7 @@ export class Transfer extends Entity {
       dataType: 'varchar',
       dataLength: 255,
       nullable: 'Y',
-    }
+    },
   })
   flightNumber?: string | null;
 

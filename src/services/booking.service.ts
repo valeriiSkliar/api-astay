@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import bcrypt from 'bcrypt';
 import {TransferService} from './transfer.service';
-import { format, compareAsc, differenceInDays } from "date-fns";
+import {format, compareAsc, differenceInDays} from 'date-fns';
 
 dayjs.extend(utc);
 
@@ -72,7 +72,7 @@ export class BookingService {
         checkOut,
         locale,
         tzOffset,
-      })
+      });
       console.log('normalisedCheckIn', normalisedCheckIn);
       console.log('normalisedCheckOut', normalisedCheckOut);
       const {
@@ -146,19 +146,23 @@ export class BookingService {
       await transaction.rollback();
     }
   }
-  handleDates({checkIn, checkOut, locale, tzOffset}: {
+  handleDates({
+    checkIn,
+    checkOut,
+    locale,
+    tzOffset,
+  }: {
     checkIn: Date;
     checkOut: Date;
     locale: string;
     tzOffset: number;
-  }): { normalisedCheckIn: Date; normalisedCheckOut: Date } {
-
-    const fornatCheckIn = format(checkIn, 'yyyy-MM-dd')
+  }): {normalisedCheckIn: Date; normalisedCheckOut: Date} {
+    const fornatCheckIn = format(checkIn, 'yyyy-MM-dd');
     const normalisedCheckIn = new Date(fornatCheckIn);
-    const fornatCheckOut = format(checkOut, 'yyyy-MM-dd')
+    const fornatCheckOut = format(checkOut, 'yyyy-MM-dd');
     const normalisedCheckOut = new Date(fornatCheckOut);
 
-    return { normalisedCheckIn, normalisedCheckOut };
+    return {normalisedCheckIn, normalisedCheckOut};
   }
 
   private async handleTokensAndFrontendUrls({
@@ -353,16 +357,23 @@ export class BookingService {
       throw new Error('Error calculating apartment price state');
     }
     if (!normalisedCheckIn || !normalisedCheckOut) {
-      throw new Error('normalisedCheckIn and normalisedCheckOut dates are required');
+      throw new Error(
+        'normalisedCheckIn and normalisedCheckOut dates are required',
+      );
     }
-    console.log('normalisedCheckIn', normalisedCheckIn, 'normalisedCheckOut', normalisedCheckOut);
+    console.log(
+      'normalisedCheckIn',
+      normalisedCheckIn,
+      'normalisedCheckOut',
+      normalisedCheckOut,
+    );
     const period = differenceInDays(normalisedCheckOut, normalisedCheckIn);
 
     if (period < 0) {
       throw new Error('CheckIn date must be before CheckOut date');
     }
 
-    const calculateBookingPrice = priceOfBooking * period ;
+    const calculateBookingPrice = priceOfBooking * period;
 
     return {
       price: Math.ceil(Number(calculateBookingPrice.toFixed(2))),

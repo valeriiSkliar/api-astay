@@ -82,7 +82,11 @@ export class TransferController {
       } else {
         transferData.customerId = isCustomer.id;
       }
-      const newTransfer = await this.transferRepository.create({...transferData, date:normalizedDate, locale});
+      const newTransfer = await this.transferRepository.create({
+        ...transferData,
+        date: normalizedDate,
+        locale,
+      });
 
       if (!newTransfer) throw new Error('Transfer could not be created');
 
@@ -179,25 +183,31 @@ export class TransferController {
       },
     })
     transfer: Partial<Transfer>,
-  ): Promise<{message: string; status: number, transfer: Transfer | null}> {
-     const {date, ...transferData} = transfer;
-     if (!date) {
-       return {
-         message: 'Date is required',
-         status: 400,
-         transfer: null
-       }
-     }
-     console.log('transfer', {...transferData, date: this.dateTimeService.normalizeDate(date)});
+  ): Promise<{message: string; status: number; transfer: Transfer | null}> {
+    const {date, ...transferData} = transfer;
+    if (!date) {
+      return {
+        message: 'Date is required',
+        status: 400,
+        transfer: null,
+      };
+    }
+    console.log('transfer', {
+      ...transferData,
+      date: this.dateTimeService.normalizeDate(date),
+    });
 
-     await this.transferRepository.updateById(id, {...transferData, date: this.dateTimeService.normalizeDate(date)});
-     const uptated = await this.transferRepository.findById(id);
+    await this.transferRepository.updateById(id, {
+      ...transferData,
+      date: this.dateTimeService.normalizeDate(date),
+    });
+    const uptated = await this.transferRepository.findById(id);
 
-     return {
-       message: 'Transfer updated successfully',
-       status: 200,
-       transfer: uptated
-     }
+    return {
+      message: 'Transfer updated successfully',
+      status: 200,
+      transfer: uptated,
+    };
   }
   // @authenticate('jwt')
   @put('/api/transfers/{id}')

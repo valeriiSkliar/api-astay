@@ -91,7 +91,6 @@ export class BookingRequestController {
         code: 200,
         booking: bookingResponse,
       };
-
     } catch (error) {
       return {
         message: 'Booking request failed',
@@ -150,7 +149,7 @@ export class BookingRequestController {
                 {relation: 'roomCategory'},
                 {relation: 'images'},
                 {relation: 'locationDetails'},
-                {relation: 'in_complex'}
+                {relation: 'in_complex'},
               ],
             },
           },
@@ -178,15 +177,10 @@ export class BookingRequestController {
           code: 200,
           booking: booking,
         };
-
       } catch (error) {
         console.log(error);
-        throw new Error(
-          'Error during sending email: ' + error.message,
-        );
+        throw new Error('Error during sending email: ' + error.message);
       }
-
-
     } catch (error) {
       return {
         message:

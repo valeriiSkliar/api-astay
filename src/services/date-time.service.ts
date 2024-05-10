@@ -17,26 +17,32 @@ export class DateTimeService {
     return new Date(this.convertToDateFns(date)).toISOString().split('T')[0];
   }
 
-  public validateDatesCheckInCheckOutDates(checkIn: string | undefined, checkOut: string | undefined) {
+  public validateDatesCheckInCheckOutDates(
+    checkIn: string | undefined,
+    checkOut: string | undefined,
+  ) {
     if (!checkIn || !checkOut) {
       throw new Error('Invalid dates. CheckIn and CheckOut dates are required');
     }
 
-    if (isBefore( new Date(), checkIn) && isAfter(checkOut, new Date()) && isBefore(checkIn, checkOut)) {
-      return  {normalizeDate: {
-        checkIn: this.normalizeDate(checkIn),
-        checkOut: this.normalizeDate(checkOut),
-      }};
+    if (
+      isBefore(new Date(), checkIn) &&
+      isAfter(checkOut, new Date()) &&
+      isBefore(checkIn, checkOut)
+    ) {
+      return {
+        normalizeDate: {
+          checkIn: this.normalizeDate(checkIn),
+          checkOut: this.normalizeDate(checkOut),
+        },
+      };
     }
-      throw new Error('Invalid dates range');
+    throw new Error('Invalid dates range');
   }
 
-  public getPeriod(start: Date, end: Date) {
-
-  }
+  public getPeriod(start: Date, end: Date) {}
 
   private convertToDateFns(date: string) {
     return format(date, 'yyyy-MM-dd');
   }
-
 }

@@ -1,4 +1,3 @@
-
 import {inject, service} from '@loopback/core';
 import {
   post,
@@ -100,7 +99,7 @@ export class FileUploadController {
     files: Array<any>,
     fields: object,
   ): Promise<object> {
-    const orderNumber = await this.uploaderService.repositoryFabric(fields)
+    const orderNumber = await this.uploaderService.repositoryFabric(fields);
 
     const photos = files.map(async (f: any, index: number) => {
       const sizes = [
@@ -149,8 +148,8 @@ export class FileUploadController {
       };
       await createSizes();
 
-      const orderNumber = await this.uploaderService.repositoryFabric(fields)
-// TODO: get index of last file
+      const orderNumber = await this.uploaderService.repositoryFabric(fields);
+      // TODO: get index of last file
       console.log('fields', fields);
       return await this.photoRepository.create({
         fileName: f.filename,

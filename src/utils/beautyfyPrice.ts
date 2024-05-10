@@ -45,18 +45,18 @@ export default function getFormattedPrice(
 ): string {
   const truePrice = Number(price);
 
-  if (Number.isNaN(truePrice)) return "NaN";
+  if (Number.isNaN(truePrice)) return 'NaN';
 
   const {
-    locales = "th-TH",
-    currency = "THB",
+    locales = 'th-TH',
+    currency = 'THB',
     // currencyDisplay = 'narrowSymbol',
     minimumFractionDigits = 0,
     maximumFractionDigits = 2,
   } = options || {};
 
   return new Intl.NumberFormat(locales, {
-    style: "currency",
+    style: 'currency',
     currency,
     // currencyDisplay,
     minimumFractionDigits,

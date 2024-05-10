@@ -27,5 +27,4 @@ export class FileUploadProvider implements Provider<FileUploadHandler> {
   value(): FileUploadHandler {
     return multer(this.options).any();
   }
-
 }

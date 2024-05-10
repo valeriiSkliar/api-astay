@@ -120,8 +120,6 @@ export class Customer extends Entity {
   @hasMany(() => Review)
   reviews: Review[];
 
-
-
   @hasMany(() => Transfer)
   transfers: Transfer[];
   [prop: string]: any;

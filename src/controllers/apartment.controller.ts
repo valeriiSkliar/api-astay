@@ -24,6 +24,7 @@ import {inject, service} from '@loopback/core';
 import {ApartmentService, MailService} from '../services';
 import {authenticate} from '@loopback/authentication';
 import {Request, RestBindings} from '@loopback/rest';
+import {format, isAfter, isBefore} from 'date-fns';
 // import mailService from '../services/mail.service';
 
 export class ApartmentController {
@@ -67,7 +68,6 @@ export class ApartmentController {
   async count(
     @param.where(Apartment) where?: Where<Apartment>,
   ): Promise<Count> {
-
     const url = this.req.url;
     const headers = {...this.req.headers};
     console.log('headers', headers, 'url', url);
@@ -199,7 +199,7 @@ export class ApartmentController {
     }
 
     filter = {...filter, include};
-    console.log( await this.apartmentService.findById(id, filter));
+    console.log(await this.apartmentService.findById(id, filter));
     try {
       return await this.apartmentService.findById(id, filter);
     } catch (err) {
@@ -225,6 +225,9 @@ export class ApartmentController {
     })
     apartment: Partial<Apartment>,
   ): Promise<void> {
+    console.log('apartment', apartment);
+    console.log('id', id);
+
     await this.apartmentRepository.updateById(id, apartment);
   }
 
@@ -273,23 +276,40 @@ export class ApartmentController {
                 },
               },
             },
-            required: ['propertyName', 'hostDisabledDates'],
+            required: ['hostDisabledDates'],
           },
         },
       },
     })
-    data: {propertyName: string; hostDisabledDates: string[]},
-  ): Promise<void> {
-    console.log('data', data);
-    console.log('id', id);
+    data: {hostDisabledDates: string[]},
+  ): Promise<Partial<Apartment>> {
     const apartment = await this.apartmentRepository.findById(id);
     if (!apartment) {
       throw new EntityNotFoundError(Apartment, id);
     }
 
-    apartment[data.propertyName] = data.hostDisabledDates;
-    console.log('apartment', apartment);
+    if (!data.hostDisabledDates) {
+      throw new Error('Need to pass disabled dates. Dates are required');
+    }
+    const {hostDisabledDates} = data;
+    if (!Array.isArray(hostDisabledDates)) {
+      throw new Error('Invalid dates format');
+    }
+    const uniqueSet = new Set(hostDisabledDates);
+    const uniqueArray = Array.from(uniqueSet);
+
+    const filterAndNormalize = uniqueArray
+      .filter(date => isAfter(date, Date.now()))
+      .map(date => {
+        return new Date(format(String(date), 'yyyy-MM-dd'));
+      })
+      .sort((a, b) => a.getTime() - b.getTime());
+
+    apartment.hostDisabledDates = filterAndNormalize;
 
     await this.apartmentRepository.updateById(id, apartment);
+    return await this.apartmentRepository.findById(id, {
+      fields: ['id', 'hostDisabledDates', 'disabledDates'],
+    });
   }
 }

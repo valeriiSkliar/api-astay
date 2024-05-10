@@ -69,7 +69,7 @@ export class AdminServiceController {
     const roomCategories = await this.roomCategoryRepository.find();
     const locations = await this.locationsRepository.find();
     const amenities = await this.amenityRepository.find();
-    const apartment =  id ? await this.apartmentRepository.findById(id) : {};
+    const apartment = id ? await this.apartmentRepository.findById(id) : {};
     return {
       complexes,
       roomTypes,

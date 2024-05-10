@@ -16,8 +16,14 @@ const roomCategories = [
   {
     color: '#0000ff',
     translations: {
-      en: {category: 'Comfort', description: 'Best conditions at an affordable price'},
-      ru: {category: 'Комфорт', description: 'Лучшие условия в адекватной цене'},
+      en: {
+        category: 'Comfort',
+        description: 'Best conditions at an affordable price',
+      },
+      ru: {
+        category: 'Комфорт',
+        description: 'Лучшие условия в адекватной цене',
+      },
     },
   },
 ];

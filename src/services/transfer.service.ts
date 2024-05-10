@@ -107,7 +107,9 @@ export class TransferService {
 
     const transferPromises = ['from', 'to'].map(async field => {
       if (transferData[field]) {
-        const date = this.dateTimeService.normalizeDate(transferData[field].date);
+        const date = this.dateTimeService.normalizeDate(
+          transferData[field].date,
+        );
         console.log('data', date);
         const transferDetails = {
           type: field === 'from' ? 'arrival' : 'departure',

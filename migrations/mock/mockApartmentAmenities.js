@@ -152,7 +152,6 @@ const amenities = () => {
   });
 };
 
-
 exports.amenities = amenities();
 // const amenities = [
 //   {

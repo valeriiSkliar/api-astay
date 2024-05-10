@@ -237,7 +237,6 @@ export class MailService {
         'No token provided for confirmed pay email. Can not send email',
       );
     }
-  
 
     if (!booking.checkIn || !booking.checkOut) {
       throw new Error(
@@ -255,9 +254,19 @@ export class MailService {
         'Invalid booking token. No any related apartment or customer found',
       );
     }
-    const {roomCategory, images, locationDetails, in_complex, wifiPassword, apartmentPassword} = apartment;
+    const {
+      roomCategory,
+      images,
+      locationDetails,
+      in_complex,
+      wifiPassword,
+      apartmentPassword,
+    } = apartment;
 
-    const guests: {guests: number, rooms: number} = booking?.guests as {guests: number, rooms: number};
+    const guests: {guests: number; rooms: number} = booking?.guests as {
+      guests: number;
+      rooms: number;
+    };
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: ConfirmedPayEmailData = {
       checkIn: booking.checkIn,
@@ -294,6 +303,4 @@ export class MailService {
       html: render(ConfirmedPayEmail({data: dataForEmail})),
     });
   }
-
-
 }

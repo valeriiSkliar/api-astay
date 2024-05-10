@@ -157,7 +157,12 @@ export class PhotoController {
     const {apartment_id, complex_id} = await this.photoRepository.findById(id);
     await this.photoRepository.deleteById(id);
     if (apartment_id || complex_id) {
-      return await this.uploaderService.reBuildOrderIndexesWhenDeletingPhoto({apartment_id, complex_id}) || [];
+      return (
+        (await this.uploaderService.reBuildOrderIndexesWhenDeletingPhoto({
+          apartment_id,
+          complex_id,
+        })) || []
+      );
     } else {
       return [];
     }
