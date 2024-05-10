@@ -34,7 +34,7 @@ export const DefaultEmail = ({ children, previewText, lang = 'en', hostData, ema
 
   const t = {
     ru: {
-      first: 'С уважением,',
+      first: 'С наилучшими пожеланиями,',
       second: `Команда ${companyName}`
     },
     en: {

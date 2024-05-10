@@ -17,16 +17,6 @@ interface ConfirmedPayEmailData {
   transfer?: Transfer;
 }
 
-interface HostContacts {
-  name: string;
-  email: string;
-  phone: string;
-  telegram: string;
-  whatsapp: string;
-  instagram: string;
-  youtube: string;
-}
-
 interface Transfer {
   from?: From;
   to?: To;
