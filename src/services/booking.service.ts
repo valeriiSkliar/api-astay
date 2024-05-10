@@ -247,11 +247,17 @@ export class BookingService {
   }
   async archiveBooking(booking: Partial<Booking>) {
     await this.apartmentService.deleteBookingDatesFromApartmentDisabledDates(booking);
+    console.log('booking', booking);
+    await this.removeRelatedTransfers(booking);
 
     return {
       ...booking,
       isArchived: true,
     };
+  }
+  private async removeRelatedTransfers(booking: Partial<Booking>) {
+    await this.transferService.deleteTransfers(booking);
+
   }
   private async confirmBookingDates(booking: Partial<Booking>) {
     const {checkIn, checkOut} = booking;

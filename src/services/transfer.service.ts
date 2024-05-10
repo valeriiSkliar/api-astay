@@ -127,4 +127,26 @@ export class TransferService {
     const transfers = await Promise.all(transferPromises);
     return transfers.filter(t => t !== null) as Transfer[];
   }
+
+  public async getRelatedTransfers(
+    booking: Partial<Booking>,
+  ) {
+    if (!booking.id) {
+      throw new Error('Booking not found');
+    }
+    return await this.transferRepository.find({
+      where: {
+        bookingId: booking.id,
+      },
+    });
+  }
+
+  public async deleteTransfers(booking: Partial<Booking>) {
+    if (!booking.id) {
+      throw new Error('No booking related to this transfer');
+    }
+    return await this.transferRepository.deleteAll({
+      bookingId: booking.id,
+    });
+  }
 }

@@ -83,7 +83,7 @@ export class BookingRequestController {
         await this.bookingService.handleBookingRequest(booking);
 
       try {
-        await this.mailService.sendBookingRequestEmail(bookingResponse);
+        // await this.mailService.sendBookingRequestEmail(bookingResponse);
       } catch (error) {
         console.log(error);
       }
@@ -173,7 +173,7 @@ export class BookingRequestController {
       await this.apartmentService.updateApartmentDisabledDates(booking.apartment.id, booking.checkIn, booking.checkOut);
 
       try {
-        await this.mailService.sendConfirmedPayEmail(booking);
+        // await this.mailService.sendConfirmedPayEmail(booking);
         return {
           message: 'Booking payment confirmed',
           code: 200,

@@ -225,6 +225,8 @@ export class BookingController {
         ],
       });
 
+      
+
       if (!updatedBookings) {
         throw new Error('Booking not found');
       }
