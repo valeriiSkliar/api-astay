@@ -30,7 +30,6 @@ export class ReviewService {
         {relation: 'customer'},
       ],
     });
-    console.log('booking', booking);
     if (!booking) {
       throw new Error('Invalid review token. No any related booking found');
     }
@@ -45,7 +44,6 @@ export class ReviewService {
     const differenceInMonths =
       (now.getFullYear() - createdAt.getFullYear()) * 12 +
       (now.getMonth() - createdAt.getMonth());
-    console.log('differenceInMonths', differenceInMonths);
     if (differenceInMonths > 2) throw new Error('Review token is too old');
 
     return booking;

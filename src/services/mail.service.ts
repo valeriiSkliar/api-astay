@@ -69,7 +69,6 @@ export class MailService {
    * @param data Additional data required for the booking email template
    */
   async sendBookingRequestEmail({customer, newBooking, transferData}: any) {
-    // console.log('bookingData', customer, newBooking, apartment, transfer);
     const hostData = await this.hostContactsService.getHostContacts();
     if (transferData) {
       transferData =

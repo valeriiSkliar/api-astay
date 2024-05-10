@@ -19,13 +19,14 @@ import {
 } from '@loopback/rest';
 import {Amenity} from '../models';
 import {AmenityRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
 export class AmenityController {
   constructor(
     @repository(AmenityRepository)
     public amenityRepository: AmenityRepository,
   ) {}
-
+  @authenticate('jwt')
   @post('/api/amenities')
   @response(200, {
     description: 'Amenity model instance',
@@ -47,6 +48,7 @@ export class AmenityController {
     return this.amenityRepository.create(amenity);
   }
 
+  @authenticate('jwt')
   @get('/api/amenities/count')
   @response(200, {
     description: 'Amenity model count',
@@ -56,6 +58,7 @@ export class AmenityController {
     return this.amenityRepository.count(where);
   }
 
+  @authenticate('jwt')
   @get('/api/amenities')
   @response(200, {
     description: 'Array of Amenity model instances',
@@ -74,6 +77,7 @@ export class AmenityController {
     return this.amenityRepository.find(filter);
   }
 
+  @authenticate('jwt')
   @patch('/api/amenities')
   @response(200, {
     description: 'Amenity PATCH success count',
@@ -93,6 +97,7 @@ export class AmenityController {
     return this.amenityRepository.updateAll(amenity, where);
   }
 
+  @authenticate('jwt')
   @get('/api/amenities/{id}')
   @response(200, {
     description: 'Amenity model instance',
@@ -110,6 +115,7 @@ export class AmenityController {
     return this.amenityRepository.findById(id, filter);
   }
 
+  @authenticate('jwt')
   @patch('/api/amenities/{id}')
   @response(204, {
     description: 'Amenity PATCH success',
@@ -128,6 +134,7 @@ export class AmenityController {
     await this.amenityRepository.updateById(id, amenity);
   }
 
+  @authenticate('jwt')
   @put('/api/amenities/{id}')
   @response(204, {
     description: 'Amenity PUT success',
@@ -139,6 +146,7 @@ export class AmenityController {
     await this.amenityRepository.replaceById(id, amenity);
   }
 
+  @authenticate('jwt')
   @del('/api/amenities/{id}')
   @response(204, {
     description: 'Amenity DELETE success',

@@ -125,7 +125,6 @@ export class LeaveReviewController {
 
       return {status: 'success', message: 'Review created successfully'};
     } catch (error) {
-      console.log('error', error);
       await transaction.rollback();
       return {status: 'error', message: error.message};
     }
@@ -155,7 +154,6 @@ export class LeaveReviewController {
     reviewData: Partial<Review>,
   ) {
     try {
-      console.log('reviewData', reviewData);
       const {tokenReview} = reviewData;
       if (!tokenReview) {
         throw new Error('Token for review is required');

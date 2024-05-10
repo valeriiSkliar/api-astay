@@ -25,7 +25,6 @@ export class SubmitTrackingService {
         cachedSubmissionCount + 1,
       );
     }
-    console.log('this.ipCache', SubmitTrackingService.statucIpCache);
   }
 
   public getSubmissionCount(clientIp: string): number {
@@ -34,8 +33,7 @@ export class SubmitTrackingService {
 
   public hasExceededLimit(clientIp: string, limit: number): boolean {
     const submissionCount = this.getSubmissionCount(clientIp);
-    console.log('submissionCount', submissionCount);
-    console.log('this.ipCache', SubmitTrackingService.statucIpCache);
+
     return submissionCount >= limit;
   }
   constructor(/* Add @inject to inject parameters */) {}

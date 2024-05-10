@@ -192,10 +192,7 @@ export class TransferController {
         transfer: null,
       };
     }
-    console.log('transfer', {
-      ...transferData,
-      date: this.dateTimeService.normalizeDate(date),
-    });
+
 
     await this.transferRepository.updateById(id, {
       ...transferData,

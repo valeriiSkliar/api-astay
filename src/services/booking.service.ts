@@ -75,8 +75,7 @@ export class BookingService {
         locale,
         tzOffset,
       });
-      console.log('normalisedCheckIn', normalisedCheckIn);
-      console.log('normalisedCheckOut', normalisedCheckOut);
+
       const {
         originalApartmentPrice,
         priceOfBooking,
@@ -93,7 +92,6 @@ export class BookingService {
         priceOfBooking,
         discountFromApartment,
       });
-      console.log('price', price);
 
       const customer = await this.ensureCustomer(
         {email, name, phoneNumber},
@@ -247,7 +245,6 @@ export class BookingService {
   }
   async archiveBooking(booking: Partial<Booking>) {
     await this.apartmentService.deleteBookingDatesFromApartmentDisabledDates(booking);
-    console.log('booking', booking);
     await this.removeRelatedTransfers(booking);
 
     return {
@@ -326,7 +323,6 @@ export class BookingService {
   public async getReviewUrl(booking: Partial<Booking>) {
     if (!booking.tokenReview) {
       booking.tokenReview = 'await this.generateReviewToken(booking)';
-      // throw new Error('Review token is required');
     }
     const bookingExist = await this.bookingRepository.exists(booking.id);
     if (!bookingExist) {
@@ -343,7 +339,6 @@ export class BookingService {
         ...booking,
       });
       const check = await this.bookingRepository.findById(booking.id);
-      console.log('check', check);
     } catch (error) {
       throw new Error('Error generating review url: ' + error.message);
     }
@@ -427,7 +422,6 @@ export class BookingService {
   }
 
   private async validateBookingData(booking: Partial<Booking>) {
-    console.log('validateBookingData', booking);
     if (!booking.apartmentId) {
       throw new Error('Apartment id is required. ApartmentID not found');
     }

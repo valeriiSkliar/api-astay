@@ -35,7 +35,6 @@ export class UploaderService {
     const sortedImages = images.sort((a, b) => a.order_number - b.order_number);
     const lastImageOrderNumber =
       sortedImages[sortedImages.length - 1]?.order_number || 1;
-    console.log('lastImageOrderNumber', lastImageOrderNumber);
     return lastImageOrderNumber === 1 && images.length === 0
       ? lastImageOrderNumber
       : lastImageOrderNumber + 1;
@@ -49,7 +48,6 @@ export class UploaderService {
     const sortedImages = images.sort((a, b) => a.order_number - b.order_number);
     const lastImageOrderNumber =
       sortedImages[sortedImages.length - 1]?.order_number || 1;
-    console.log('lastImageOrderNumber', lastImageOrderNumber);
     return lastImageOrderNumber === 1 && images.length === 0
       ? lastImageOrderNumber
       : lastImageOrderNumber + 1;

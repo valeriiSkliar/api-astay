@@ -83,10 +83,8 @@ export class ApplicationController {
     // }
 
     // if(clientIp) {
-    //   console.log('incrementSubmissionCount', clientIp);
     //   this.submissionTrackingService.incrementSubmissionCount(clientIp);
     // };
-    console.log('contactData', contactData);
 
     try {
       const {type, pageLink, name, email, phone} = contactData;
@@ -96,13 +94,11 @@ export class ApplicationController {
         type !== 'forOwners-short' &&
         (!type || !pageLink || !email || !phone || !name)
       ) {
-        console.log('type !== `forOwners-short`', 'Missing required fields');
         throw new Error('Missing required fields');
       } else if (
         type === 'forOwners-short' &&
         (!type || !pageLink || !phone || !name)
       ) {
-        console.log('type === `forOwners-short`', 'Missing required fields');
         // Only email is optional for 'forOwners-short'
         throw new Error('Missing required fields');
       }

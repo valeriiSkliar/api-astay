@@ -74,7 +74,6 @@ export class PhotoController {
     },
   })
   async find(@param.filter(Photo) filter?: Filter<Photo>): Promise<Photo[]> {
-    console.log('filter', filter);
     filter = {
       ...filter,
       order: filter?.order ?? ['order_number ASC'],

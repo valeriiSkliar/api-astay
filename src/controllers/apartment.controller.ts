@@ -36,6 +36,7 @@ export class ApartmentController {
     private req: Request,
   ) {}
 
+  @authenticate('jwt')
   @post('/api/apartments')
   @response(200, {
     description: 'Apartment model instance',
@@ -70,11 +71,6 @@ export class ApartmentController {
   ): Promise<Count> {
     const url = this.req.url;
     const headers = {...this.req.headers};
-    console.log('headers', headers, 'url', url);
-    console.log('req', this.req);
-    console.log('req', this.req.ip);
-    // 'x-forwarded-for'
-    console.log('req', this.req.headers['x-forwarded-for']);
 
     return this.apartmentRepository.count(where);
   }
@@ -142,7 +138,7 @@ export class ApartmentController {
     }
     return {count: apartments.length, apartments};
   }
-
+  @authenticate('jwt')
   @patch('/api/apartments')
   @response(200, {
     description: 'Apartment PATCH success count',
@@ -179,7 +175,6 @@ export class ApartmentController {
     if (!id) {
       throw new EntityNotFoundError('Apartment', id);
     }
-
     const reviewsScope = {
       order: ['reviewDate DESC'],
     };
@@ -210,6 +205,7 @@ export class ApartmentController {
     }
   }
 
+  @authenticate('jwt')
   @patch('/api/apartments/{id}')
   @response(204, {
     description: 'Apartment PATCH success',
@@ -225,12 +221,12 @@ export class ApartmentController {
     })
     apartment: Partial<Apartment>,
   ): Promise<void> {
-    console.log('apartment', apartment);
-    console.log('id', id);
+
 
     await this.apartmentRepository.updateById(id, apartment);
   }
 
+  @authenticate('jwt')
   @put('/api/apartments/{id}')
   @response(204, {
     description: 'Apartment PUT success',
@@ -242,6 +238,7 @@ export class ApartmentController {
     await this.apartmentRepository.replaceById(id, apartment);
   }
 
+  @authenticate('jwt')
   @del('/api/apartments/{id}')
   @response(204, {
     description: 'Apartment DELETE success',
@@ -250,6 +247,7 @@ export class ApartmentController {
     await this.apartmentRepository.deleteById(id);
   }
 
+  @authenticate('jwt')
   @patch('/api/apartments/{id}/update-disabled-dates')
   @response(200, {
     description: 'Apartment PATCH success',

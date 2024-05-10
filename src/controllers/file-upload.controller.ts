@@ -149,8 +149,6 @@ export class FileUploadController {
       await createSizes();
 
       const orderNumber = await this.uploaderService.repositoryFabric(fields);
-      // TODO: get index of last file
-      console.log('fields', fields);
       return await this.photoRepository.create({
         fileName: f.filename,
         order_number: orderNumber,

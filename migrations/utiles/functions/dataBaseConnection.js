@@ -11,8 +11,6 @@ async function getConnection(query) {
 
   const [results] = await connection.query(query);
 
-  // console.log('Retrieved data in getConnection Function:', results);
-
   connection.end();
 
   return results;

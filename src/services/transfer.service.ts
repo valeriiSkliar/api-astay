@@ -50,7 +50,6 @@ export class TransferService {
       throw new Error('Customer not found');
     }
 
-    console.log('transferData', transferData);
 
     const transfers = ['from', 'to'].map(field => {
       if (transferData[field as keyof typeof transferData]) {
@@ -110,7 +109,6 @@ export class TransferService {
         const date = this.dateTimeService.normalizeDate(
           transferData[field].date,
         );
-        console.log('data', date);
         const transferDetails = {
           type: field === 'from' ? 'arrival' : 'departure',
           customerId: customer.id,

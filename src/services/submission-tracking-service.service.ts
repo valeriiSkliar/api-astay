@@ -6,11 +6,9 @@ export class SubmissionTrackingServiceService {
 
   public incrementSubmissionCount(clientIp: string): void {
     if (this.ipCache.has(clientIp)) {
-      console.log('has', this.ipCache);
       const submissionCount = this.ipCache.get(clientIp) || 0;
       this.ipCache.set(clientIp, submissionCount + 1);
     } else {
-      console.log('set', this.ipCache);
 
       this.ipCache.set(clientIp, 1);
     }
@@ -22,8 +20,7 @@ export class SubmissionTrackingServiceService {
 
   public hasExceededLimit(clientIp: string, limit: number): boolean {
     const submissionCount = this.getSubmissionCount(clientIp);
-    console.log('submissionCount', submissionCount);
-    console.log('this.ipCache', this.ipCache);
+
     return submissionCount >= limit;
   }
 
