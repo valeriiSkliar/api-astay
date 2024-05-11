@@ -57,7 +57,6 @@ export class ApartmentController {
     })
     {data}: Omit<Apartment, 'id'>,
   ): Promise<Apartment> {
-    // console.log(data);
     return this.apartmentRepository.create(data);
   }
 
@@ -194,7 +193,6 @@ export class ApartmentController {
     }
 
     filter = {...filter, include};
-    console.log(await this.apartmentService.findById(id, filter));
     try {
       return await this.apartmentService.findById(id, filter);
     } catch (err) {

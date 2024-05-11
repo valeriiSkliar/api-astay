@@ -40,3 +40,4 @@ export * from './review-customer.controller';
 export * from './admin-service.controller';
 export * from './leave-review.controller';
 export * from './booking-request.controller';
+export * from './booking-managing.controller';

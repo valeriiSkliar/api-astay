@@ -86,6 +86,10 @@ export class BookingRequestController {
         // await this.mailService.sendBookingRequestEmail(bookingResponse);
       } catch (error) {
         console.log(error);
+        return {
+          message: 'Error sending booking request email',
+          code: 400,
+        }
       }
       return {
         message: 'Booking request received. Thank you!',
@@ -94,7 +98,7 @@ export class BookingRequestController {
       };
     } catch (error) {
       return {
-        message: 'Booking request failed',
+        message: 'Booking request failed. ' + error.message,
         code: 400,
       };
     }

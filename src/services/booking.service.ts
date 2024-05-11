@@ -1,6 +1,7 @@
 import {injectable, /* inject, */ BindingScope, service} from '@loopback/core';
 import {IsolationLevel, Transaction, repository} from '@loopback/repository';
 import {
+  ApartmentRepository,
   BookingRepository,
   CustomerRepository,
   TransferRepository,
@@ -15,35 +16,6 @@ import {ApartmentService} from './apartment.service';
 import {DateTimeService} from './date-time.service';
 
 dayjs.extend(utc);
-
-var DateDiff = {
-  inDays: function (d1: Date, d2: Date) {
-    var t2 = d2.getTime();
-    var t1 = d1.getTime();
-
-    return Math.floor((t2 - t1) / (24 * 3600 * 1000));
-  },
-
-  // inWeeks: function(d1: Date, d2: Date) {
-  //     var t2 = d2.getTime();
-  //     var t1 = d1.getTime();
-
-  //     return parseInt((t2-t1)/(24*3600*1000*7));
-  // },
-
-  inMonths: function (d1: Date, d2: Date) {
-    var d1Y = d1.getFullYear();
-    var d2Y = d2.getFullYear();
-    var d1M = d1.getMonth();
-    var d2M = d2.getMonth();
-
-    return d2M + 12 * d2Y - (d1M + 12 * d1Y);
-  },
-
-  inYears: function (d1: Date, d2: Date) {
-    return d2.getFullYear() - d1.getFullYear();
-  },
-};
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class BookingService {
@@ -68,7 +40,15 @@ export class BookingService {
         ...rest
       } = booking;
 
-      await this.validateBookingData({apartmentId, email, name});
+      const validateBookingData = await this.validateBookingData({apartmentId, email, name});
+      if ( !validateBookingData ) {
+        throw new Error('Error validating booking data');
+      }
+
+      const isApartmentExist = await this.isApartmentExist(apartmentId);
+      if (!isApartmentExist) {
+        throw new Error('Apartment not found, please try again');
+      }
       const {normalisedCheckIn, normalisedCheckOut} = await this.handleDates({
         checkIn,
         checkOut,
@@ -148,6 +128,8 @@ export class BookingService {
     } catch (error) {
       console.log('error', error);
       await transaction.rollback();
+      throw error;
+
     }
   }
   handleDates({
@@ -204,7 +186,7 @@ export class BookingService {
     @repository('BookingRepository')
     public bookingRepository: BookingRepository,
     @repository('ApartmentRepository')
-    public apartmentRepository: BookingRepository,
+    public apartmentRepository: ApartmentRepository,
     @repository(CustomerRepository)
     public customerRepository: CustomerRepository,
     @service(TransferService)
@@ -368,12 +350,7 @@ export class BookingService {
         'normalisedCheckIn and normalisedCheckOut dates are required',
       );
     }
-    console.log(
-      'normalisedCheckIn',
-      normalisedCheckIn,
-      'normalisedCheckOut',
-      normalisedCheckOut,
-    );
+
     const period = differenceInDays(normalisedCheckOut, normalisedCheckIn);
 
     if (period < 0) {
@@ -422,6 +399,7 @@ export class BookingService {
   }
 
   private async validateBookingData(booking: Partial<Booking>) {
+
     if (!booking.apartmentId) {
       throw new Error('Apartment id is required. ApartmentID not found');
     }
@@ -431,8 +409,12 @@ export class BookingService {
     const isApartmentExist = await this.apartmentRepository.exists(
       booking.apartmentId,
     );
+    if (!isApartmentExist) {
+      throw new Error('Apartment not found, please try again');
+    }
 
-    return isApartmentExist;
+    return true;
+
   }
 
   private async ensureCustomer(

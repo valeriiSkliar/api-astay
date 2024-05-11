@@ -37,6 +37,7 @@ import {
 } from '../emailTemplates/locales/en';
 import {render} from '@react-email/components';
 import {service} from '@loopback/core';
+import {authenticate} from '@loopback/authentication';
 export class ApplicationController {
   constructor(
     @repository(ApplicationsRepository)
@@ -49,10 +50,6 @@ export class ApplicationController {
   ) {}
 
   @post('/api/contact-us-submit')
-  // @response(200, {
-  //   description: 'Applications model instance',
-  //   content: {'application/json': {schema: getModelSchemaRef(Applications)}},
-  // })
   async submitContactForm(
     @requestBody({
       content: {
@@ -137,6 +134,7 @@ export class ApplicationController {
     }
   }
 
+  @authenticate('jwt')
   @post('/api/applications')
   @response(200, {
     description: 'Applications model instance',
@@ -158,6 +156,7 @@ export class ApplicationController {
     return this.applicationsRepository.create(applications);
   }
 
+  @authenticate('jwt')
   @get('/api/applications/count')
   @response(200, {
     description: 'Applications model count',
@@ -169,6 +168,7 @@ export class ApplicationController {
     return this.applicationsRepository.count(where);
   }
 
+  @authenticate('jwt')
   @get('/api/applications')
   @response(200, {
     description: 'Array of Applications model instances',
@@ -186,7 +186,7 @@ export class ApplicationController {
   ): Promise<Applications[]> {
     return this.applicationsRepository.find(filter);
   }
-
+  @authenticate('jwt')
   @patch('/api/applications')
   @response(200, {
     description: 'Applications PATCH success count',
@@ -206,6 +206,7 @@ export class ApplicationController {
     return this.applicationsRepository.updateAll(applications, where);
   }
 
+  @authenticate('jwt')
   @get('/api/applications/{id}')
   @response(200, {
     description: 'Applications model instance',
@@ -223,6 +224,7 @@ export class ApplicationController {
     return this.applicationsRepository.findById(id, filter);
   }
 
+  @authenticate('jwt')
   @patch('/api/applications/{id}')
   @response(204, {
     description: 'Applications PATCH success',
@@ -242,6 +244,7 @@ export class ApplicationController {
     return this.applicationsRepository.find({where: {isArchived: false}});
   }
 
+  @authenticate('jwt')
   @put('/api/applications/{id}')
   @response(204, {
     description: 'Applications PUT success',
@@ -253,6 +256,7 @@ export class ApplicationController {
     await this.applicationsRepository.replaceById(id, applications);
   }
 
+  @authenticate('jwt')
   @del('/api/applications/{id}')
   @response(204, {
     description: 'Applications DELETE success',

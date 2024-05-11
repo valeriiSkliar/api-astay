@@ -62,6 +62,7 @@ export class BookingController {
     @service(DateTimeService) private dateTimeService: DateTimeService,
   ) {}
 
+  @authenticate('jwt')
   @post('/api/bookings')
   @response(200, {
     description: 'Booking model instance',
@@ -69,7 +70,6 @@ export class BookingController {
       'application/json': {schema: getModelSchemaRef(Booking)},
     },
   })
-  @authenticate('jwt')
   async create(
     @requestBody({
       content: {
@@ -107,19 +107,19 @@ export class BookingController {
       },
     },
   })
+
   @authenticate('jwt')
   async find(
     @param.filter(Booking) filter?: Filter<Booking>,
   ): Promise<Booking[]> {
     return this.bookingRepository.find(filter);
   }
-
+  @authenticate('jwt')
   @patch('/api/bookings')
   @response(200, {
     description: 'Booking PATCH success count',
     content: {'application/json': {schema: CountSchema}},
   })
-  @authenticate('jwt')
   async updateAll(
     @requestBody({
       content: {
@@ -134,6 +134,7 @@ export class BookingController {
     return this.bookingRepository.updateAll(booking, where);
   }
 
+  @authenticate('jwt')
   @get('/api/bookings/{id}')
   @response(200, {
     description: 'Booking model instance',
@@ -143,7 +144,6 @@ export class BookingController {
       },
     },
   })
-  @authenticate('jwt')
   async findById(
     @param.path.number('id') id: number,
     @param.filter(Booking, {exclude: 'where'})
@@ -225,7 +225,7 @@ export class BookingController {
         ],
       });
 
-      
+
 
       if (!updatedBookings) {
         throw new Error('Booking not found');
@@ -236,11 +236,11 @@ export class BookingController {
     }
   }
 
+  @authenticate('jwt')
   @put('/api/bookings/{id}')
   @response(204, {
     description: 'Booking PUT success',
   })
-  @authenticate('jwt')
   async replaceById(
     @param.path.number('id') id: number,
     @requestBody() booking: Booking,
@@ -248,11 +248,11 @@ export class BookingController {
     await this.bookingRepository.replaceById(id, booking);
   }
 
+  @authenticate('jwt')
   @del('/api/bookings/{id}')
   @response(204, {
     description: 'Booking DELETE success',
   })
-  @authenticate('jwt')
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.bookingRepository.deleteById(id);
   }
@@ -266,6 +266,7 @@ export class BookingController {
       },
     },
   })
+
   async validateBookingToken(
     @requestBody({
       content: {
@@ -309,6 +310,7 @@ export class BookingController {
     }
   }
 
+  @authenticate('jwt')
   @post('/api/generate-review-url', {
     responses: {
       '200': {
@@ -317,7 +319,6 @@ export class BookingController {
       },
     },
   })
-  @authenticate('jwt')
   public async generateReviewUrl(
     @requestBody({
       content: {
