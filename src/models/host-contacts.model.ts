@@ -90,6 +90,20 @@ export class HostContacts extends Entity {
   })
   secondCardDescription?: string;
 
+  @property({
+    type: 'string',
+    required: false,
+    default: '',
+  })
+  address?: string;
+
+  @property({
+    type: 'string',
+    required: false,
+    default: '',
+  })
+  workTime?: string;
+
   constructor(data?: Partial<HostContacts>) {
     super(data);
   }

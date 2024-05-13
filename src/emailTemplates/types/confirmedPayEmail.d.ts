@@ -18,14 +18,14 @@ interface ConfirmedPayEmailData {
 }
 
 interface Transfer {
-  from?: From;
+  from?: {price: number};
   to?: To;
 }
 
-interface From extends Partial<Transfer> {
-  price: string;
+interface From extends Transfer {
+  price?:  number;
 }
 
 interface To extends Partial<Transfer> {
-  price: string;
+  price?:  number;
 }

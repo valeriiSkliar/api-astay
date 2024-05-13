@@ -264,11 +264,17 @@ export class MailService {
     };
     const transferData = booking?.transfers ? this.transferService.convertTransferArrayToObject(
       booking?.transfers,
-    ) as {from: From; to: To}
+    ) as {from: {price: number}; to: To}
     : {
-      from: undefined,
-      to: undefined,
+      from: {price: 0},
+      to: {price: 0},
     };
+
+    const {from, to} = transferData;
+    const {price: fromPrice = 0} = from;
+    const {price: toPrice = 0} = to;
+
+    const totalPrice = transferData ? booking?.price + fromPrice  + toPrice : booking?.price
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: ConfirmedPayEmailData = {
       checkIn: booking.checkIn,
@@ -280,14 +286,14 @@ export class MailService {
       customerName: customer.name,
       apartmentId: apartment.id,
       apartmentName: apartment.translations?.[locale]?.name,
-      address: locationDetails?.translations?.[locale]?.address || '',
+      address: hostContacts.address || '',
+      // workingHours: locationDetails?.workingHours || '',
       guests: guests.guests,
       rooms: guests.rooms,
-      // booking price  + transfers price
-      totalPrice: getFormattedPrice(booking.price),
+      totalPrice: getFormattedPrice(totalPrice),
       transfer: {
-        from: {date: transferData.from?.date} || undefined,
-        to: {date:transferData.to?.date} || undefined,
+        from: {price: transferData.from?.price } ,
+        to: {price:transferData.to?.price} ,
       },
     };
     console.log(render(EmailTemplate({data: dataForEmail})))

@@ -67,16 +67,16 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
         </Row>
         <Row>
           <InfoRow leftColumn={text.checkIn} rightColumn={text.checkOut} />
-          <Hr style={hr} />
+          <Hr style={{ ...hr, margin: 0 }} />
           <InfoRow
             leftColumn={text.guests}
             rightColumn={text.rooms}
           />
-          <Hr style={hr} />
+          <Hr style={{ ...hr, margin: 0 }} />
           <InfoRow leftColumn={text.address} />
-          <Hr style={hr} />
+          <Hr style={{ ...hr, margin: 0 }} />
           <InfoTransfers transfer={data.transfer} />
-          <Hr style={hr} />
+          <Hr style={{ ...hr, margin: 0 }} />
           <InfoRow leftColumn={text.totalPrice} rightColumn={{}} />
           <Hr style={{ ...hr, margin: 0 }} />
         </Row>

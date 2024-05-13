@@ -51,7 +51,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
           <InfoRow leftColumn={text.address} />
           <Hr style={{ ...hr, margin: 0, }} />
           <InfoTransfers transfer={data.transfer} lang="ru" />
-          <Hr style={hr} />
+          <Hr style={{ ...hr, margin: 0 }} />
           <InfoRow leftColumn={text.totalPrice} rightColumn={{}} />
           <Hr style={{ ...hr, margin: 0, }} />
         </Row>
