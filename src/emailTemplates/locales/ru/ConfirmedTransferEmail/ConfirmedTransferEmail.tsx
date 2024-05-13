@@ -1,4 +1,5 @@
 import {
+  Column,
   Heading,
   Hr,
   Img,
@@ -9,73 +10,111 @@ import {
 import React from "react";
 import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
-import { heading, hr, mainImg, nulling, paragraph } from "../../../styles/global";
+import {
+  bullet,
+  heading,
+  hr,
+  mainImg,
+  nulling,
+  paragraph,
+} from "../../../styles/global";
+import InfoTransfers from "../../../ui/InfoTransfers";
+import { textRu } from "../../../helpers/translate/translate";
 
 interface ConfirmedTransferEmailProps {
   data: ConfirmedTransferEmailData;
 }
 
-export const ConfirmedTransferEmail = ({ data }: ConfirmedTransferEmailProps) => {
-  const previewText = `Ваш заказ такси был успешно подтвержден.`;
+export const ConfirmedTransferEmail = ({
+  data,
+}: ConfirmedTransferEmailProps) => {
+  const previewText = `Ваш трансфер был успешно подтвержден.`;
   const { customerName } = data;
-
-
+  const text = textRu(data);
 
   return (
-    <DefaultEmail lang="ru" previewText={previewText} hostData={data.hostContacts}>
+    <DefaultEmail
+      lang="ru"
+      previewText={previewText}
+      hostData={data.hostContacts}
+    >
       <Section>
-        <Heading as="h2" style={{ ...heading, marginBottom: 20 }}>Ваш заказ такси подтвержден.</Heading>
+        <Heading as="h2" style={{ ...heading, marginBottom: 20 }}>
+          Ваш трансфер подтвержден
+        </Heading>
         <Row>
-          <div style={{ overflow: 'hidden' }}>
-            <Img src="https://media4.giphy.com/media/o3LUQmlpSX54N8tc9s/giphy.gif?cid=790b76110968b654391fa3042fcfa2bbbc9d07dfd91c9e2d&rid=giphy.gif&ct=g" style={mainImg} width={580} height={290} alt="" />
+          <div style={{ overflow: "hidden" }}>
+            <Img
+              src="https://media4.giphy.com/media/o3LUQmlpSX54N8tc9s/giphy.gif?cid=790b76110968b654391fa3042fcfa2bbbc9d07dfd91c9e2d&rid=giphy.gif&ct=g"
+              style={mainImg}
+              width={580}
+              height={290}
+              alt=""
+            />
           </div>
-          {data.transfer.from && (
-            <>
-              <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
-                Поездка
-              </Heading>
-              <InfoRow leftColumn={data.transfer.from} rightColumn={data.transfer.to} style={{ padding: '0 0 20px' }} />
-              <Hr style={hr} />
-            </>
-          )}
-          {!data.transfer.from && data.transfer.to && (
-            <>
-              <Heading as="h3" style={{ ...nulling, marginTop: 16, fontSize: 20, textAlign: 'center' }}>
-                Поездка
-              </Heading>
-              <InfoRow leftColumn={data.transfer.to} rightColumn={{}} style={{ padding: '0 0 20px' }} />
-              <Hr style={hr} />
-            </>
-          )}
-          <InfoRow leftColumn={data.totalPrice} rightColumn={{}} />
+          <InfoTransfers lang="ru" transfer={data.transfer} />
+          <Hr style={hr} />
+          <InfoRow leftColumn={text.totalPrice} rightColumn={{}} />
           <Hr style={hr} />
         </Row>
       </Section>
       <Section>
         <Row>
           <Text style={{ ...paragraph, fontWeight: "700" }}>
-            Здравствуйте {customerName},
+            Здравствуйте, {customerName},
           </Text>
-          <Text style={{ ...nulling, margin: '5px 0' }}>
-            Спасибо что выбрали нас. Мы стремимся обеспечить безупречный опыт от начала и до конца.
+          <Text style={{ ...nulling, margin: "5px 0" }}>
+            Мы искренне благодарим вас за выбор нашей компании. Наша цель -
+            обеспечить вам комфортную и быструю поездку, а также предоставить
+            высокий уровень сервиса.
           </Text>
-          <Text>
-            Ваша поездка включает:
-          </Text>
-          <Text>
-            - Встречу в аэропорту с персонализированой табличкой
-          </Text>
-          <Text>
-            - Все платные дороги
-          </Text>
-          <Text>
-            Пожалуйста, свяжитесь с нами, если у вас возникнут вопросы.
-          </Text>
+          <Text>Ваш трансфер включает в себя:</Text>
+        </Row>
+      </Section>
+      <Section cellSpacing={0} cellPadding={0}>
+        <Row align="center">
+          <Column width={20} align="center" valign="middle">
+            <div style={bullet}></div>
+          </Column>
+          <Column align="left" valign="middle">
+            <Text style={nulling}>
+              Встречу в аэропорту с персонализированной табличкой.
+            </Text>
+          </Column>
+        </Row>
+        <Row>
+          <Column width={20} align="center" valign="middle">
+            <div style={bullet}></div>
+          </Column>
+          <Column align="left" valign="middle">
+            <Text style={nulling}>Оплату всех платных дорог.</Text>
+          </Column>
+        </Row>
+        <Row>
+          <Column width={20} align="center" valign="middle">
+            <div style={bullet}></div>
+          </Column>
+          <Column align="left" valign="middle">
+            <Text style={nulling}>Помощь водителя с багажом.</Text>
+          </Column>
+        </Row>
+        <Row>
+          <Column width={20} align="center" valign="middle">
+            <div style={bullet}></div>
+          </Column>
+          <Column align="left" valign="middle">
+            <Text style={nulling}>Бутилированная вода.</Text>
+          </Column>
         </Row>
       </Section>
       <Section>
-        <Text style={nulling}>С уважением,</Text>
-        <Text style={nulling}>Команда AstayHome</Text>
+        <Row>
+          <Text>
+            Наш менеджер свяжется с вами и отправит данные о водителе и месте
+            встречи. Не стесняйтесь обращаться к нам, если у вас возникнут
+            вопросы или потребуется дополнительная информация.
+          </Text>
+        </Row>
       </Section>
     </DefaultEmail>
   );

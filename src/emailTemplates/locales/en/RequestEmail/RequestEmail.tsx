@@ -6,7 +6,7 @@ import {
 import React from "react";
 
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
-import { nulling, paragraph } from "../../../styles/global";
+import { paragraph } from "../../../styles/global";
 
 interface RequestEmailProps {
   data: RequestEmailData;
@@ -20,25 +20,17 @@ export const RequestEmail = ({ data: { customerName, hostContacts } }: RequestEm
       <Section>
         <Row>
           <Text style={{ ...paragraph, fontWeight: "700" }}>
-            Hi {customerName},
+            Hello, {customerName},
           </Text>
-          <div>
-            <Text>
-              Thank you for reaching out to our hotel!
-            </Text>
-            <Text>
-              We have received your request and appreciate your interest. Our manager will contact you shortly to discuss the details of your request and offer the best options.
-            </Text>
-            <Text>
-              We strive to provide our guests with a high level of service and comfort, and we look forward to the opportunity to make your stay with us enjoyable and memorable.
-            </Text>
-          </div>
+          <Text>
+            Thank you for reaching out to us!
+          </Text>
+          <Text>
+            We have received your inquiry and appreciate your interest. Our manager will contact you shortly to discuss all the details and offer the best options.
+          </Text>
         </Row>
       </Section>
-      <Section>
-        <Text style={nulling}>Best regards,</Text>
-        <Text style={nulling}>The AstayHome Team</Text>
-      </Section>
+
     </DefaultEmail>
   );
 };
