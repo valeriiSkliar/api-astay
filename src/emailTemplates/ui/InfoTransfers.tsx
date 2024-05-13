@@ -4,6 +4,7 @@ import {
 import React from "react";
 import { nulling } from "../styles/global";
 import InfoRow, { InfoData } from "./InfoRow";
+import getFormattedPrice from "../../utils/beautyfyPrice";
 
 interface InfoRowProps {
   transfer?: Transfer;
@@ -34,7 +35,7 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
   if (transfer.from && !transfer.to) {
     const from: InfoData = {
       title: t[locale].from,
-      text: transfer.from?.price || transfer.from?.date || '',
+      text: transfer.from?.price ? getFormattedPrice(transfer.from.price) : '',
     }
 
     return (
@@ -50,7 +51,7 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
   if (!transfer.from && transfer.to) {
     const to: InfoData = {
       title: t[locale].to,
-      text: transfer.to?.price || transfer.to?.date || '',
+      text: transfer?.to.price ? getFormattedPrice(transfer.to.price) : '',
     }
 
     return (
@@ -66,13 +67,13 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
 
     const from: InfoData = {
       title: t[locale].from,
-      text: transfer.from?.price || transfer.from?.date || '',
+      text: transfer.from?.price ? getFormattedPrice(transfer.from.price) : '',
     }
 
 
     const to: InfoData = {
       title: t[locale].to,
-      text: transfer.to?.price || transfer.to?.date || '',
+      text: transfer.to?.price ? getFormattedPrice(transfer.to.price) : '',
     }
 
     return (
