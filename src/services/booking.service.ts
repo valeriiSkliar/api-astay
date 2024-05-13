@@ -191,7 +191,16 @@ export class BookingService {
     message: string;
   }> {
     try {
-    const { name, email, phone, ...rest} = booking;
+    const { name, email, phone, customerId, ...rest} = booking;
+    const customer = await this.customerRepository.findById(customerId);
+    if (!customer) {
+      throw new Error('Customer not found');
+    }
+    await this.customerRepository.updateById(customerId, {
+      name: name || customer.name,
+      email: email || customer.email,
+      phone: phone || customer.phone
+    });
     if (!id) {
       throw new Error('Booking ID is required');
     }
@@ -199,7 +208,10 @@ export class BookingService {
 
       const updatedBookingData: Booking = {
         ...prevBooking,
-        ...rest
+        ...rest,
+        phoneNumber: phone,
+        name,
+        email,
       } as Booking;
 
       await this.updateById(id, updatedBookingData);

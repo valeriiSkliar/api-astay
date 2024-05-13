@@ -22,12 +22,12 @@ interface Transfer {
   to?: To;
 }
 
-interface From {
+interface From extends Partial<Transfer> {
   price?: string;
   date?: string;
 }
 
-interface To {
+interface To extends Partial<Transfer> {
   price?: string;
   date?: string;
 }

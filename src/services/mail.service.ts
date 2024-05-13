@@ -4,14 +4,7 @@ import {MailInterface} from '../interfaces/mailInterface';
 import {emailConfig} from '../datasources/nodemailer.config';
 import {RenderMailTemplateService} from './render-mail-template.service';
 import {HostContactsService} from './host-contacts.service';
-import {Html, render} from '@react-email/components';
-import {
-  ConfirmedBookingEmail,
-  ConfirmedPayEmail,
-  ConfirmedTransferEmail,
-  LeaveReviewEmail,
-  RequestEmail,
-} from '../emailTemplates/locales/en';
+import { render} from '@react-email/components';
 import {repository} from '@loopback/repository';
 import {
   ApartmentRepository,
@@ -21,7 +14,6 @@ import {
 } from '../repositories';
 import {Booking, BookingRelations, Customer, RoomCategory} from '../models';
 import {TransferService} from './transfer.service';
-import {formatDate} from '../emailTemplates/helpers/formatDate';
 import getFormattedPrice from '../utils/beautyfyPrice';
 import * as defaultTemplates from '../emailTemplates/locales/en';
 import * as ruTemplates from '../emailTemplates/locales/ru';
@@ -270,6 +262,13 @@ export class MailService {
       guests: number;
       rooms: number;
     };
+    const transferData = booking?.transfers ? this.transferService.convertTransferArrayToObject(
+      booking?.transfers,
+    ) as {from: From; to: To}
+    : {
+      from: undefined,
+      to: undefined,
+    };
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: ConfirmedPayEmailData = {
       checkIn: booking.checkIn,
@@ -284,11 +283,14 @@ export class MailService {
       address: locationDetails?.translations?.[locale]?.address || '',
       guests: guests.guests,
       rooms: guests.rooms,
-
+      // booking price  + transfers price
       totalPrice: getFormattedPrice(booking.price),
-      // add transfer
-
+      transfer: {
+        from: {date: transferData.from?.date} || undefined,
+        to: {date:transferData.to?.date} || undefined,
+      },
     };
+    console.log(render(EmailTemplate({data: dataForEmail})))
     this.sendEmail({
       to: customer.email,
       from: `"AstayHome" support@astayhome.com`,

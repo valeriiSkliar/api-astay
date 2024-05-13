@@ -1,5 +1,3 @@
-// Uncomment these imports to begin using these cool features!
-
 import {inject, service} from '@loopback/core';
 import {CustomerRepository} from '../repositories';
 import {repository} from '@loopback/repository';
