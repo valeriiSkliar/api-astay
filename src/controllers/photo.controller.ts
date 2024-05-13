@@ -79,7 +79,6 @@ export class PhotoController {
       order: filter?.order ?? ['order_number ASC'],
     };
     const photos = await this.photoRepository.find(filter);
-    console.log(photos);
     return photos;
   }
 

@@ -90,7 +90,7 @@ export class TransferController {
 
       if (!newTransfer) throw new Error('Transfer could not be created');
 
-      await this.mailService.sendTransferRequestEmail({customerName, email});
+      await this.mailService.sendTransferRequestEmail({customerName, email, locale});
 
       return {
         message: 'Transfer created successfully',

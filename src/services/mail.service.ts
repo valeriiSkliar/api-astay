@@ -12,7 +12,6 @@ import {
   LeaveReviewEmail,
   RequestEmail,
 } from '../emailTemplates/locales/en';
-import {ConfirmedBookingEmailProps} from '../emailTemplates/locales/en/ConfirmedBookingEmail/ConfirmedBookingEmail';
 import {repository} from '@loopback/repository';
 import {
   ApartmentRepository,
@@ -21,14 +20,18 @@ import {
   RoomCategoryRepository,
 } from '../repositories';
 import {Booking, BookingRelations, Customer, RoomCategory} from '../models';
-import {title} from 'process';
-import {text} from 'stream/consumers';
 import {TransferService} from './transfer.service';
 import {formatDate} from '../emailTemplates/helpers/formatDate';
 import getFormattedPrice from '../utils/beautyfyPrice';
+import * as defaultTemplates from '../emailTemplates/locales/en';
+import * as ruTemplates from '../emailTemplates/locales/ru';
+
 @injectable({scope: BindingScope.SINGLETON})
 export class MailService {
   private transporter: nodemailer.Transporter;
+  // private templates: {[key: string]: Html};
+  private templates: {[key: string]: any};
+
 
   constructor(
     @service(RenderMailTemplateService)
@@ -44,6 +47,10 @@ export class MailService {
     @service(TransferService) private transferService: TransferService,
   ) {
     this.transporter = nodemailer.createTransport(emailConfig);
+    this.templates = {
+      en: defaultTemplates,
+      ru: ruTemplates
+  };
   }
 
   /**
@@ -63,6 +70,9 @@ export class MailService {
     }
   }
 
+  private getTemplate(locale: string, templateType: string) {
+    return this.templates[locale][templateType];
+}
   /**
    * Send an email when a booking request is received
    * @param option MailInterface containing email options
@@ -81,70 +91,55 @@ export class MailService {
       include: ['room_type', 'roomCategory', 'images', 'locationDetails'],
     });
     if (apartmentData) {
-      const {roomCategory, images, locationDetails} = apartmentData;
+      const { images, translations} = apartmentData;
+      const {locale} = newBooking;
+      const emailSubject = (locale || 'en') === 'en'
+      ? 'We have received your reservation request. We will contact you soon. AstayHome'
+      : 'Мы получили ваш запрос на бронирование. Мы свяжемся с вами в ближайшее время. AstayHome';
+      const EmailTemplate = this.getTemplate(locale, 'ConfirmedBookingEmail');
 
+      const { en } = translations as { en: any };
       const dataForEmail: ConfirmedBookingEmailData = {
+        apartmentName: en?.name || 'Apartment',
         customerName: customer.name,
-        img: images[0]?.url,
-        roomCategory: roomCategory.translations.en.category,
-        location: {
-          city: locationDetails.translations.en.city,
-          country: locationDetails.translations.en.country,
-        },
-        guests: {
-          title: 'Guests',
-          text: newBooking.guests.guests,
-        },
-        rooms: {
-          title: 'Rooms',
-          text: newBooking.guests.rooms,
-        },
+        img: images[0]?.url, // add  default image,
+        guests: newBooking.guests.guests,
+        rooms: newBooking.guests.rooms,
         checkIn: newBooking.checkIn,
         checkOut: newBooking.checkOut,
         transfer: {
-          from: {
-            title: 'From',
-            text: formatDate(
-              new Date(transferData.from.date).toISOString(),
-              'en',
-              true,
-            ),
-          },
-          to: {
-            title: 'To',
-            text: formatDate(
-              new Date(transferData.to.date).toISOString(),
-              'en',
-              true,
-            ),
-          },
+          from: transferData.from,
+          to: transferData.to,
         },
         hostContacts: hostData,
       };
 
-      // TODO: FIX NULL POINTER FOR TRANSFERS
 
       this.sendEmail({
         to: customer.email,
         from: `"AstayHome" support@astayhome.com`,
-        subject: 'Booking Request',
-        html: render(ConfirmedBookingEmail({data: dataForEmail})),
+        subject: emailSubject,
+        html: render(EmailTemplate({data: dataForEmail})),
       });
     }
   }
 
-  async sendSubmitedFormEmail({email, name}: {email: string; name: string}) {
+  async sendSubmitedFormEmail({email, name, locale = 'en'}: {email: string; name: string, locale: string}) {
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: RequestEmailData = {
       customerName: name,
       hostContacts: hostContacts,
     };
+    const emailSubject = locale === 'en'
+      ? 'We have received your application, thank you! AstayHome Team'
+      : 'Мы получили вашу заявку, спасибо! AstayHome Team';
+    const EmailTemplate = this.getTemplate(locale || 'en', 'RequestEmail');
 
     this.sendEmail({
       to: email,
       from: `"AstayHome" support@astayhome.com`,
       subject: 'AstayHome Form Request',
-      html: render(RequestEmail({data: dataForEmail})),
+      html: render(EmailTemplate({data: dataForEmail})),
     });
   }
 
@@ -160,9 +155,7 @@ export class MailService {
             relation: 'apartment',
             scope: {
               include: [
-                {relation: 'roomCategory'},
                 {relation: 'images'},
-                {relation: 'locationDetails'},
               ],
             },
           },
@@ -180,35 +173,46 @@ export class MailService {
         'Invalid review token. No any related apartment or customer found',
       );
     }
+    const locale = customer.locale;
+    const bookingLocale = booking.locale;
+
+    const EmailTemplate = this.getTemplate(
+      bookingLocale || locale || 'en',
+      'LeaveReviewEmail');
+    const emailSubject = (locale || bookingLocale || 'en') === 'en'
+      ? 'Leave a review about your stay in AstayHome!'
+      : 'Оставьте отзыв о вашем проживании в AstayHome!';
     const dataForEmail: LeaveReviewEmailData = {
       customerName: customer.name,
       reviewLink: booking?.reviewUrl || '',
-      img: apartment.images[0]?.url,
-      roomCategory: apartment.roomCategory.translations.en.category,
-      location: {
-        city: apartment.locationDetails.translations.en.city,
-        country: apartment.locationDetails.translations.en.country,
-      },
+      img: apartment.images[0]?.url, // add default image
+      apartmentName: apartment.translations?.[locale || 'en'|| bookingLocale]?.name || 'Apartment',
       hostContacts: hostContacts,
     };
     this.sendEmail({
       to: customer.email,
       from: `"AstayHome" support@astayhome.com`,
-      subject: 'Leave a Review - AstayHome',
-      html: render(LeaveReviewEmail({data: dataForEmail})),
+      subject: emailSubject,
+      html: render(EmailTemplate({data: dataForEmail})),
     });
   }
 
   async sendTransferRequestEmail({
     email,
     customerName,
+    locale,
   }: {
     email: string;
     customerName: string;
+    locale: string;
   }): Promise<void> {
     if (!email) {
       throw new Error('Request email address not found! Can not send email');
     }
+    const EmailTemplate = this.getTemplate(locale, 'RequestEmail');
+    const emailSubject = locale === 'en'
+      ? 'Confirmation of receipt of the transfer application. AstayHome!'
+      : 'Подтверждение приема заявки на трансфер. AstayHome!';
 
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: RequestEmailData = {
@@ -219,8 +223,8 @@ export class MailService {
     this.sendEmail({
       to: email,
       from: `"AstayHome" support@astayhome.com`,
-      subject: 'AstayHome Transfer Request',
-      html: render(RequestEmail({data: dataForEmail})),
+      subject: emailSubject,
+      html: render(EmailTemplate({data: dataForEmail})),
     });
   }
 
@@ -230,7 +234,7 @@ export class MailService {
         'No booking provided for confirmed pay email. Can not send email',
       );
     }
-    const {token} = booking;
+    const {token, locale} = booking;
     if (!token) {
       throw new Error(
         'No token provided for confirmed pay email. Can not send email',
@@ -253,11 +257,11 @@ export class MailService {
         'Invalid booking token. No any related apartment or customer found',
       );
     }
+    const emailSubject = locale === 'en' ? 'Booking payment confirmation' : 'Подтверждение оплаты бронирования';
+    const EmailTemplate = this.getTemplate(locale, 'ConfirmedPayEmail');
     const {
-      roomCategory,
       images,
       locationDetails,
-      in_complex,
       wifiPassword,
       apartmentPassword,
     } = apartment;
@@ -270,36 +274,27 @@ export class MailService {
     const dataForEmail: ConfirmedPayEmailData = {
       checkIn: booking.checkIn,
       checkOut: booking.checkOut,
-      roomCategory: roomCategory.translations.en.category,
-      img: images[0]?.url, // TODO: add default image
-      location: {
-        city: locationDetails.translations.en.city,
-        country: locationDetails.translations.en.country,
-      },
+      img: images[0]?.url || process.env.DEFAULT_APARTMENT_IMAGE,
       wifiPassword: wifiPassword || '',
       apartmentPassword: apartmentPassword || '',
       hostContacts: hostContacts,
-      infoBox: {
-        guests: {
-          title: 'Guests',
-          text: `${guests.guests}`,
-        },
-        address: {
-          title: 'Address',
-          text: `${in_complex?.translations?.en?.address}`,
-        },
-        totalPrice: {
-          title: 'Total Price',
-          text: `${getFormattedPrice(booking.price)}`,
-        },
-        // add transfer
-      },
+      customerName: customer.name,
+      apartmentId: apartment.id,
+      apartmentName: apartment.translations?.[locale]?.name,
+      address: locationDetails?.translations?.[locale]?.address || '',
+      guests: guests.guests,
+      rooms: guests.rooms,
+
+      totalPrice: getFormattedPrice(booking.price),
+      // add transfer
+
     };
     this.sendEmail({
       to: customer.email,
       from: `"AstayHome" support@astayhome.com`,
-      subject: `Confirm Pay for booking #${booking.id} - AstayHome`,
-      html: render(ConfirmedPayEmail({data: dataForEmail})),
+      subject: `${emailSubject} #${booking.id} - AstayHome`,
+      html: render(EmailTemplate({data: dataForEmail})),
     });
   }
 }
+

@@ -97,7 +97,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
             {data.apartmentPassword && (
               <Text>
                 Your door access code is{" "}
-                <span style={textAccent}>(access code)</span>. It will be active
+                <span style={textAccent}>({data.apartmentPassword})</span>. It will be active
                 from the time of check-in.
               </Text>
             )}
@@ -105,7 +105,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
             {data.wifiPassword && (
               <Text>
                 The wi-fi password is{" "}
-                <span style={textAccent}>(wi-fi password)</span>.
+                <span style={textAccent}>({data.wifiPassword})</span>.
               </Text>
             )}
 

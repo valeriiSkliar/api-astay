@@ -84,7 +84,7 @@ export class ApplicationController {
     // };
 
     try {
-      const {type, pageLink, name, email, phone} = contactData;
+      const {type, pageLink, name, email, phone, locale = 'en'} = contactData;
 
       // Validation logic based on form type
       if (
@@ -111,6 +111,7 @@ export class ApplicationController {
         await this.mailService.sendSubmitedFormEmail({
           email: application.email,
           name: application.name,
+          locale,
         });
       } else {
         throw new Error('Error creating application');

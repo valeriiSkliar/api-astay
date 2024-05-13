@@ -1,6 +1,6 @@
 export function formatDate(
   date?: string,
-  locale: Intl.LocalesArgument = "en",
+  locale: string | string[] | undefined = "en",
   showWeekDay = false,
 ) {
   if (!date) return "";
@@ -23,3 +23,4 @@ export function formatDate(
 export function ruFormatDate(date?: string, showWeekDay = false) {
   return formatDate(date, "ru", showWeekDay).replace(" г.", "");
 }
+

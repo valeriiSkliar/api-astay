@@ -103,6 +103,7 @@ export class BookingService {
         priceOfBooking,
         discountFromApartment,
         token,
+        locale,
         tokenReview,
         paymentUrl,
       };
