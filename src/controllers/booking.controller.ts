@@ -32,7 +32,7 @@ import {
   HostContactsRepository,
   TransferRepository,
 } from '../repositories';
-import {inject, service} from '@loopback/core';
+import {BindingScope, inject, injectable, service} from '@loopback/core';
 import bcrypt from 'bcrypt';
 import {
   BookingService,
@@ -44,6 +44,7 @@ import {BookingResponse} from '../types';
 import {authenticate} from '@loopback/authentication';
 import {format, isAfter, isBefore} from 'date-fns';
 
+@injectable({scope: BindingScope.TRANSIENT})
 export class BookingController {
   constructor(
     @repository(BookingRepository)
@@ -339,6 +340,7 @@ export class BookingController {
           token: booking.reviewToken,
           isArchived: false,
         },
+        include: [{relation: 'customer'}, {relation: 'transfers'}, {relation: 'apartment'}],
       });
       if (!currentBooking) {
         throw new Error('Invalid booking id or token');

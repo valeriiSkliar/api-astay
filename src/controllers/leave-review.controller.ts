@@ -7,7 +7,7 @@ import {
 } from '@loopback/rest';
 import {Review} from '../models';
 import {IsolationLevel, Transaction, repository} from '@loopback/repository';
-import {ApartmentRepository, ReviewRepository} from '../repositories';
+import {ApartmentRepository, BookingRepository, ReviewRepository} from '../repositories';
 import {BookingService, MailService, ReviewService} from '../services';
 import {service} from '@loopback/core';
 import Mail from 'nodemailer/lib/mailer';
@@ -21,6 +21,7 @@ export class LeaveReviewController {
     @service(MailService) private mailService: MailService,
     @repository(ApartmentRepository)
     private apartmentRepository: ApartmentRepository,
+    @repository( BookingRepository) private bookingRepository: BookingRepository,
   ) {}
 
   @post('/api/reviews/customer-leave-review')
@@ -158,6 +159,15 @@ export class LeaveReviewController {
       if (!tokenReview) {
         throw new Error('Token for review is required');
       }
+      const bookingToReview = await this.bookingRepository.findOne({
+        where: {
+          tokenReview,
+        },
+      })
+      if (!bookingToReview) {
+        throw new Error('No booking found for the provided token');
+      }
+      
       await this.mailService.sendLeaveReviewEmail(tokenReview);
 
       return {status: 'success', message: 'Review link sent successfully'};

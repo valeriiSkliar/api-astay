@@ -1,12 +1,12 @@
-import {injectable, /* inject, */ BindingScope, service} from '@loopback/core';
-import {IsolationLevel, Transaction, repository} from '@loopback/repository';
+import {injectable, /* inject, */ BindingScope, service, inject} from '@loopback/core';
+import {DataObject, EntityNotFoundError, IsolationLevel, Transaction, repository} from '@loopback/repository';
 import {
   ApartmentRepository,
   BookingRepository,
   CustomerRepository,
   TransferRepository,
 } from '../repositories';
-import {Apartment, Booking, Customer} from '../models';
+import {Apartment, Booking, BookingRelations, Customer} from '../models';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import bcrypt from 'bcrypt';
@@ -14,6 +14,7 @@ import {TransferService} from './transfer.service';
 import {format, compareAsc, differenceInDays} from 'date-fns';
 import {ApartmentService} from './apartment.service';
 import {DateTimeService} from './date-time.service';
+
 
 dayjs.extend(utc);
 
@@ -182,6 +183,90 @@ export class BookingService {
   private generateReviewUrl(token: string): string {
     return `${process.env.FRONTEND_URL}/apartment/leave-review?token=${token}`;
   }
+
+  public async editBooking (id: number, booking: Partial<Booking>): Promise<{
+    status: string;
+    booking: Partial<Booking>;
+    message: string;
+  }> {
+    try {
+    const { name, email, phone, ...rest} = booking;
+    if (!id) {
+      throw new Error('Booking ID is required');
+    }
+    const prevBooking = await this.bookingRepository.findById(id);
+
+      const updatedBookingData: Booking = {
+        ...prevBooking,
+        ...rest
+      } as Booking;
+
+      await this.updateById(id, updatedBookingData);
+
+      const bookingNext = await this.bookingRepository.findById(id, {
+        include: [
+          {relation: 'apartment'},
+          {relation: 'customer'},
+          {relation: 'transfers'},]
+      });
+
+      return {
+        status: 'success',
+        booking: bookingNext,
+        message: 'Booking updated successfully'
+      }
+    } catch (error) {
+      throw new Error(error.message);
+    }
+
+  }
+
+  public async updateById(id: number, booking: Booking): Promise<Booking> {
+    let bookingData;
+    try {
+        bookingData = await this.bookingRepository.findById(id);
+        if (!bookingData) {
+            throw new EntityNotFoundError(Booking, id);
+        }
+
+        if (!booking.status) {
+            throw new Error('Booking status is required');
+        }
+
+        const { normalizeDate } = this.dateTimeService.validateDatesCheckInCheckOutDates(
+            booking.checkIn,
+            booking.checkOut
+        );
+
+        booking.checkIn = normalizeDate.checkIn;
+        booking.checkOut = normalizeDate.checkOut;
+
+        const isApartmentExist = await this.isApartmentExist(booking.apartmentId);
+        if (!isApartmentExist) {
+            throw new Error('Apartment does not exist');
+        }
+
+        const updatedBooking = await this.handleBookingStatus({ ...bookingData, ...booking });
+        await this.bookingRepository.updateById(id, updatedBooking);
+
+        const updatedBookings = await this.bookingRepository.find({
+            include: [
+                { relation: 'customer' },
+                { relation: 'transfers', scope: { where: { isArchived: false } } },
+                { relation: 'apartment' },
+            ],
+        });
+
+        if (!updatedBookings.length) {
+            throw new Error('Booking not found after update');
+        }
+
+        return updatedBookings[0];
+    } catch (error) {
+        throw new Error('Error updating booking: ' + error.message);
+    }
+}
+
   constructor(
     @repository('BookingRepository')
     public bookingRepository: BookingRepository,
@@ -249,7 +334,6 @@ export class BookingService {
       booking,
       bookingDates,
     );
-
 
     return {
       ...booking,

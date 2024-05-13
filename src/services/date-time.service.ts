@@ -20,25 +20,26 @@ export class DateTimeService {
   public validateDatesCheckInCheckOutDates(
     checkIn: string | undefined,
     checkOut: string | undefined,
-  ) {
+) {
     if (!checkIn || !checkOut) {
-      throw new Error('Invalid dates. CheckIn and CheckOut dates are required');
+        throw new Error('Invalid dates. CheckIn and CheckOut dates are required');
     }
 
-    if (
-      isBefore(new Date(), checkIn) &&
-      isAfter(checkOut, new Date()) &&
-      isBefore(checkIn, checkOut)
-    ) {
-      return {
-        normalizeDate: {
-          checkIn: this.normalizeDate(checkIn),
-          checkOut: this.normalizeDate(checkOut),
-        },
-      };
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    if (isBefore(new Date(), checkInDate) && isAfter(checkOutDate, new Date()) && isBefore(checkInDate, checkOutDate)) {
+        return {
+            normalizeDate: {
+                checkIn: this.normalizeDate(checkIn),
+                checkOut: this.normalizeDate(checkOut),
+            },
+        };
+    } else {
+        throw new Error('Invalid date range. Check-in must be before check-out and both should be in the future.');
     }
-    throw new Error('Invalid dates range');
-  }
+}
+
 
   public getPeriod(start: Date, end: Date) {}
 
