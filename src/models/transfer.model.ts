@@ -77,6 +77,7 @@ export class Transfer extends Entity {
   @property({
     type: 'string',
     required: false,
+    default: '00:00:00',
   })
   time?: string;
 
@@ -86,12 +87,6 @@ export class Transfer extends Entity {
     default: '',
   })
   notes?: string;
-
-  @property({
-    type: 'string',
-    required: false,
-  })
-  comments?: string;
 
   @property({
     type: 'boolean',

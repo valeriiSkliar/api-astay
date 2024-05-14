@@ -113,7 +113,7 @@ export class TransferController {
     return this.transferRepository.count(where);
   }
 
-  // @authenticate('jwt')
+  @authenticate('jwt')
   @get('/api/transfers')
   @response(200, {
     description: 'Array of Transfer model instances',
@@ -132,7 +132,7 @@ export class TransferController {
     return this.transferRepository.find(filter);
   }
 
-  // @authenticate('jwt')
+  @authenticate('jwt')
   @patch('/api/transfers')
   @response(200, {
     description: 'Transfer PATCH success count',
@@ -151,7 +151,7 @@ export class TransferController {
   ): Promise<Count> {
     return this.transferRepository.updateAll(transfer, where);
   }
-  // @authenticate('jwt')
+  @authenticate('jwt')
   @get('/api/transfers/{id}')
   @response(200, {
     description: 'Transfer model instance',
@@ -168,7 +168,7 @@ export class TransferController {
   ): Promise<Transfer> {
     return this.transferRepository.findById(id, filter);
   }
-  // @authenticate('jwt')
+  @authenticate('jwt')
   @patch('/api/transfers/{id}')
   @response(204, {
     description: 'Transfer PATCH success',
@@ -184,7 +184,7 @@ export class TransferController {
     })
     transfer: Partial<Transfer>,
   ): Promise<{message: string; status: number; transfer: Transfer | null}> {
-    const {date, ...transferData} = transfer;
+    const {date, customer, ...transferData} = transfer;
     if (!date) {
       return {
         message: 'Date is required',
