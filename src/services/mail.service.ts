@@ -17,11 +17,10 @@ import {TransferService} from './transfer.service';
 import getFormattedPrice from '../utils/beautyfyPrice';
 import * as defaultTemplates from '../emailTemplates/locales/en';
 import * as ruTemplates from '../emailTemplates/locales/ru';
-
+import { Transfer  as TransferModel } from '../models';
 @injectable({scope: BindingScope.SINGLETON})
 export class MailService {
   private transporter: nodemailer.Transporter;
-  // private templates: {[key: string]: Html};
   private templates: {[key: string]: any};
 
 
@@ -287,7 +286,6 @@ export class MailService {
       apartmentId: apartment.id,
       apartmentName: apartment.translations?.[locale]?.name,
       address: hostContacts.address || '',
-      // workingHours: locationDetails?.workingHours || '',
       guests: guests.guests,
       rooms: guests.rooms,
       totalPrice: getFormattedPrice(totalPrice),
@@ -296,13 +294,58 @@ export class MailService {
         to: {price:transferData.to?.price} ,
       },
     };
-    console.log(render(EmailTemplate({data: dataForEmail})))
     this.sendEmail({
       to: customer.email,
       from: `"AstayHome" support@astayhome.com`,
       subject: `${emailSubject} #${booking.id} - AstayHome`,
       html: render(EmailTemplate({data: dataForEmail})),
     });
+  }
+
+  async sendTransferConfirmationEmail(transfer: TransferModel) {
+    if (!transfer) {
+      throw new Error(
+        'No transfer provided for transfer confirmation email. Can not send email',
+      );
+    }
+    const hostContacts = await this.hostContactsService.getHostContacts();
+    if (!hostContacts) {
+      throw new Error(
+        'No host contacts provided for transfer confirmation email. Can not send email',
+      );
+    }
+    const {locale, customer, ...transferData} = transfer;
+    if (!customer) {
+      throw new Error(
+        'No customer provided for transfer confirmation email. Can not send email',
+      );
+    }
+    if (!transferData || !transferData.price) {
+      throw new Error(
+        'No transfer data or transfer price provided for transfer confirmation email. Can not send email',
+      );
+    }
+
+    const formToObject = {
+      from: transferData.type === 'arrival' ? {price: transferData.price} : undefined,
+      to: transferData.type === 'departure' ? {price: transferData.price} : undefined,
+    }
+    const emailSubject = locale === 'en' ? 'Transfer confirmation' : 'Подтверждение трансфера';
+    const EmailTemplate = this.getTemplate(locale || 'en', 'ConfirmedTransferEmail');
+    const dataForEmail: ConfirmedTransferEmailData= {
+      customerName: customer.name,
+      hostContacts: hostContacts,
+      transfer: formToObject,
+      totalPrice: String(transferData.price),
+    }
+    const info = await this.sendEmail({
+      to: customer.email,
+      from: `"AstayHome" support@astayhome.com`,
+      subject: `${emailSubject} #${transfer.id} - AstayHome`,
+      html: render(EmailTemplate({data: dataForEmail})),
+    });
+
+    // console.log(info);
   }
 }
 

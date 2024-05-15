@@ -22,7 +22,6 @@ import {CustomerRepository, TransferRepository} from '../repositories';
 import {service} from '@loopback/core';
 import {DateTimeService, MailService} from '../services';
 import {authenticate} from '@loopback/authentication';
-import {format} from 'date-fns';
 
 export class TransferController {
   constructor(
@@ -206,7 +205,7 @@ export class TransferController {
       transfer: uptated,
     };
   }
-  // @authenticate('jwt')
+  @authenticate('jwt')
   @put('/api/transfers/{id}')
   @response(204, {
     description: 'Transfer PUT success',
@@ -218,7 +217,7 @@ export class TransferController {
     await this.transferRepository.replaceById(id, transfer);
   }
 
-  // @authenticate('jwt')
+  @authenticate('jwt')
   @del('/api/transfers/{id}')
   @response(204, {
     description: 'Transfer DELETE success',
@@ -226,4 +225,39 @@ export class TransferController {
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.transferRepository.deleteById(id);
   }
+
+  @authenticate('jwt')
+  @post('/api/confirm-transfer/{id}')
+  async confirmTransfer(
+    @param.path.number('id') id: number,
+  ): Promise<{message: string; status: number}> {
+    const transfer = await this.transferRepository.findById(id, {
+      include: [
+        {
+          relation: 'customer',
+        }
+      ]
+    });
+    if (!transfer) {
+      return {
+        message: 'Transfer not found',
+        status: 404,
+      };
+    }
+
+    try {
+      await this.mailService.sendTransferConfirmationEmail(transfer);
+    } catch (error) {
+      return {
+        message: 'Transfer could not be confirmed ' + error.message,
+        status: 400,
+      };
+    }
+
+    return {
+      message: 'Transfer confirmation email sent successfully',
+      status: 200,
+    };
+  }
+    // const updated = await this.transferRepository.updateById(id, {
 }
