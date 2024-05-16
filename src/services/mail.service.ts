@@ -18,6 +18,7 @@ import getFormattedPrice from '../utils/beautyfyPrice';
 import * as defaultTemplates from '../emailTemplates/locales/en';
 import * as ruTemplates from '../emailTemplates/locales/ru';
 import { Transfer  as TransferModel } from '../models';
+import {get} from 'http';
 @injectable({scope: BindingScope.SINGLETON})
 export class MailService {
   private transporter: nodemailer.Transporter;
@@ -336,7 +337,7 @@ export class MailService {
       customerName: customer.name,
       hostContacts: hostContacts,
       transfer: formToObject,
-      totalPrice: String(transferData.price),
+      totalPrice: getFormattedPrice(transferData.price),
     }
     const info = await this.sendEmail({
       to: customer.email,
