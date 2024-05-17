@@ -4,7 +4,7 @@ import {MailInterface} from '../interfaces/mailInterface';
 import {emailConfig} from '../datasources/nodemailer.config';
 import {RenderMailTemplateService} from './render-mail-template.service';
 import {HostContactsService} from './host-contacts.service';
-import { render} from '@react-email/components';
+import {render} from '@react-email/components';
 import {repository} from '@loopback/repository';
 import {
   ApartmentRepository,
@@ -17,13 +17,12 @@ import {TransferService} from './transfer.service';
 import getFormattedPrice from '../utils/beautyfyPrice';
 import * as defaultTemplates from '../emailTemplates/locales/en';
 import * as ruTemplates from '../emailTemplates/locales/ru';
-import { Transfer  as TransferModel } from '../models';
+import {Transfer as TransferModel} from '../models';
 import {get} from 'http';
 @injectable({scope: BindingScope.SINGLETON})
 export class MailService {
   private transporter: nodemailer.Transporter;
   private templates: {[key: string]: any};
-
 
   constructor(
     @service(RenderMailTemplateService)
@@ -41,8 +40,8 @@ export class MailService {
     this.transporter = nodemailer.createTransport(emailConfig);
     this.templates = {
       en: defaultTemplates,
-      ru: ruTemplates
-  };
+      ru: ruTemplates,
+    };
   }
 
   /**
@@ -64,7 +63,7 @@ export class MailService {
 
   private getTemplate(locale: string, templateType: string) {
     return this.templates[locale][templateType];
-}
+  }
   /**
    * Send an email when a booking request is received
    * @param option MailInterface containing email options
@@ -83,18 +82,21 @@ export class MailService {
       include: ['room_type', 'roomCategory', 'images', 'locationDetails'],
     });
     if (apartmentData) {
-      const { images, translations} = apartmentData;
+      const {images, translations} = apartmentData;
       const {locale} = newBooking;
-      const emailSubject = (locale || 'en') === 'en'
-      ? 'We have received your reservation request. We will contact you soon. AstayHome'
-      : 'Мы получили ваш запрос на бронирование. Мы свяжемся с вами в ближайшее время. AstayHome';
+      const emailSubject =
+        (locale || 'en') === 'en'
+          ? 'We have received your reservation request. We will contact you soon. AstayHome'
+          : 'Мы получили ваш запрос на бронирование. Мы свяжемся с вами в ближайшее время. AstayHome';
       const EmailTemplate = this.getTemplate(locale, 'ConfirmedBookingEmail');
 
-      const { en } = translations as { en: any };
+      const {en} = translations as {en: any};
       const dataForEmail: ConfirmedBookingEmailData = {
         apartmentName: en?.name || 'Apartment',
         customerName: customer.name,
-        img: images[0]?.url, // add  default image,
+        img: encodeURI(
+          images[0]?.url || 'https://astayhome.com/foto-not-found',
+        ), // add  default image,
         guests: newBooking.guests.guests,
         rooms: newBooking.guests.rooms,
         checkIn: newBooking.checkIn,
@@ -106,7 +108,6 @@ export class MailService {
         hostContacts: hostData,
       };
 
-
       this.sendEmail({
         to: customer.email,
         from: `"AstayHome" support@astayhome.com`,
@@ -116,15 +117,24 @@ export class MailService {
     }
   }
 
-  async sendSubmitedFormEmail({email, name, locale = 'en'}: {email: string; name: string, locale: string}) {
+  async sendSubmitedFormEmail({
+    email,
+    name,
+    locale = 'en',
+  }: {
+    email: string;
+    name: string;
+    locale: string;
+  }) {
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: RequestEmailData = {
       customerName: name,
       hostContacts: hostContacts,
     };
-    const emailSubject = locale === 'en'
-      ? 'We have received your application, thank you! AstayHome Team'
-      : 'Мы получили вашу заявку, спасибо! AstayHome Team';
+    const emailSubject =
+      locale === 'en'
+        ? 'We have received your application, thank you! AstayHome Team'
+        : 'Мы получили вашу заявку, спасибо! AstayHome Team';
     const EmailTemplate = this.getTemplate(locale || 'en', 'RequestEmail');
 
     this.sendEmail({
@@ -146,9 +156,7 @@ export class MailService {
           {
             relation: 'apartment',
             scope: {
-              include: [
-                {relation: 'images'},
-              ],
+              include: [{relation: 'images'}],
             },
           },
           {relation: 'customer'},
@@ -170,15 +178,21 @@ export class MailService {
 
     const EmailTemplate = this.getTemplate(
       bookingLocale || locale || 'en',
-      'LeaveReviewEmail');
-    const emailSubject = (locale || bookingLocale || 'en') === 'en'
-      ? 'Leave a review about your stay in AstayHome!'
-      : 'Оставьте отзыв о вашем проживании в AstayHome!';
+      'LeaveReviewEmail',
+    );
+    const emailSubject =
+      (locale || bookingLocale || 'en') === 'en'
+        ? 'Leave a review about your stay in AstayHome!'
+        : 'Оставьте отзыв о вашем проживании в AstayHome!';
     const dataForEmail: LeaveReviewEmailData = {
       customerName: customer.name,
       reviewLink: booking?.reviewUrl || '',
-      img: apartment.images[0]?.url, // add default image
-      apartmentName: apartment.translations?.[locale || 'en'|| bookingLocale]?.name || 'Apartment',
+      img: encodeURI(
+        apartment.images[0]?.url || 'https://astayhome.com/foto-not-found',
+      ), // add default image
+      apartmentName:
+        apartment.translations?.[locale || 'en' || bookingLocale]?.name ||
+        'Apartment',
       hostContacts: hostContacts,
     };
     this.sendEmail({
@@ -202,9 +216,10 @@ export class MailService {
       throw new Error('Request email address not found! Can not send email');
     }
     const EmailTemplate = this.getTemplate(locale, 'RequestEmail');
-    const emailSubject = locale === 'en'
-      ? 'Confirmation of receipt of the transfer application. AstayHome!'
-      : 'Подтверждение приема заявки на трансфер. AstayHome!';
+    const emailSubject =
+      locale === 'en'
+        ? 'Confirmation of receipt of the transfer application. AstayHome!'
+        : 'Подтверждение приема заявки на трансфер. AstayHome!';
 
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: RequestEmailData = {
@@ -249,37 +264,39 @@ export class MailService {
         'Invalid booking token. No any related apartment or customer found',
       );
     }
-    const emailSubject = locale === 'en' ? 'Booking payment confirmation' : 'Подтверждение оплаты бронирования';
+    const emailSubject =
+      locale === 'en'
+        ? 'Booking payment confirmation'
+        : 'Подтверждение оплаты бронирования';
     const EmailTemplate = this.getTemplate(locale, 'ConfirmedPayEmail');
-    const {
-      images,
-      locationDetails,
-      wifiPassword,
-      apartmentPassword,
-    } = apartment;
+    const {images, locationDetails, wifiPassword, apartmentPassword} =
+      apartment;
 
     const guests: {guests: number; rooms: number} = booking?.guests as {
       guests: number;
       rooms: number;
     };
-    const transferData = booking?.transfers ? this.transferService.convertTransferArrayToObject(
-      booking?.transfers,
-    ) as {from: {price: number}; to: To}
-    : {
-      from: {price: 0},
-      to: {price: 0},
-    };
+    const transferData = booking?.transfers
+      ? (this.transferService.convertTransferArrayToObject(
+          booking?.transfers,
+        ) as {from: {price: number}; to: To})
+      : {
+          from: {price: 0},
+          to: {price: 0},
+        };
 
     const {from, to} = transferData;
     const {price: fromPrice = 0} = from;
     const {price: toPrice = 0} = to;
 
-    const totalPrice = transferData ? booking?.price + fromPrice  + toPrice : booking?.price
+    const totalPrice = transferData
+      ? booking?.price + fromPrice + toPrice
+      : booking?.price;
     const hostContacts = await this.hostContactsService.getHostContacts();
     const dataForEmail: ConfirmedPayEmailData = {
       checkIn: booking.checkIn,
       checkOut: booking.checkOut,
-      img: images[0]?.url || process.env.DEFAULT_APARTMENT_IMAGE,
+      img: encodeURI(images[0]?.url || process.env.DEFAULT_APARTMENT_IMAGE),
       wifiPassword: wifiPassword || '',
       apartmentPassword: apartmentPassword || '',
       hostContacts: hostContacts,
@@ -291,8 +308,8 @@ export class MailService {
       rooms: guests.rooms,
       totalPrice: getFormattedPrice(totalPrice),
       transfer: {
-        from: {price: transferData.from?.price } ,
-        to: {price:transferData.to?.price} ,
+        from: {price: transferData.from?.price},
+        to: {price: transferData.to?.price},
       },
     };
     this.sendEmail({
@@ -321,24 +338,34 @@ export class MailService {
         'No customer provided for transfer confirmation email. Can not send email',
       );
     }
-    if (!transferData || !transferData.price) {
+    if (!transferData?.price) {
       throw new Error(
         'No transfer data or transfer price provided for transfer confirmation email. Can not send email',
       );
     }
 
     const formToObject = {
-      from: transferData.type === 'arrival' ? {price: transferData.price} : undefined,
-      to: transferData.type === 'departure' ? {price: transferData.price} : undefined,
-    }
-    const emailSubject = locale === 'en' ? 'Transfer confirmation' : 'Подтверждение трансфера';
-    const EmailTemplate = this.getTemplate(locale || 'en', 'ConfirmedTransferEmail');
-    const dataForEmail: ConfirmedTransferEmailData= {
+      from:
+        transferData.type === 'arrival'
+          ? {price: transferData.price}
+          : undefined,
+      to:
+        transferData.type === 'departure'
+          ? {price: transferData.price}
+          : undefined,
+    };
+    const emailSubject =
+      locale === 'en' ? 'Transfer confirmation' : 'Подтверждение трансфера';
+    const EmailTemplate = this.getTemplate(
+      locale || 'en',
+      'ConfirmedTransferEmail',
+    );
+    const dataForEmail: ConfirmedTransferEmailData = {
       customerName: customer.name,
       hostContacts: hostContacts,
       transfer: formToObject,
       totalPrice: getFormattedPrice(transferData.price),
-    }
+    };
     const info = await this.sendEmail({
       to: customer.email,
       from: `"AstayHome" support@astayhome.com`,
@@ -349,4 +376,3 @@ export class MailService {
     // console.log(info);
   }
 }
-
