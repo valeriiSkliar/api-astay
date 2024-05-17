@@ -101,10 +101,7 @@ export class MailService {
         rooms: newBooking.guests.rooms,
         checkIn: newBooking.checkIn,
         checkOut: newBooking.checkOut,
-        transfer: {
-          from: transferData.from,
-          to: transferData.to,
-        },
+        
         hostContacts: hostData,
       };
 
