@@ -53,7 +53,6 @@ export const ConfirmedTransferEmail = ({
             />
           </div>
           <InfoTransfers lang="ru" transfer={data.transfer} />
-          <Hr style={hr} />
           <InfoRow leftColumn={text.totalPrice} rightColumn={{}} />
           <Hr style={hr} />
         </Row>

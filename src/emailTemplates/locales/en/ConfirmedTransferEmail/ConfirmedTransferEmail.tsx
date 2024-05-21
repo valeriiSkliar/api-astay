@@ -50,7 +50,6 @@ export const ConfirmedTransferEmail = ({
             />
           </div>
           <InfoTransfers transfer={data.transfer} />
-          <Hr style={hr} />
           <InfoRow leftColumn={text.totalPrice} rightColumn={{}} />
           <Hr style={hr} />
         </Row>

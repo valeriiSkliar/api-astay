@@ -1,8 +1,9 @@
 import {
   Heading,
+  Hr,
 } from "@react-email/components";
 import React from "react";
-import { nulling } from "../styles/global";
+import { hr, nulling } from "../styles/global";
 import InfoRow, { InfoData } from "./InfoRow";
 import getFormattedPrice from "../../utils/beautyfyPrice";
 
@@ -44,6 +45,7 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
           {t[locale].header}
         </Heading>
         <InfoRow leftColumn={from} rightColumn={{}} style={{ padding: '0 0 20px' }} />
+        <Hr style={hr} />
       </>
     );
   }
@@ -60,6 +62,7 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
           {t[locale].header}
         </Heading>
         <InfoRow leftColumn={to} rightColumn={{}} style={{ padding: '0 0 20px' }} />
+        <Hr style={hr} />
       </>
     );
   }
@@ -82,6 +85,7 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
           {t[locale].header}
         </Heading>
         <InfoRow leftColumn={from} rightColumn={to} style={{ padding: '0 0 20px' }} />
+        <Hr style={hr} />
       </>
 
     );

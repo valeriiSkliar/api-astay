@@ -43,7 +43,6 @@ export const ConfirmedBookingEmail = ({ data }: ConfirmedBookingEmailProps) => {
           <InfoRow leftColumn={text.guests} rightColumn={text.rooms} />
           <Hr style={hr} />
           <InfoTransfers transfer={data.transfer} lang="ru" />
-          <Hr style={hr} />
         </Row>
       </Section>
       <Section>
