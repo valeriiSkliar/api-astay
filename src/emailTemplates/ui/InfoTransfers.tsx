@@ -33,10 +33,14 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
 
   if (!transfer || Object.is(transfer, null)) return null;
 
+
   if (transfer.from && !transfer.to) {
+    const { price = 0 } = transfer.from;
+    if (!price || price <= 0) return null;
+
     const from: InfoData = {
       title: t[locale].from,
-      text: transfer.from?.price ? getFormattedPrice(transfer.from.price) : '',
+      text: getFormattedPrice(price),
     }
 
     return (
@@ -51,9 +55,13 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
   }
 
   if (!transfer.from && transfer.to) {
+    const { price = 0 } = transfer.to;
+
+    if (!price || price <= 0) return null;
+
     const to: InfoData = {
       title: t[locale].to,
-      text: transfer?.to.price ? getFormattedPrice(transfer.to.price) : '',
+      text: getFormattedPrice(price),
     }
 
     return (
@@ -68,15 +76,21 @@ export default function InfoTransfers({ transfer, lang }: InfoRowProps) {
   }
   if (transfer.from && transfer.to) {
 
+    const { price: priceFrom = 0 } = transfer.from;
+    const { price = 0 } = transfer.to;
+
+    if (!price || price <= 0 || !priceFrom || priceFrom <= 0) return null;
+
+
     const from: InfoData = {
       title: t[locale].from,
-      text: transfer.from?.price ? getFormattedPrice(transfer.from.price) : '',
+      text: getFormattedPrice(priceFrom),
     }
 
 
     const to: InfoData = {
       title: t[locale].to,
-      text: transfer.to?.price ? getFormattedPrice(transfer.to.price) : '',
+      text: getFormattedPrice(price),
     }
 
     return (
