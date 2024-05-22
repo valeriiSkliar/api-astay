@@ -3,8 +3,8 @@
 import {repository} from '@loopback/repository';
 import {BookingRepository} from '../repositories';
 
+import {authenticate} from '@loopback/authentication';
 import {inject, service} from '@loopback/core';
-import {ApartmentService, BookingService, DateTimeService, MailService} from '../services';
 import {
   Request,
   RestBindings,
@@ -14,7 +14,7 @@ import {
   response,
 } from '@loopback/rest';
 import {Booking} from '../models';
-import {authenticate} from '@loopback/authentication';
+import {ApartmentService, BookingService, DateTimeService, MailService} from '../services';
 
 export class BookingRequestController {
   constructor(
@@ -26,7 +26,7 @@ export class BookingRequestController {
     @service(MailService) private mailService: MailService,
     @service(DateTimeService) private dateTimeService: DateTimeService,
     @service(ApartmentService) private apartmentService: ApartmentService,
-  ) {}
+  ) { }
 
   @post('/api/booking-requests')
   @response(200, {
@@ -78,6 +78,7 @@ export class BookingRequestController {
     })
     booking: Omit<Booking, 'id'>,
   ) {
+    console.log(booking);
     try {
       const bookingResponse =
         await this.bookingService.handleBookingRequest(booking);
