@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -7,23 +8,21 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
+import {AverageCountScoresReviews} from '../interfaces/expansionDefaultModel/Average(Count)Reviews';
 import {Booking, Review} from '../models';
 import {ApartmentRepository, ReviewRepository} from '../repositories';
-import {AverageCountScoresReviews} from '../interfaces/expansionDefaultModel/Average(Count)Reviews';
-import {calculateAverageRating} from '../services/reviews/calculateAverageRating.service';
-import {service} from '@loopback/core';
 import {BookingService, ReviewService} from '../services';
-import {authenticate} from '@loopback/authentication';
+import {calculateAverageRating} from '../services/reviews/calculateAverageRating.service';
 import {BookingResponse} from '../types';
 export class ReviewController {
   constructor(
@@ -33,7 +32,7 @@ export class ReviewController {
     public apartmentRepository: ApartmentRepository,
     @service(ReviewService) private reviewService: ReviewService,
     @service(BookingService) private bookingService: BookingService,
-  ) {}
+  ) { }
 
   @post('/api/reviews')
   @response(200, {
@@ -77,16 +76,21 @@ export class ReviewController {
     @param.where(Review)
     where?: Where<Review> & {average?: boolean; listing_id?: number},
   ): Promise<AverageCountScoresReviews> {
+    console.log('start');
+
     if (where && where.average) {
+
       const whereObj: Where<Review> = {
-        average: true,
-        status: true,
-        isArchived: false,
+        where: {
+          status: true,
+          isArchived: false,
+        }
       };
       const reviews = await this.reviewRepository.find(whereObj);
       const averageRating = calculateAverageRating(reviews);
       return {count: reviews.length, average: averageRating};
     } else if (where && where.listing_id) {
+
       const reviews = await this.reviewRepository.find({
         where: {
           status: true,
