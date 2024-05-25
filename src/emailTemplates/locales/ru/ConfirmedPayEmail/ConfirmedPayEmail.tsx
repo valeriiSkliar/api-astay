@@ -22,8 +22,6 @@ interface ConfirmedPayEmailProps {
 export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
   const previewText = `Бронирование на ${ruFormatDate(data.checkIn)} успешно подтверждено.`;
 
-  const headText = `${data.apartmentName} | от ${data.hostContacts.name}`;
-
   const text = textRu(data);
 
   return (
@@ -33,11 +31,11 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
         <Row>
           <div>
             <Text style={{ marginTop: '5px', fontSize: '20px' }}>
-              {headText}
+              {data.apartmentName}
             </Text>
           </div>
           <div style={{ overflow: 'hidden' }}>
-            <Img src={data.img} style={mainImg} width={1920} height={1080} alt={headText} />
+            <Img src={data.img} style={mainImg} width={1920} height={1080} alt={data.apartmentName} />
           </div>
         </Row>
         <Row style={{ textAlign: 'center', margin: '20px 0' }}>

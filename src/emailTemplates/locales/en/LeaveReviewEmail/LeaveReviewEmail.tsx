@@ -17,17 +17,17 @@ interface LeaveReviewEmailProps {
 
 export const LeaveReviewEmail = ({ data }: LeaveReviewEmailProps) => {
   const previewText = `How did you do on your rest?`;
-  const headText = `${data.apartmentName} | by ${data.hostContacts.name}`;
+
   return (
     <DefaultEmail previewText={previewText} hostData={data.hostContacts}>
       <Section style={{ overflow: 'hidden' }}>
         <Heading as="h2" style={heading}>How was your stay?</Heading>
         <Row>
           <Text style={{ marginTop: '5px', fontSize: '20px' }}>
-            {headText}
+            {data.apartmentName}
           </Text>
           <div style={{ overflow: 'hidden' }}>
-            <Img src={data.img} style={mainImg} width={1920} height={1080} alt={headText} />
+            <Img src={data.img} style={mainImg} width={1920} height={1080} alt={data.apartmentName} />
           </div>
         </Row>
       </Section>

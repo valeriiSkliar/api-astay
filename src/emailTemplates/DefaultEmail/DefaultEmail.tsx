@@ -30,7 +30,7 @@ interface DefaultEmailProps {
 
 
 
-export const DefaultEmail = ({ children, previewText, lang = 'en', hostData, emailTitle = 'AstayHome', companyName = 'AstayHome' }: DefaultEmailProps) => {
+export const DefaultEmail = ({ children, previewText, lang = 'en', hostData, emailTitle = 'Astayhome', companyName = 'Astayhome' }: DefaultEmailProps) => {
 
   const t = {
     ru: {
