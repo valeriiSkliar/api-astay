@@ -39,7 +39,7 @@ export function textRu(data: TranslateEmailText) {
       text: formatGuests,
     },
     rooms: {
-      title: 'Комнат',
+      title: 'Апартаментов',
       text: formatRooms,
     },
     address: {
@@ -81,7 +81,7 @@ export function textEn(data: TranslateEmailText) {
       text: formatGuests,
     },
     rooms: {
-      title: 'Rooms',
+      title: 'Apartments',
       text: formatRooms,
     },
     address: {
