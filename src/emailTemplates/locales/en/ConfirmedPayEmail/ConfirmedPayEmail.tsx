@@ -60,7 +60,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
             href={`https://astayhome.com/ru/apartment/${data.apartmentId}`}
             style={{ ...button, padding: "15px 0", width: "100%" }}
           >
-            See room
+            See apartment
           </Button>
         </Row>
         <Row>
