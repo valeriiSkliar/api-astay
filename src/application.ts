@@ -1,26 +1,25 @@
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
 
+import {AuthenticationComponent} from '@loopback/authentication';
+import {
+  JWTAuthenticationComponent,
+  TokenServiceBindings,
+  UserServiceBindings
+} from '@loopback/authentication-jwt';
+import {RepositoryMixin} from '@loopback/repository';
+import {RestApplication} from '@loopback/rest';
+import {CrudRestComponent} from '@loopback/rest-crud';
 import {
   RestExplorerBindings,
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
-import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
-import {MySequence} from './sequence';
 import multer from 'multer';
 import path from 'path';
-import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './keys';
-import {AuthenticationComponent} from '@loopback/authentication';
-import {
-  JWTAuthenticationComponent,
-  SECURITY_SCHEME_SPEC,
-  TokenServiceBindings,
-  UserServiceBindings,
-} from '@loopback/authentication-jwt';
 import {LocalMysqlDataSource} from './datasources/local-mysql.datasource';
-import {CrudRestComponent} from '@loopback/rest-crud';
+import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './keys';
+import {MySequence} from './sequence';
 import {SubmitTrackingService} from './services';
 // import {CronComponent} from '@loopback/cron';
 
@@ -51,7 +50,8 @@ export class ApiApplication extends BootMixin(
     this.sequence(MySequence);
     this.bind('services.submit-tracking').toClass(SubmitTrackingService);
     // for jwt access token
-    this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to('2592000');
+    const maxAge = 3600 * 24 * 30 * 3
+    this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to(String(maxAge));
 
     // for cron jobs
     // this.component(CronComponent);
