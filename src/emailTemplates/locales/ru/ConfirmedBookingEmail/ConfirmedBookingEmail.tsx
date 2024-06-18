@@ -22,7 +22,6 @@ export const ConfirmedBookingEmail = ({ data }: ConfirmedBookingEmailProps) => {
   const previewText = `Ваше бронирование на ${ruFormatDate(data.checkIn)} успешно отправлено.`;
   const { customerName, apartmentName } = data;
 
-  const headText = `${apartmentName} | от ${data.hostContacts.name}`;
   const text = textRu(data);
 
   return (
@@ -32,11 +31,11 @@ export const ConfirmedBookingEmail = ({ data }: ConfirmedBookingEmailProps) => {
         <Row>
           <div>
             <Text style={{ marginTop: '5px', fontSize: '20px' }}>
-              {headText}
+              {apartmentName}
             </Text>
           </div>
           <div style={{ overflow: 'hidden' }}>
-            <Img src={data.img} style={mainImg} width={1920} height={1080} alt={headText} />
+            <Img src={data.img} style={mainImg} width={1920} height={1080} alt={apartmentName} />
           </div>
           <InfoRow leftColumn={text.checkIn} rightColumn={text.checkOut} />
           <Hr style={hr} />

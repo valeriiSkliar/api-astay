@@ -32,8 +32,6 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
     data.checkIn,
   )} has been successfully confirmed.`;
 
-  const headText = `${data.apartmentName} | by ${data.hostContacts.name}`;
-
   const text = textEn(data);
 
   return (
@@ -44,7 +42,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
         </Heading>
         <Row>
           <Text style={{ marginTop: "5px", fontSize: "20px" }}>
-            {headText}
+            {data.apartmentName}
           </Text>
           <div style={{ overflow: "hidden" }}>
             <Img
@@ -52,7 +50,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
               style={mainImg}
               width={1920}
               height={1080}
-              alt={headText}
+              alt={data.apartmentName}
             />
           </div>
         </Row>
@@ -62,7 +60,7 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
             href={`https://astayhome.com/ru/apartment/${data.apartmentId}`}
             style={{ ...button, padding: "15px 0", width: "100%" }}
           >
-            See room
+            See apartment
           </Button>
         </Row>
         <Row>
