@@ -9,8 +9,9 @@ import {
   Text,
 } from "@react-email/components";
 import React from "react";
-import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
+import { formatDate } from "../../../helpers/formatDate";
+import { textEn } from "../../../helpers/translate/translate";
 import {
   button,
   heading,
@@ -19,9 +20,8 @@ import {
   paragraph,
   textAccent,
 } from "../../../styles/global";
-import { formatDate } from "../../../helpers/formatDate";
+import InfoRow from "../../../ui/InfoRow";
 import InfoTransfers from "../../../ui/InfoTransfers";
-import { textEn } from "../../../helpers/translate/translate";
 
 interface ConfirmedPayEmailProps {
   data: ConfirmedPayEmailData;
@@ -54,11 +54,11 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
             />
           </div>
         </Row>
-        <Row style={{ textAlign: "center", margin: "20px 0" }}>
+        <Row style={{ textAlign: "center", margin: "20px auto" }}>
           <Button
             target="_blank"
             href={`https://astayhome.com/ru/apartment/${data.apartmentId}`}
-            style={{ ...button, padding: "15px 0", width: "100%" }}
+            style={{ ...button, padding: "15px 20px", display: "block", minWidth: "320px", fontSize: '14px' }}
           >
             See apartment
           </Button>
