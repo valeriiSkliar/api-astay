@@ -31,6 +31,8 @@ const restConfig = {
     allowedHeaders: 'Content-Type, Authorization',
   },
 };
+export const maxAge = 3600 * 24 * 30 * 3
+
 
 export {ApplicationConfig};
 
@@ -50,7 +52,6 @@ export class ApiApplication extends BootMixin(
     this.sequence(MySequence);
     this.bind('services.submit-tracking').toClass(SubmitTrackingService);
     // for jwt access token
-    const maxAge = 3600 * 24 * 30 * 3
     this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to(String(maxAge));
 
     // for cron jobs

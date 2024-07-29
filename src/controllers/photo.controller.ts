@@ -1,3 +1,5 @@
+import {authenticate} from '@loopback/authentication';
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -7,29 +9,26 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
 import {Photo} from '../models';
 import {PhotoRepository} from '../repositories';
-import {service} from '@loopback/core';
 import {UploaderService} from '../services';
-import e from 'express';
-import {authenticate} from '@loopback/authentication';
 
 export class PhotoController {
   constructor(
     @repository(PhotoRepository)
     public photoRepository: PhotoRepository,
     @service(UploaderService) private uploaderService: UploaderService,
-  ) {}
+  ) { }
 
   @post('/api/photos')
   @response(200, {
@@ -74,6 +73,8 @@ export class PhotoController {
     },
   })
   async find(@param.filter(Photo) filter?: Filter<Photo>): Promise<Photo[]> {
+
+
     filter = {
       ...filter,
       order: filter?.order ?? ['order_number ASC'],
@@ -98,6 +99,8 @@ export class PhotoController {
     photo: Photo,
     @param.where(Photo) where?: Where<Photo>,
   ): Promise<Count> {
+
+
     return this.photoRepository.updateAll(photo, where);
   }
 
@@ -115,6 +118,8 @@ export class PhotoController {
     @param.filter(Photo, {exclude: 'where'})
     filter?: FilterExcludingWhere<Photo>,
   ): Promise<Photo> {
+
+
     return this.photoRepository.findById(id, filter);
   }
 
@@ -133,6 +138,8 @@ export class PhotoController {
     })
     photo: Photo,
   ): Promise<void> {
+
+
     await this.photoRepository.updateById(id, photo);
   }
 
@@ -144,6 +151,8 @@ export class PhotoController {
     @param.path.string('id') id: number,
     @requestBody() photo: Photo,
   ): Promise<void> {
+
+
     await this.photoRepository.replaceById(id, photo);
   }
   @authenticate('jwt')
@@ -152,6 +161,8 @@ export class PhotoController {
     description: 'Photo DELETE success',
   })
   async deleteById(@param.path.string('id') id: number): Promise<Photo[]> {
+
+
     const {apartment_id, complex_id} = await this.photoRepository.findById(id);
     await this.photoRepository.deleteById(id);
     if (apartment_id || complex_id) {
@@ -190,6 +201,8 @@ export class PhotoController {
     })
     orderUpdates: Array<{id: number; order_number: number}>,
   ): Promise<Photo[]> {
+
+
     await Promise.all(
       orderUpdates.map(async orderUpdate =>
         this.photoRepository.updateById(orderUpdate.id, {
@@ -197,7 +210,7 @@ export class PhotoController {
         }),
       ),
     );
-    return await Promise.all(
+    return Promise.all(
       orderUpdates.map(async orderUpdate =>
         this.photoRepository.findById(orderUpdate.id),
       ),

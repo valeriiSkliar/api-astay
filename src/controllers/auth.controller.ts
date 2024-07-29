@@ -1,4 +1,4 @@
-import {inject} from '@loopback/core';
+import {TokenService, authenticate} from '@loopback/authentication';
 import {
   Credentials,
   MyUserService,
@@ -7,16 +7,16 @@ import {
   UserRepository,
   UserServiceBindings,
 } from '@loopback/authentication-jwt';
-import {TokenService, authenticate} from '@loopback/authentication';
-import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
+import {inject} from '@loopback/core';
 import {model, property, repository} from '@loopback/repository';
 import {
+  SchemaObject,
   get,
   getModelSchemaRef,
   post,
   requestBody,
-  SchemaObject,
 } from '@loopback/rest';
+import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
 import {genSalt, hash} from 'bcryptjs';
 import _ from 'lodash';
 
@@ -61,7 +61,7 @@ export class AuthController {
     @inject(SecurityBindings.USER, {optional: true})
     public user: UserProfile,
     @repository(UserRepository) protected userRepository: UserRepository,
-  ) {}
+  ) { }
 
   @post('/api/users/login', {
     responses: {
@@ -84,15 +84,16 @@ export class AuthController {
   })
   async login(
     @requestBody(CredentialsRequestBody) credentials: Credentials,
-  ): Promise<{token: string}> {
+  ): Promise<{token: string, expareAt: number}> {
     // ensure the user exists, and the password is correct
     const user = await this.userService.verifyCredentials(credentials);
     // convert a User object into a UserProfile object (reduced set of properties)
     const userProfile = this.userService.convertToUserProfile(user);
-
     // create a JSON Web Token based on the user profile
+    const expareAt = Date.now() + 3 * 30 * 24 * 60 * 60 * 1000; // add 3 months from login
+
     const token = await this.jwtService.generateToken(userProfile);
-    return {token};
+    return {token, expareAt};
   }
 
   @authenticate('jwt')
