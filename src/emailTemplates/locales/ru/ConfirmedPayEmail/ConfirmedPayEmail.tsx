@@ -9,12 +9,12 @@ import {
   Text,
 } from "@react-email/components";
 import React from "react";
-import InfoRow from "../../../ui/InfoRow";
 import DefaultEmail from "../../../DefaultEmail/DefaultEmail";
-import { button, nulling } from "../../../styles/global";
 import { ruFormatDate } from "../../../helpers/formatDate";
-import InfoTransfers from "../../../ui/InfoTransfers";
 import { textRu } from "../../../helpers/translate/translate";
+import { button, nulling } from "../../../styles/global";
+import InfoRow from "../../../ui/InfoRow";
+import InfoTransfers from "../../../ui/InfoTransfers";
 
 interface ConfirmedPayEmailProps {
   data: ConfirmedPayEmailData;
@@ -38,8 +38,8 @@ export const ConfirmedPayEmail = ({ data }: ConfirmedPayEmailProps) => {
             <Img src={data.img} style={mainImg} width={1920} height={1080} alt={data.apartmentName} />
           </div>
         </Row>
-        <Row style={{ textAlign: 'center', margin: '20px 0' }}>
-          <Button target="_blank" href={`https://astayhome.com/ru/apartment/${data.apartmentId}`} style={{ ...button, padding: '15px 0', width: '100%' }}>Посмотреть апартамент</Button>
+        <Row style={{ textAlign: 'center', margin: '20px auto' }}>
+          <Button target="_blank" href={`https://astayhome.com/ru/apartment/${data.apartmentId}`} style={{ ...button, padding: "15px 20px", display: "block", minWidth: "320px", fontSize: '14px' }}>Посмотреть апартамент</Button>
         </Row>
         <Row>
           <InfoRow leftColumn={text.checkIn} rightColumn={text.checkOut} />
