@@ -39,3 +39,10 @@ interface RequestEmailData {
   customerName: string;
   hostContacts: HostContacts;
 }
+
+interface NotificationEmailData {
+  companyName?: string;
+  emailTitle?: string;
+  message: string;
+  hostContacts: HostContacts;
+}
