@@ -1,24 +1,22 @@
-import {injectable, BindingScope, service} from '@loopback/core';
-import nodemailer from 'nodemailer';
-import {MailInterface} from '../interfaces/mailInterface';
-import {emailConfig} from '../datasources/nodemailer.config';
-import {RenderMailTemplateService} from './render-mail-template.service';
-import {HostContactsService} from './host-contacts.service';
-import {render} from '@react-email/components';
+import {BindingScope, injectable, service} from '@loopback/core';
 import {repository} from '@loopback/repository';
+import {render} from '@react-email/components';
+import nodemailer from 'nodemailer';
+import {emailConfig} from '../datasources/nodemailer.config';
+import * as defaultTemplates from '../emailTemplates/locales/en';
+import * as ruTemplates from '../emailTemplates/locales/ru';
+import {MailInterface} from '../interfaces/mailInterface';
+import {Booking, BookingRelations, Transfer as TransferModel} from '../models';
 import {
   ApartmentRepository,
   BookingRepository,
   PhotoRepository,
   RoomCategoryRepository,
 } from '../repositories';
-import {Booking, BookingRelations, Customer, RoomCategory} from '../models';
-import {TransferService} from './transfer.service';
 import getFormattedPrice from '../utils/beautyfyPrice';
-import * as defaultTemplates from '../emailTemplates/locales/en';
-import * as ruTemplates from '../emailTemplates/locales/ru';
-import {Transfer as TransferModel} from '../models';
-import {get} from 'http';
+import {HostContactsService} from './host-contacts.service';
+import {RenderMailTemplateService} from './render-mail-template.service';
+import {TransferService} from './transfer.service';
 @injectable({scope: BindingScope.SINGLETON})
 export class MailService {
   private transporter: nodemailer.Transporter;
@@ -101,7 +99,7 @@ export class MailService {
         rooms: newBooking.guests.rooms,
         checkIn: newBooking.checkIn,
         checkOut: newBooking.checkOut,
-        
+
         hostContacts: hostData,
       };
 
@@ -134,12 +132,12 @@ export class MailService {
         : 'Мы получили вашу заявку, спасибо! AstayHome Team';
     const EmailTemplate = this.getTemplate(locale || 'en', 'RequestEmail');
 
-    this.sendEmail({
-      to: email,
-      from: `"AstayHome" support@astayhome.com`,
-      subject: 'AstayHome Form Request',
-      html: render(EmailTemplate({data: dataForEmail})),
-    });
+    // this.sendEmail({
+    //   to: email,
+    //   from: `"AstayHome" support@astayhome.com`,
+    //   subject: 'AstayHome Form Request',
+    //   html: render(EmailTemplate({data: dataForEmail})),
+    // });
   }
 
   async sendLeaveReviewEmail(tokenReview: string) {
@@ -275,12 +273,12 @@ export class MailService {
     };
     const transferData = booking?.transfers
       ? (this.transferService.convertTransferArrayToObject(
-          booking?.transfers,
-        ) as {from: {price: number}; to: To})
+        booking?.transfers,
+      ) as {from: {price: number}; to: To})
       : {
-          from: {price: 0},
-          to: {price: 0},
-        };
+        from: {price: 0},
+        to: {price: 0},
+      };
 
     const {from, to} = transferData;
     const {price: fromPrice = 0} = from;
