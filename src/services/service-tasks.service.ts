@@ -1,11 +1,20 @@
-import { /* inject, */ BindingScope, injectable} from '@loopback/core';
+import { /* inject, */ BindingScope, injectable, service} from '@loopback/core';
+import {Applications} from '../models';
+import {MailService} from './mail.service';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class ServiceTasksService {
-  constructor(/* Add @inject to inject parameters */) { }
+  constructor(
+    @service(MailService) private mailService: MailService,
+  ) { }
 
   async stop(): Promise<void> {
     console.log('Stopping servise tasks');
+  }
+
+  async sendNoficationAboutNewApplicationToManager(instance: Applications): Promise<void> {
+    await this.mailService.sendNoficationAboutNewApplicationToManager(instance)
+
   }
 
   async restart(): Promise<void> {

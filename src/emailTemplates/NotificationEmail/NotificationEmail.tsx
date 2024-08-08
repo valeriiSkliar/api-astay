@@ -5,6 +5,7 @@ import {
   Section,
   Text
 } from "@react-email/components";
+import React from 'react';
 import DefaultEmail from "../DefaultEmail/DefaultEmail";
 import {
   button,
@@ -25,32 +26,32 @@ const quote: React.CSSProperties = {
   color: 'black',
 }
 
-export const NotificationEmail = ({ data }: NotificationEmailProps) => {
+export const NotificationEmail = ({data}: NotificationEmailProps) => {
   const previewText = '🚀 You have new application 🚀';
 
   return (
     <DefaultEmail previewText={previewText} hostData={data.hostContacts}>
-      <Section style={{ paddingBottom: "20px", overflow: "hidden" }}>
+      <Section style={{paddingBottom: "20px", overflow: "hidden"}}>
         <Heading as="h2" style={heading}>
-        🚀 You have new application 🚀
+          🚀 You have new application 🚀
         </Heading>
         <Row>
-          <Text style={{ marginTop: "5px", fontSize: "20px" }}>
+          <Text style={{marginTop: "5px", fontSize: "20px"}}>
             Please review it in the admin panel.
           </Text>
           <Button target="_blank" href="https://admin.astayhome.com/admin/aplications-list">
-          <div style={{ overflow: "hidden" }}>
-            <blockquote style={quote}>
-              {data.message}
-            </blockquote>
-          </div>
+            <div style={{overflow: "hidden"}}>
+              <blockquote style={quote}>
+                {data.message}
+              </blockquote>
+            </div>
           </Button>
         </Row>
-        <Row style={{ textAlign: "center", margin: "20px auto", width: "100%"}}>
+        <Row style={{textAlign: "center", margin: "20px auto", width: "100%"}}>
           <Button
             target="_blank"
             href="https://admin.astayhome.com/admin/aplications-list"
-            style={{ ...button, padding: "15px 20px", display: "block", minWidth: "320px", fontSize: '14px' }}
+            style={{...button, padding: "15px 20px", display: "block", minWidth: "320px", fontSize: '14px'}}
           >
             Go to Admin panel
           </Button>

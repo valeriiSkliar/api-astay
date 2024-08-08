@@ -27,6 +27,12 @@ export class HostContacts extends Entity {
 
   @property({
     type: 'string',
+    defaullt: 'astayserver@gmail.com',
+  })
+  serviceEmail?: string;
+
+  @property({
+    type: 'string',
   })
   name?: string;
 

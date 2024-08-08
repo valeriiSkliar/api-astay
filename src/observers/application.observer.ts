@@ -38,7 +38,8 @@ export class ApplicationObserver implements LifeCycleObserver {
   async start(): Promise<void> {
     // this.serviceTasksService.start();
     this.applicationRepository.modelClass.observe('after save', async (ctx, next) => {
-      console.log('persist', ctx.instance);
+      // console.log('persist', ctx.instance);
+      this.serviceTasksService.sendNoficationAboutNewApplicationToManager(ctx.instance);
       // next()
       // const result = await next();
       // return result;

@@ -1,3 +1,4 @@
+//
 import {BindingScope, injectable, service} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {render} from '@react-email/components';
@@ -6,7 +7,7 @@ import {emailConfig} from '../datasources/nodemailer.config';
 import * as defaultTemplates from '../emailTemplates/locales/en';
 import * as ruTemplates from '../emailTemplates/locales/ru';
 import {MailInterface} from '../interfaces/mailInterface';
-import {Booking, BookingRelations, Transfer as TransferModel} from '../models';
+import {Applications, Booking, BookingRelations, Transfer as TransferModel} from '../models';
 import {
   ApartmentRepository,
   BookingRepository,
@@ -67,6 +68,24 @@ export class MailService {
    * @param option MailInterface containing email options
    * @param data Additional data required for the booking email template
    */
+
+  async sendNoficationAboutNewApplicationToManager(instance: Applications) {
+    const hostData = await this.hostContactsService.getHostContacts();
+    const EmailTemplate = defaultTemplates.NotificationEmail;
+    const dataForEmail: NotificationEmailData = {
+      // companyName: 'AstayHome',
+      // emailTitle: 'New application',
+      hostContacts: hostData,
+      message: instance.message ?? 'No message',
+    }
+    await this.sendEmail({
+      to: hostData.serviceEmail,
+      from: `"AstayHome" support@astayhome.com`,
+      subject: `New application from ${instance.name ?? 'No name'} on AstayHome`,
+      html: render(EmailTemplate({data: dataForEmail})),
+    });
+  }
+
   async sendBookingRequestEmail({customer, newBooking, transferData}: any) {
     const hostData = await this.hostContactsService.getHostContacts();
     if (transferData) {
@@ -103,7 +122,7 @@ export class MailService {
         hostContacts: hostData,
       };
 
-      this.sendEmail({
+      await this.sendEmail({
         to: customer.email,
         from: `"AstayHome" support@astayhome.com`,
         subject: emailSubject,
@@ -132,12 +151,12 @@ export class MailService {
         : 'Мы получили вашу заявку, спасибо! AstayHome Team';
     const EmailTemplate = this.getTemplate(locale || 'en', 'RequestEmail');
 
-    // this.sendEmail({
-    //   to: email,
-    //   from: `"AstayHome" support@astayhome.com`,
-    //   subject: 'AstayHome Form Request',
-    //   html: render(EmailTemplate({data: dataForEmail})),
-    // });
+    await this.sendEmail({
+      to: email,
+      from: `"AstayHome" support@astayhome.com`,
+      subject: emailSubject,
+      html: render(EmailTemplate({data: dataForEmail})),
+    });
   }
 
   async sendLeaveReviewEmail(tokenReview: string) {
@@ -190,7 +209,7 @@ export class MailService {
         'Apartment',
       hostContacts: hostContacts,
     };
-    this.sendEmail({
+    await this.sendEmail({
       to: customer.email,
       from: `"AstayHome" support@astayhome.com`,
       subject: emailSubject,
@@ -222,7 +241,7 @@ export class MailService {
       hostContacts: hostContacts,
     };
 
-    this.sendEmail({
+    await this.sendEmail({
       to: email,
       from: `"AstayHome" support@astayhome.com`,
       subject: emailSubject,
@@ -264,7 +283,7 @@ export class MailService {
         ? 'Booking payment confirmation'
         : 'Подтверждение оплаты бронирования';
     const EmailTemplate = this.getTemplate(locale, 'ConfirmedPayEmail');
-    const {images, locationDetails, wifiPassword, apartmentPassword} =
+    const {images, wifiPassword, apartmentPassword} =
       apartment;
 
     const guests: {guests: number; rooms: number} = booking?.guests as {
@@ -298,7 +317,7 @@ export class MailService {
       customerName: customer.name,
       apartmentId: apartment.id,
       apartmentName: apartment.translations?.[locale]?.name,
-      address: hostContacts.address || '',
+      address: hostContacts.address ?? '',
       guests: guests.guests,
       rooms: guests.rooms,
       totalPrice: getFormattedPrice(totalPrice),
@@ -307,7 +326,7 @@ export class MailService {
         to: {price: transferData.to?.price},
       },
     };
-    this.sendEmail({
+    await this.sendEmail({
       to: customer.email,
       from: `"AstayHome" support@astayhome.com`,
       subject: `${emailSubject} #${booking.id} - AstayHome`,
@@ -361,7 +380,7 @@ export class MailService {
       transfer: formToObject,
       totalPrice: getFormattedPrice(transferData.price),
     };
-    const info = await this.sendEmail({
+    await this.sendEmail({
       to: customer.email,
       from: `"AstayHome" support@astayhome.com`,
       subject: `${emailSubject} #${transfer.id} - AstayHome`,
