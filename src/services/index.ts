@@ -10,3 +10,4 @@ export * from './review.service';
 export * from './render-mail-template.service';
 export * from './uploader.service';
 export * from './date-time.service';
+export * from './service-tasks.service';

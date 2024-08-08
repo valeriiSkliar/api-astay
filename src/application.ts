@@ -1,26 +1,26 @@
-import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import { BootMixin } from '@loopback/boot';
+import { ApplicationConfig } from '@loopback/core';
 
-import {AuthenticationComponent} from '@loopback/authentication';
+import { AuthenticationComponent } from '@loopback/authentication';
 import {
   JWTAuthenticationComponent,
   TokenServiceBindings,
   UserServiceBindings
 } from '@loopback/authentication-jwt';
-import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
-import {CrudRestComponent} from '@loopback/rest-crud';
+import { RepositoryMixin } from '@loopback/repository';
+import { RestApplication } from '@loopback/rest';
+import { CrudRestComponent } from '@loopback/rest-crud';
 import {
   RestExplorerBindings,
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
-import {ServiceMixin} from '@loopback/service-proxy';
+import { ServiceMixin } from '@loopback/service-proxy';
 import multer from 'multer';
 import path from 'path';
-import {LocalMysqlDataSource} from './datasources/local-mysql.datasource';
-import {FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY} from './keys';
-import {MySequence} from './sequence';
-import {SubmitTrackingService} from './services';
+import { LocalMysqlDataSource } from './datasources/local-mysql.datasource';
+import { FILE_UPLOAD_SERVICE, STORAGE_DIRECTORY } from './keys';
+import { MySequence } from './sequence';
+import { SubmitTrackingService } from './services';
 // import {CronComponent} from '@loopback/cron';
 
 const restConfig = {
@@ -34,7 +34,7 @@ const restConfig = {
 export const maxAge = 3600 * 24 * 30 * 3
 
 
-export {ApplicationConfig};
+export { ApplicationConfig };
 
 export class ApiApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
@@ -44,7 +44,6 @@ export class ApiApplication extends BootMixin(
       ...options,
       // rest: restConfig,
     });
-
     this.dataSource(LocalMysqlDataSource, UserServiceBindings.DATASOURCE_NAME);
     this.component(AuthenticationComponent);
     this.component(JWTAuthenticationComponent);
