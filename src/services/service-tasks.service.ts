@@ -1,5 +1,5 @@
 import { /* inject, */ BindingScope, injectable, service} from '@loopback/core';
-import {Applications} from '../models';
+import {Applications, Booking} from '../models';
 import {MailService} from './mail.service';
 
 @injectable({scope: BindingScope.TRANSIENT})
@@ -14,7 +14,13 @@ export class ServiceTasksService {
 
   async sendNoficationAboutNewApplicationToManager(instance: Applications): Promise<void> {
     await this.mailService.sendNoficationAboutNewApplicationToManager(instance)
+  }
 
+  async sendNoficationAboutNewBookingToManager(instance: Booking): Promise<void> {
+  await this.mailService.sendNoficationAboutNewBookingToManager(instance)
+  }
+  async sendNoficationAboutNewTransferToManager(instance: Transfer): Promise<void> {
+    await this.mailService.sendNoficationAboutNewTransferToManager(instance)
   }
 
   async restart(): Promise<void> {

@@ -2,10 +2,10 @@ import {
   /* inject, Application, CoreBindings, */
   lifeCycleObserver, // The decorator
   LifeCycleObserver,
-  service
+  service, // The interface
 } from '@loopback/core';
 import {repository} from '@loopback/repository';
-import {ApplicationsRepository, TransferRepository} from '../repositories';
+import {TransferRepository} from '../repositories';
 import {ServiceTasksService} from '../services';
 
 /**
@@ -13,13 +13,14 @@ import {ServiceTasksService} from '../services';
  * `boot`
  */
 @lifeCycleObserver('service')
-export class ApplicationObserver implements LifeCycleObserver {
+export class TransferObserver implements LifeCycleObserver {
 
   constructor(
     @repository(TransferRepository) private transferRepository: TransferRepository,
-    @repository(ApplicationsRepository) private applicationRepository: ApplicationsRepository,
     @service(ServiceTasksService) private serviceTasksService: ServiceTasksService,
-  ) { }
+
+  ) {}
+
 
   /**
    * This method will be invoked when the application initializes. It will be
@@ -29,16 +30,12 @@ export class ApplicationObserver implements LifeCycleObserver {
     // Add your logic for init
   }
 
-  // value() {
-  //   // return this.applicationRepository.observe('persist')
-  // }
-
   /**
    * This method will be invoked when the application starts.
    */
   async start(): Promise<void> {
-    this.applicationRepository.modelClass.observe('after save', async (ctx, next) => {
-      this.serviceTasksService.sendNoficationAboutNewApplicationToManager(ctx.instance);
+    this.transferRepository.modelClass.observe('after save', async (ctx, next) => {
+      await this.serviceTasksService.sendNoficationAboutNewTransferToManager(ctx.instance);
     })
   }
 
@@ -46,6 +43,6 @@ export class ApplicationObserver implements LifeCycleObserver {
    * This method will be invoked when the application stops.
    */
   async stop(): Promise<void> {
-    this.serviceTasksService.stop();
+    // Add your logic for stop
   }
 }

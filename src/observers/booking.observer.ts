@@ -5,7 +5,7 @@ import {
   service
 } from '@loopback/core';
 import {repository} from '@loopback/repository';
-import {ApplicationsRepository, TransferRepository} from '../repositories';
+import {BookingRepository} from '../repositories';
 import {ServiceTasksService} from '../services';
 
 /**
@@ -13,13 +13,13 @@ import {ServiceTasksService} from '../services';
  * `boot`
  */
 @lifeCycleObserver('service')
-export class ApplicationObserver implements LifeCycleObserver {
+export class BookingObserver implements LifeCycleObserver {
 
   constructor(
-    @repository(TransferRepository) private transferRepository: TransferRepository,
-    @repository(ApplicationsRepository) private applicationRepository: ApplicationsRepository,
-    @service(ServiceTasksService) private serviceTasksService: ServiceTasksService,
-  ) { }
+      @repository(BookingRepository) private bookingRepository: BookingRepository,
+      @service(ServiceTasksService) private serviceTasksService: ServiceTasksService,
+
+  ) {}
 
   /**
    * This method will be invoked when the application initializes. It will be
@@ -29,16 +29,13 @@ export class ApplicationObserver implements LifeCycleObserver {
     // Add your logic for init
   }
 
-  // value() {
-  //   // return this.applicationRepository.observe('persist')
-  // }
-
   /**
    * This method will be invoked when the application starts.
    */
   async start(): Promise<void> {
-    this.applicationRepository.modelClass.observe('after save', async (ctx, next) => {
-      this.serviceTasksService.sendNoficationAboutNewApplicationToManager(ctx.instance);
+    this.bookingRepository.modelClass.observe('after save', async ( ctx, next ) => {
+      this.serviceTasksService.sendNoficationAboutNewBookingToManager(ctx.instance);
+
     })
   }
 
@@ -46,6 +43,6 @@ export class ApplicationObserver implements LifeCycleObserver {
    * This method will be invoked when the application stops.
    */
   async stop(): Promise<void> {
-    this.serviceTasksService.stop();
+    // Add your logic for stop
   }
 }

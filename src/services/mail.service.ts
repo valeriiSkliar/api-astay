@@ -69,6 +69,40 @@ export class MailService {
    * @param data Additional data required for the booking email template
    */
 
+  async sendNoficationAboutNewBookingToManager( instance: Booking ) {
+   const hostData = await this.hostContactsService.getHostContacts();
+    const EmailTemplate = defaultTemplates.NotificationEmail;
+    const dataForEmail: NotificationEmailData = {
+      // companyName: 'AstayHome',
+      // emailTitle: 'New application',
+      hostContacts: hostData,
+      message: `booking form ${instance.name}` ?? 'No message',
+    }
+    await this.sendEmail({
+      to: hostData.serviceEmail,
+      from: `"AstayHome" support@astayhome.com`,
+      subject: `New booking from ${instance.name ?? 'No name'} on AstayHome`,
+      html: render(EmailTemplate({data: dataForEmail})),
+    });
+  }
+
+  async sendNoficationAboutNewTransferToManager( instance: Transfer ) {
+  const hostData = await this.hostContactsService.getHostContacts();
+    const EmailTemplate = defaultTemplates.NotificationEmail;
+    const dataForEmail: NotificationEmailData = {
+      // companyName: 'AstayHome',
+      // emailTitle: 'New application',
+      hostContacts: hostData,
+      message: `You get new transfer` ?? 'No message',
+    }
+    await this.sendEmail({
+      to: hostData.serviceEmail,
+      from: `"AstayHome" support@astayhome.com`,
+      subject: `You get new transfer on AstayHome`,
+      html: render(EmailTemplate({data: dataForEmail})),
+    });
+  }
+
   async sendNoficationAboutNewApplicationToManager(instance: Applications) {
     const hostData = await this.hostContactsService.getHostContacts();
     const EmailTemplate = defaultTemplates.NotificationEmail;
